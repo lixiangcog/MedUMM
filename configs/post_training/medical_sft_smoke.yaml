@@ -1,0 +1,14 @@
+post_training:
+  method: medical_sft
+  data:
+    source: jsonl
+    path: examples/medical/tiny_train.jsonl
+    image_root: examples/medical/images
+    validate_images: true
+    deidentified: true
+  text_dimensions: 64
+  epochs: 100
+  learning_rate: 0.6
+  weight_decay: 0.0001
+  seed: 7
+  output_directory: outputs/post_training/medical_sft

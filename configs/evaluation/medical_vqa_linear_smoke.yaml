@@ -1,0 +1,13 @@
+benchmark: medical_vqa
+data:
+  source: jsonl
+  path: examples/medical/tiny_eval.jsonl
+  image_root: examples/medical/images
+  validate_images: true
+model:
+  backbone: medical_linear
+  config:
+    model_path: outputs/post_training/medical_sft
+evaluation:
+  output_directory: outputs/evaluation/medical_vqa_linear
+  resume: false

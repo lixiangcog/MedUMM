@@ -1,0 +1,9 @@
+inference:
+  backbone: medical_linear
+  config:
+    model_path: outputs/post_training/medical_sft
+  requests:
+    - task: understanding
+      prompt: Is the central synthetic finding bright or dark? Answer A or B.
+      images: [examples/medical/images/synthetic_scan.pgm]
+  output_json: outputs/inference/medical_linear.json

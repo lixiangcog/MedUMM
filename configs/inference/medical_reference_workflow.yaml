@@ -1,0 +1,22 @@
+inference:
+  backbone: medical_reference
+  config:
+    seed: 7
+    image_size: 64
+    output_directory: outputs/reference
+  requests:
+    - task: generation
+      prompt: synthetic medical phantom for software testing
+      output_path: outputs/reference/generated.png
+    - task: understanding
+      prompt: Is the synthetic scan relatively bright? Answer A or B.
+      images: [examples/medical/images/synthetic_scan.pgm]
+      parameters:
+        bright_threshold: 96
+        bright_answer: A
+        dark_answer: B
+    - task: editing
+      prompt: increase contrast
+      images: [examples/medical/images/synthetic_scan.pgm]
+      output_path: outputs/reference/edited.png
+  output_json: outputs/reference/inference.json
