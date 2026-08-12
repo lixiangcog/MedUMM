@@ -4,14 +4,14 @@
   "status": "passed",
   "scheduler": {
     "slurm_job_id": "436330",
-    "slurm_step_id": "23"
+    "slurm_step_id": "24"
   },
   "hostname": "gpu01",
   "runtime": {
     "python": "3.10.20",
     "platform": "Linux-4.18.0-553.el8_10.x86_64-x86_64-with-glibc2.28",
     "hostname": "gpu01",
-    "git_commit": "",
+    "git_commit": "69b63c2",
     "git_dirty": false,
     "torch": "2.7.1+cu126",
     "cuda_available": true,
@@ -74,7 +74,7 @@
     "objective": "dpo",
     "global_steps": 6,
     "epochs": 3,
-    "duration_seconds": 0.937,
+    "duration_seconds": 0.818,
     "device": "cuda",
     "dtype": "bfloat16",
     "quantization": "none",
@@ -97,7 +97,7 @@
       {
         "path": "adapter_config.json",
         "size": 1159,
-        "sha256": "41b80b1b89af4a4c6fbf965be6c3450cc46d0e51c2e9d81e68041e21f77fa32f"
+        "sha256": "ec00ecd7d393231881e9cd0930d7f2b0fa1396f6a353d044af9e6404292ab1e3"
       },
       {
         "path": "adapter_model.safetensors",

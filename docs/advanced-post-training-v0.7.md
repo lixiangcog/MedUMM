@@ -119,7 +119,7 @@ verification bundle proves:
 - before/after loss, preference accuracy, and reward-margin measurements;
 - independently reloadable adapter weights.
 
-The accepted run completed as Slurm step `436330.21` on one
+The accepted release-source run completed as Slurm step `436330.24` on one
 NVIDIA A800-SXM4-80GB. It executed six DPO optimizer steps, saved 98,304
 trainable LoRA parameters, and reloaded the saved adapter. On this eight-pair
 software acceptance slice, preference accuracy changed from 0.0 to 1.0 and the
