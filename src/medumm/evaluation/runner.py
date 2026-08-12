@@ -35,6 +35,9 @@ class EvaluationRunner:
         fingerprint: str,
         metadata: dict[str, Any] | None = None,
         batch_size: int = 1,
+        shard_rank: int = 0,
+        shard_count: int = 1,
+        prediction_flush_interval: int | None = None,
     ) -> None:
         self.benchmark = benchmark
         self.pipeline = pipeline
@@ -47,7 +50,17 @@ class EvaluationRunner:
         self.fingerprint = fingerprint
         self.metadata = dict(metadata or {})
         self.batch_size = batch_size
-        self.predictions_path = self.output_directory / "predictions.jsonl"
+        if shard_count < 1 or not 0 <= shard_rank < shard_count:
+            raise ValueError("Evaluation shard requires 0 <= rank < count.")
+        resolved_flush_interval = prediction_flush_interval or batch_size
+        if resolved_flush_interval < 1:
+            raise ValueError("prediction_flush_interval must be at least one.")
+        self.shard_rank = shard_rank
+        self.shard_count = shard_count
+        self.prediction_flush_interval = resolved_flush_interval
+        suffix = f".rank-{shard_rank:05d}-of-{shard_count:05d}" if shard_count > 1 else ""
+        self.artifact_suffix = suffix
+        self.predictions_path = self.output_directory / f"predictions{suffix}.jsonl"
 
     def _previous_predictions(self, *, required: bool = False) -> dict[str, dict[str, Any]]:
         if not self.predictions_path.is_file():
@@ -71,12 +84,13 @@ class EvaluationRunner:
         active = {item.sample_id for item in items}
         predictions = {key: row for key, row in predictions.items() if key in active}
         pending = [item for item in items if item.sample_id not in predictions]
-        if pending:
+        for start in range(0, len(pending), self.prediction_flush_interval):
+            chunk = pending[start : start + self.prediction_flush_interval]
             outputs = self.pipeline.run_many(
-                [item.request for item in pending],
+                [item.request for item in chunk],
                 batch_size=self.batch_size,
             )
-            for item, output in zip(pending, outputs, strict=True):
+            for item, output in zip(chunk, outputs, strict=True):
                 predictions[item.sample_id] = {
                     "id": item.sample_id,
                     "request_id": output.request_id,
@@ -87,10 +101,10 @@ class EvaluationRunner:
                     "duration_ms": output.duration_ms,
                     "scores": output.scores,
                 }
-                write_jsonl(
-                    self.predictions_path,
-                    [predictions[current.sample_id] for current in items if current.sample_id in predictions],
-                )
+            write_jsonl(
+                self.predictions_path,
+                [predictions[current.sample_id] for current in items if current.sample_id in predictions],
+            )
         return predictions
 
     @staticmethod
@@ -144,7 +158,9 @@ class EvaluationRunner:
                 **item.content,
                 **self.scorer(prediction, item.content),
             })
-        results_path = write_jsonl(self.output_directory / "results.jsonl", rows)
+        results_path = write_jsonl(
+            self.output_directory / f"results{self.artifact_suffix}.jsonl", rows
+        )
         metrics = self.summarizer(rows)
         inference_summary = self._inference_summary(predictions)
         report_metadata = {**self.metadata, "inference": inference_summary}
@@ -156,8 +172,11 @@ class EvaluationRunner:
             "fingerprint": self.fingerprint,
             "metrics": metrics,
             "metadata": report_metadata,
+            "shard": {"rank": self.shard_rank, "count": self.shard_count},
         }
-        report_path = write_json(self.output_directory / "score.json", report)
+        report_path = write_json(
+            self.output_directory / f"score{self.artifact_suffix}.json", report
+        )
         metrics_path = self._write_metrics(metrics)
         return EvaluationResult(
             benchmark=self.benchmark,
@@ -179,7 +198,7 @@ class EvaluationRunner:
         )
 
     def _write_metrics(self, metrics: dict[str, Any]) -> Path:
-        path = self.output_directory / "metrics.csv"
+        path = self.output_directory / f"metrics{self.artifact_suffix}.csv"
         with path.open("w", encoding="utf-8", newline="") as handle:
             writer = csv.writer(handle)
             writer.writerow(["section", "group", "metric", "value"])
@@ -216,6 +235,7 @@ class EvaluationRunner:
                     "fingerprint": self.fingerprint,
                     **self.metadata,
                     "inference": self._inference_summary(predictions),
+                    "shard": {"rank": self.shard_rank, "count": self.shard_count},
                 },
             )
         return self._score(items, predictions)

@@ -160,8 +160,13 @@ def write_run_manifest(
     status: str,
     result: dict[str, Any] | None = None,
 ) -> Path:
+    suffix = (
+        f".rank-{context.rank:05d}-of-{context.world_size:05d}"
+        if context.world_size > 1
+        else ""
+    )
     return write_json(
-        context.output_directory / "run_manifest.json",
+        context.output_directory / f"run_manifest{suffix}.json",
         {
             "schema_version": "1.0",
             "status": status,

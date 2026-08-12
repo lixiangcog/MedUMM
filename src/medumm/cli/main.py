@@ -134,9 +134,21 @@ def _report_command(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _merge_command(arguments: argparse.Namespace) -> int:
+    from medumm.evaluation import merge_prediction_shards
+
+    result = merge_prediction_shards(
+        arguments.shards,
+        arguments.output,
+        expected_count=arguments.expected_count,
+    )
+    print(f"[MedUMM] merged {result['prediction_count']} predictions: {result['output_path']}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 0.3.0")
+    parser.add_argument("--version", action="version", version="MedUMM 0.4.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")
@@ -163,6 +175,14 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--scores", nargs="+", required=True)
     report.add_argument("--output-directory", required=True)
     report.set_defaults(handler=_report_command)
+
+    merge = commands.add_parser(
+        "merge-predictions", help="Strictly merge distributed prediction shards"
+    )
+    merge.add_argument("--shards", nargs="+", required=True)
+    merge.add_argument("--output", required=True)
+    merge.add_argument("--expected-count", type=int)
+    merge.set_defaults(handler=_merge_command)
     return parser
 
 

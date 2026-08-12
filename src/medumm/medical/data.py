@@ -17,6 +17,7 @@ class MedicalVQASample:
     modality: str = "unknown"
     category: str = "unknown"
     language: str = "unknown"
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 def _records(path: Path) -> list[dict[str, Any]]:
@@ -92,6 +93,9 @@ def load_medical_vqa(
                 modality=str(record.get("modality", "unknown")),
                 category=str(record.get("category", "unknown")),
                 language=str(record.get("language", "unknown")),
+                metadata=dict(record.get("metadata", {}))
+                if isinstance(record.get("metadata", {}), dict)
+                else {},
             )
         )
         if limit and len(samples) >= limit:

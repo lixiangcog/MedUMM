@@ -31,3 +31,21 @@ def test_run_manifest_records_environment_and_redacts_secrets(tmp_path):
     assert manifest["config"]["model"]["max_new_tokens"] == 128
     assert manifest["config"]["model"]["nested"]["password"] == "<redacted>"
     assert manifest["result"]["metadata"]["auth_token"] == "<redacted>"
+
+
+def test_distributed_manifest_has_rank_local_name(tmp_path):
+    runtime = RuntimeContext.create(
+        command="evaluation",
+        config_path=PROJECT_ROOT / "pyproject.toml",
+        output_directory=tmp_path,
+    )
+    runtime.rank = 1
+    runtime.world_size = 2
+    runtime.distributed = True
+    path = write_run_manifest(
+        runtime,
+        config={},
+        component={"kind": "benchmark", "name": "test"},
+        status="completed",
+    )
+    assert path.name == "run_manifest.rank-00001-of-00002.json"

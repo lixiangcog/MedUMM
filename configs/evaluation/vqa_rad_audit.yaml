@@ -1,0 +1,21 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+evaluation:
+  benchmark: medical_vqa
+  data:
+    adapter: medical_vqa_jsonl
+    source: jsonl
+    path: data/vqa_rad_smoke/samples.jsonl
+    image_root: data/vqa_rad_smoke/images
+    validate_images: true
+    deidentified: true
+  output_directory: outputs/evaluation/vqa_rad_audit
+  protocol:
+    name: vqa_rad_closed
+    version: "1.0"
+    metric_suite: medical_vqa_core
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 4
+  mode: audit

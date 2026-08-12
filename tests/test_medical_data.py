@@ -13,3 +13,4 @@ def test_loads_medical_vqa_schema():
     assert len(samples) == 3
     assert samples[0].choices == {"A": "yes", "B": "no"}
     assert samples[0].image_paths[0].endswith("synthetic_scan.pgm")
+    assert samples[0].metadata == {}

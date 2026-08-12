@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "status": "passed",
+  "scheduler": {
+    "slurm_job_id": "436330",
+    "slurm_step_id": "12"
+  },
+  "hostname": "gpu01",
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB",
+    "gpu_memory_mb": 81221.81
+  },
+  "model": {
+    "id": "microsoft/llava-med-v1.5-mistral-7b",
+    "revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "device": "cuda:0",
+    "dtype": "float16"
+  },
+  "dataset": {
+    "id": "flaviagiammarino/vqa-rad",
+    "revision": "bcf91e7654fb9d51c8ab6a5b82cacf3fafd2fae9",
+    "split": "test",
+    "sample_count": 32,
+    "license": "CC0-1.0",
+    "audit_status": "passed"
+  },
+  "evaluation": {
+    "protocol": {
+      "name": "vqa_rad_closed",
+      "version": "1.0",
+      "metric_suite": "medical_vqa_core",
+      "metric_suite_version": "1.0",
+      "group_by": [
+        "modality",
+        "category",
+        "answer_type",
+        "language"
+      ],
+      "bootstrap_samples": 2000,
+      "confidence_level": 0.95,
+      "seed": 42,
+      "require_provenance": true,
+      "require_deidentified": true,
+      "minimum_samples": 32
+    },
+    "prediction_count": 32,
+    "metrics": {
+      "overall": {
+        "total": 32,
+        "exact_match": 34.38,
+        "token_f1": 34.38,
+        "abstention_rate": 0.0,
+        "closed_accuracy": 34.38
+      },
+      "uncertainty": {
+        "exact_match": {
+          "confidence_level": 0.95,
+          "lower": 18.75,
+          "upper": 50.0,
+          "bootstrap_samples": 2000
+        },
+        "token_f1": {
+          "confidence_level": 0.95,
+          "lower": 18.75,
+          "upper": 50.0,
+          "bootstrap_samples": 2000
+        },
+        "abstention_rate": {
+          "confidence_level": 0.95,
+          "lower": 0.0,
+          "upper": 0.0,
+          "bootstrap_samples": 2000
+        }
+      },
+      "by_modality": {
+        "radiology": {
+          "total": 32,
+          "exact_match": 34.38,
+          "token_f1": 34.38,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 34.38
+        }
+      },
+      "by_category": {
+        "radiology": {
+          "total": 32,
+          "exact_match": 34.38,
+          "token_f1": 34.38,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 34.38
+        }
+      },
+      "by_answer_type": {
+        "closed": {
+          "total": 32,
+          "exact_match": 34.38,
+          "token_f1": 34.38,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 34.38
+        }
+      },
+      "by_language": {
+        "en": {
+          "total": 32,
+          "exact_match": 34.38,
+          "token_f1": 34.38,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 34.38
+        }
+      }
+    },
+    "inference": {
+      "sample_count": 32,
+      "mean_duration_ms": 83.61,
+      "max_duration_ms": 387.76,
+      "max_peak_gpu_memory_mb": 15159.58,
+      "model": {
+        "model_id": "microsoft/llava-med-v1.5-mistral-7b",
+        "model_revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+        "model_family": "llava_mistral",
+        "conversation_mode": "mistral_instruct",
+        "device": "cuda:0",
+        "dtype": "float16",
+        "context_length": 2048,
+        "peak_gpu_memory_mb": 15159.02,
+        "clinical_use": false
+      }
+    }
+  }
+}

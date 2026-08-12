@@ -7,6 +7,22 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v0.4: medical evaluation base
+
+Version 0.4 turns the first real-model slice into a reusable medical evaluation
+foundation:
+
+- a versioned evaluation protocol and independently registered metric suite;
+- preflight dataset quality/governance audits with content and provenance hashes;
+- closed/open VQA metrics, configurable subgroup reports, abstention, and seeded
+  bootstrap confidence intervals;
+- per-batch atomic prediction checkpoints, fingerprint-safe resume, automatic
+  Slurm/torchrun sharding, and strict deterministic shard merge;
+- protocol-aware score files, CSV exports, leaderboards, and real A800 evidence.
+
+See [docs/medical-evaluation-v0.4.md](docs/medical-evaluation-v0.4.md) for the
+contract, CLI examples, artifacts, and acceptance criteria.
+
 ## v0.3: first real medical model
 
 Version 0.3 connects the stable platform to a real biomedical vision-language
@@ -158,8 +174,9 @@ with InferencePipeline("medical_reference", {}) as pipeline:
 
 ## Evaluation and reproducibility
 
-Evaluation supports three explicit states:
+Evaluation supports four explicit states:
 
+- `audit`: validate dataset quality and governance without loading a model;
 - `generate`: write fingerprinted `predictions.jsonl` only;
 - `score`: score an existing compatible prediction file without loading a
   model;
@@ -169,6 +186,16 @@ Scoring writes `results.jsonl`, `score.json`, and `metrics.csv`. CLI runs also
 write `run_manifest.json` containing the resolved config, component identity,
 run ID, software environment, Git commit, and result. The `cross_task`
 benchmark composes any registered benchmarks behind the same result contract.
+
+Distributed workers automatically emit rank-local artifacts. Merge them only
+after all ranks finish:
+
+```bash
+medumm merge-predictions \
+  --shards outputs/evaluation/run/predictions.rank-*.jsonl \
+  --output outputs/evaluation/run/predictions.jsonl \
+  --expected-count 500
+```
 
 ## Built-in plugins
 

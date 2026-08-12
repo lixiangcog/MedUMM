@@ -8,7 +8,7 @@ flow upward.
 flowchart BT
   subgraph infra["Infrastructure layer"]
     interfaces["Standard interfaces<br/>Model · Dataset · Benchmark · Trainer"]
-    common["Common functions<br/>Runtime · distributed · metrics · atomic I/O"]
+    common["Common functions<br/>Runtime · distributed · metric suites · audit · atomic I/O"]
     bases["Base backbones<br/>PyTorch · Transformers · Diffusers · native"]
   end
 
@@ -79,6 +79,7 @@ returned in original request order.
 Evaluation is a state machine:
 
 ```text
+audit:    dataset -> schema/governance/provenance checks -> dataset_audit.json
 generate: dataset -> requests -> model -> predictions.jsonl
 score:    predictions.jsonl + references -> metrics and report
 full:     generate missing predictions -> score
@@ -88,6 +89,11 @@ Dataset and model fingerprints prevent an old prediction cache from being
 silently scored as a new run. `CrossTaskBenchmark` composes multiple registered
 benchmarks and returns one `EvaluationResult` without knowing their internal
 metrics.
+
+The resolved protocol and metric-suite versions are part of the run fingerprint.
+Workers select `items[rank::world_size]` and use rank-local artifact names;
+`merge-predictions` rejects missing ranks, duplicate sample IDs, mixed
+fingerprints, and unexpected sample counts before producing a canonical file.
 
 ## Layer 3: core functionality
 
@@ -119,8 +125,10 @@ project root, output directory, device preferences, rank, world size, and run
 identity. `DistributedContext` understands both `torchrun` and Slurm variables,
 provides deterministic data sharding, and offers an optional process barrier.
 
-I/O writes JSON and JSONL atomically. Metric functions remain independent of
-model code. Backbone libraries are implementation details behind adapters.
+I/O writes JSON and JSONL atomically. Metric suites remain independent of model
+code and expose per-sample scoring plus aggregation contracts. Medical data
+audits run before weights are loaded. Backbone libraries are implementation
+details behind adapters.
 
 ## Adding a component
 

@@ -7,6 +7,7 @@ from medumm.core.contracts import (
     TaskType,
 )
 from medumm.core.distributed import DistributedContext
+from medumm.core.interfaces import MetricSuite
 from medumm.core.registry import registry
 from medumm.core.results import EvaluationResult, InferenceResult, TrainingResult
 from medumm.core.runtime import RuntimeContext
@@ -19,6 +20,7 @@ __all__ = [
     "InferenceResult",
     "Modality",
     "ModelCapabilities",
+    "MetricSuite",
     "RuntimeContext",
     "TaskType",
     "TrainingResult",

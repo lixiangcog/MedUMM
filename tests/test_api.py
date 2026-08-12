@@ -1,4 +1,4 @@
-from medumm import catalog, infer
+from medumm import EvaluationProtocol, MetricSuite, catalog, create_metric_suite, infer
 from tests.conftest import PROJECT_ROOT
 
 
@@ -33,3 +33,10 @@ def test_high_level_inference_api_accepts_unified_config():
     )
     assert results[0].request_id == "api-test"
     assert results[0].text == "A"
+
+
+def test_evaluation_protocol_and_metric_suite_are_public():
+    protocol = EvaluationProtocol()
+    suite = create_metric_suite(protocol.metric_suite)
+    assert isinstance(suite, MetricSuite)
+    assert suite.version == protocol.metric_suite_version

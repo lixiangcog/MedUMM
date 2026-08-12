@@ -59,3 +59,19 @@ def test_inference_summary_preserves_real_model_evidence():
     assert summary["mean_duration_ms"] == 12.5
     assert summary["max_peak_gpu_memory_mb"] == 2048.0
     assert summary["model"]["model_revision"] == "abc"
+
+
+def test_rank_local_artifact_names_do_not_collide(tmp_path):
+    runner = EvaluationRunner(
+        benchmark="test",
+        pipeline=None,
+        output_directory=tmp_path,
+        parser=lambda result: str(result.text),
+        scorer=lambda prediction, content: {"exact": 1.0},
+        summarizer=lambda rows: {"overall": {"total": len(rows)}},
+        mode="score",
+        fingerprint="stable",
+        shard_rank=1,
+        shard_count=2,
+    )
+    assert runner.predictions_path.name == "predictions.rank-00001-of-00002.jsonl"

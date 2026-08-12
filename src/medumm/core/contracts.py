@@ -27,6 +27,7 @@ class ArchitectureFamily(str, Enum):
 
 
 class EvaluationMode(str, Enum):
+    AUDIT = "audit"
     GENERATE = "generate"
     SCORE = "score"
     FULL = "full"

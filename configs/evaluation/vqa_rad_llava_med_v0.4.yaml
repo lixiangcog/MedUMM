@@ -1,5 +1,6 @@
 schema_version: "1.0"
 runtime:
+  seed: 42
   device: cuda
   dtype: float16
 evaluation:
@@ -7,8 +8,8 @@ evaluation:
   data:
     adapter: medical_vqa_jsonl
     source: jsonl
-    path: data/vqa_rad_smoke/samples.jsonl
-    image_root: data/vqa_rad_smoke/images
+    path: data/vqa_rad_eval/samples.jsonl
+    image_root: data/vqa_rad_eval/images
     validate_images: true
     deidentified: true
   model:
@@ -26,21 +27,21 @@ evaluation:
     parameters:
       max_new_tokens: 32
       do_sample: false
-  output_directory: outputs/evaluation/vqa_rad_llava_med_smoke
+  output_directory: outputs/evaluation/vqa_rad_llava_med_v0.4
   prompt_template: "{question}\nAnswer yes or no only."
   protocol:
     name: vqa_rad_closed
     version: "1.0"
     metric_suite: medical_vqa_core
     group_by: [modality, category, answer_type, language]
-    bootstrap_samples: 1000
+    bootstrap_samples: 2000
     confidence_level: 0.95
     seed: 42
     require_provenance: true
     require_deidentified: true
-    minimum_samples: 4
+    minimum_samples: 32
   checkpoint:
     flush_every: 1
   mode: full
   batch_size: 1
-  resume: false
+  resume: true

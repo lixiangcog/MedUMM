@@ -75,7 +75,10 @@ class CrossTaskBenchmark(BenchmarkAdapter):
                 )
             )
 
-        completed = sum(result.status in {"completed", "generated"} for result in results)
+        completed = sum(
+            result.status in {"completed", "generated", "passed", "warning"}
+            for result in results
+        )
         total_samples = sum(result.dataset_size for result in results)
         report = {
             "schema_version": "1.0",

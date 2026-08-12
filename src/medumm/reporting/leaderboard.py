@@ -35,6 +35,11 @@ def build_leaderboard(
         rows.append({
             "benchmark": report.get("benchmark"),
             "model": report.get("metadata", {}).get("model", "unknown"),
+            "protocol": report.get("metadata", {}).get("protocol", {}).get("name"),
+            "protocol_version": report.get("metadata", {}).get("protocol", {}).get("version"),
+            "metric_suite": report.get("metadata", {}).get("protocol", {}).get("metric_suite"),
+            "metric_suite_version": report.get("metadata", {}).get("protocol", {}).get("metric_suite_version"),
+            "dataset_fingerprint": report.get("metadata", {}).get("dataset_fingerprint"),
             "dataset_size": report.get("dataset_size"),
             "source": str(path),
             **_flatten_metrics(report.get("metrics", {})),

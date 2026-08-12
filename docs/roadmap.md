@@ -35,17 +35,23 @@ incomplete evaluation or data-governance path.
 - [ ] medical image editing model and editing benchmark
 - [ ] GPU Slurm smoke jobs for every advertised capability
 
-## v0.4 — post-training and distributed evaluation
+## v0.4 — medical evaluation base
+
+- [x] versioned medical evaluation protocol and metric-suite contract
+- [x] preflight dataset quality, provenance, license, and de-identification audit
+- [x] exact match, token F1, closed accuracy, abstention, and subgroup metrics
+- [x] deterministic bootstrap confidence intervals
+- [x] batch-level atomic checkpoints and fingerprint-safe recovery
+- [x] automatic Slurm/torchrun sharding and strict deterministic prediction merge
+- [x] protocol-aware score, CSV, leaderboard, and reproducibility artifacts
+- [x] expanded real LLaVA-Med + VQA-RAD A800 acceptance run
+
+## v0.5 — post-training, distributed scale, and evaluation breadth
 
 - [ ] Transformers SFT plus LoRA/QLoRA trainer plugin
 - [ ] multi-dataset mixture schema with sampling weights and provenance
-- [ ] initialized distributed inference, result gathering, and failure recovery
-- [ ] sharded benchmark scoring and deterministic merge
-- [ ] checkpoint/resume and experiment-tracker hooks
+- [ ] initialized multi-node process groups and experiment-tracker hooks
 - [ ] preference-training interface and first medical safety preference recipe
-
-## v0.5 — medical evaluation breadth
-
 - [ ] localization and grounding metrics
 - [ ] report generation and longitudinal reasoning benchmarks
 - [ ] calibration, uncertainty, selective prediction, and abstention

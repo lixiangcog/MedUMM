@@ -36,3 +36,28 @@ def test_cross_task_benchmark_composes_registered_benchmarks(tmp_path):
     assert result.status == "completed"
     assert result.metrics["summary"]["benchmark_count"] == 1
     assert (tmp_path / "cross/cross_task_report.json").is_file()
+
+
+def test_cross_task_accepts_audit_only_children(tmp_path):
+    runtime = RuntimeContext.create(
+        command="evaluation",
+        config_path=PROJECT_ROOT / "pyproject.toml",
+        output_directory=tmp_path / "cross-audit",
+    )
+    result = CrossTaskBenchmark().run(
+        {
+            "output_directory": str(tmp_path / "cross-audit"),
+            "benchmarks": [{
+                "name": "data_gate",
+                "benchmark": "medical_vqa",
+                "data": {
+                    "path": "examples/medical/tiny_eval.jsonl",
+                    "image_root": "examples/medical/images",
+                },
+                "mode": "audit",
+            }],
+        },
+        config_path=PROJECT_ROOT / "pyproject.toml",
+        runtime=runtime,
+    )
+    assert result.status == "completed"

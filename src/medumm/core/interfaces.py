@@ -62,6 +62,25 @@ class BenchmarkAdapter(ABC):
         """Execute generation, scoring, or both and return EvaluationResult."""
 
 
+class MetricSuite(ABC):
+    """Versioned, model-independent scoring contract for a benchmark family."""
+
+    name: str
+    version: str
+
+    @abstractmethod
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        """Score one normalized prediction against one sample payload."""
+
+    @abstractmethod
+    def summarize(
+        self,
+        rows: list[dict[str, Any]],
+        protocol: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Aggregate item scores under an explicit evaluation protocol."""
+
+
 class PostTrainer(ABC):
     name: str
 
