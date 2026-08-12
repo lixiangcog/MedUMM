@@ -53,11 +53,13 @@ def test_inference_summary_preserves_real_model_evidence():
                 "model_revision": "abc",
                 "device": "cuda:0",
                 "peak_gpu_memory_mb": 2048.0,
+                "generated_tokens": 12,
             },
         }
     })
     assert summary["mean_duration_ms"] == 12.5
     assert summary["max_peak_gpu_memory_mb"] == 2048.0
+    assert summary["mean_generated_tokens"] == 12.0
     assert summary["model"]["model_revision"] == "abc"
 
 

@@ -47,6 +47,18 @@ def _choice(value: str, choices: dict[str, str]) -> str:
     for letter, option in choices.items():
         if normalized == normalize_answer(option):
             return letter
+    # Medical VLMs often answer a closed question and then explain it. Accept
+    # one unambiguous leading option phrase ("Yes, ..."), but never search the
+    # whole rationale for a coincidental option token.
+    leading = normalized.split()
+    matches = [
+        letter
+        for letter, option in choices.items()
+        if leading[: len(normalize_answer(option).split())]
+        == normalize_answer(option).split()
+    ]
+    if len(matches) == 1:
+        return matches[0]
     return ""
 
 

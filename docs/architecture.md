@@ -76,6 +76,15 @@ Each validates the adapter's declared tasks, modalities, image count, and batch
 limits before calling the model. Mixed-task input is grouped for execution and
 returned in original request order.
 
+Starting in v0.6, the execution axis and medical-semantic axis are explicit and
+separate. `task: understanding` selects the image/text-to-text model method;
+optional `medical_task` selects one of eight clinical intents such as
+`anatomy_localization`, `diagnostic_reasoning`, or `report_generation`. A report
+is text generated from medical evidence, so it remains on the text-output
+understanding pipeline; the generic `generation` pipeline continues to mean
+multimodal content generation such as text-to-image. This preserves the four
+layer architecture while allowing task-specific data contracts and metrics.
+
 Evaluation is a state machine:
 
 ```text

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import platform
 import sys
 import time
 from pathlib import Path
@@ -16,6 +18,7 @@ from medumm.inference.request import InferenceRequest
 
 DEFAULT_MODEL = "microsoft/llava-med-v1.5-mistral-7b"
 DEFAULT_SYSTEM_PROMPT = ""
+DEFAULT_USE_KEYWORD_STOPPING = False
 
 
 class LlavaMedAdapter(ModelAdapter):
@@ -115,6 +118,9 @@ class LlavaMedAdapter(ModelAdapter):
             "use_cache": True,
             **dict(config.get("parameters", {})),
         }
+        self.use_keyword_stopping = bool(
+            config.get("use_keyword_stopping", DEFAULT_USE_KEYWORD_STOPPING)
+        )
 
         disable_torch_init()
         model_name = get_model_name_from_path(self.model_path)
@@ -174,6 +180,9 @@ class LlavaMedAdapter(ModelAdapter):
             [stop_string], self.tokenizer, input_ids
         )
         options = {**self.defaults, **request.parameters}
+        use_keyword_stopping = bool(
+            options.pop("use_keyword_stopping", self.use_keyword_stopping)
+        )
         if not bool(options.get("do_sample", False)):
             options.pop("temperature", None)
             options.pop("top_p", None)
@@ -182,11 +191,13 @@ class LlavaMedAdapter(ModelAdapter):
             self.torch.cuda.synchronize()
         started = time.perf_counter()
         with self.torch.inference_mode():
+            generation_options = dict(options)
+            if use_keyword_stopping:
+                generation_options["stopping_criteria"] = [stopping_criteria]
             output_ids = self.model.generate(
                 input_ids,
                 images=image_tensor,
-                stopping_criteria=[stopping_criteria],
-                **options,
+                **generation_options,
             )
         if self.device.startswith("cuda"):
             self.torch.cuda.synchronize()
@@ -212,6 +223,13 @@ class LlavaMedAdapter(ModelAdapter):
                 "device": self.loaded_device,
                 "dtype": self.dtype,
                 "context_length": self.context_length,
+                "generated_tokens": int(output_ids.shape[-1]),
+                "keyword_stopping": use_keyword_stopping,
+                "hostname": platform.node(),
+                "scheduler": {
+                    "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+                    "slurm_step_id": os.environ.get("SLURM_STEP_ID"),
+                },
                 "peak_gpu_memory_mb": peak_memory_mb,
                 "clinical_use": False,
                 **request.metadata,

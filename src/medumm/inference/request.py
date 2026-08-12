@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from medumm.core.contracts import TaskType
+from medumm.medical.tasks import MedicalTaskType
 
 
 @dataclass(slots=True)
@@ -21,9 +22,11 @@ class InferenceRequest:
     parameters: dict[str, Any] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
     output_path: str | None = None
+    medical_task: MedicalTaskType | None = None
 
     def __post_init__(self) -> None:
         self.task = TaskType(self.task)
+        self.medical_task = MedicalTaskType(self.medical_task) if self.medical_task else None
         self.request_id = str(self.request_id).strip()
         self.model = str(self.model).strip().lower() if self.model else None
         self.images = [str(Path(item).expanduser()) for item in self.images]
@@ -37,6 +40,7 @@ class InferenceRequest:
             return value
         return cls(
             task=TaskType(value["task"]),
+            medical_task=value.get("medical_task"),
             request_id=str(value.get("request_id") or value.get("id") or uuid.uuid4().hex),
             model=value.get("model", value.get("backbone")),
             prompt=value.get("prompt"),
@@ -74,12 +78,17 @@ class InferenceRequest:
             raise ValueError("Understanding requires a prompt or an image.")
         if self.task is TaskType.EDITING and not (self.prompt and self.images):
             raise ValueError("Editing requires a prompt and at least one image.")
+        if self.medical_task is not None and self.task is not TaskType.UNDERSTANDING:
+            raise ValueError(
+                "Medical semantic tasks currently require the text-output understanding pipeline."
+            )
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "request_id": self.request_id,
             "model": self.model,
             "task": self.task.value,
+            "medical_task": self.medical_task.value if self.medical_task else None,
             "prompt": self.prompt,
             "images": self.images,
             "videos": self.videos,

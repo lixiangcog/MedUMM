@@ -63,11 +63,23 @@ def register_builtins() -> None:
             _factory("medumm.medical.dataset", "MedicalVQADatasetAdapter"),
             description="Local JSON/JSONL medical visual question answering dataset",
         )
+    if not registry.datasets.contains("medical_tasks_jsonl"):
+        registry.datasets.register(
+            "medical_tasks_jsonl",
+            _factory("medumm.medical.dataset", "MedicalTasksDatasetAdapter"),
+            description="Task-aware medical perception, reasoning, and generation dataset",
+        )
     if not registry.benchmarks.contains("medical_vqa"):
         registry.benchmarks.register(
             "medical_vqa",
             _factory("medumm.evaluation.medical_vqa", "MedicalVQABenchmark"),
             description="Medical VQA generation and scoring benchmark",
+        )
+    if not registry.benchmarks.contains("medical_tasks"):
+        registry.benchmarks.register(
+            "medical_tasks",
+            _factory("medumm.evaluation.medical_tasks", "MedicalTasksBenchmark"),
+            description="Task-aware medical perception, reasoning, report, and communication benchmark",
         )
     if not registry.benchmarks.contains("cross_task"):
         registry.benchmarks.register(

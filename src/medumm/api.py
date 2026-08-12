@@ -30,6 +30,7 @@ def infer(
             key: block[key]
             for key in (
                 "task",
+                "medical_task",
                 "prompt",
                 "images",
                 "videos",

@@ -7,6 +7,34 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v0.6: task-aware medicine, not natural-image classification
+
+Version 0.6 adds a medical semantic layer across perception, reasoning, and
+long-form generation:
+
+- eight stable intents for finding assessment, clinical description, anatomy
+  localization, quantitative assessment, imaging context, diagnostic reasoning,
+  report generation, and patient communication;
+- a `medical_tasks_jsonl` contract with task, concept, evidence, case/turn, and
+  reference-provenance fields;
+- a `medical_tasks` benchmark and `medical_task_core` suite with task-specific
+  success, concept/evidence coverage, negation-aware extra concepts, strict
+  diagnosis, and uncertainty intervals;
+- audit gates that distinguish expert/native task labels from transparent
+  heuristic mappings;
+- a balanced 24-sample VQA-RAD + LLaVA-Med A800 acceptance recipe covering six
+  tasks supported by real source questions, without fabricating report or
+  patient-communication labels.
+
+The task hierarchy is informed by the open diagnosis, clinical explanation,
+and interaction goals described in
+[VisionUnite](https://arxiv.org/pdf/2408.02865). MedUMM does not redistribute its
+weights or treat its pretrained model license as part of this implementation.
+See [docs/medical-tasks-v0.6.md](docs/medical-tasks-v0.6.md) for the schema,
+metrics, provenance rules, and server recipe.
+The verified A800 evidence is stored in
+[docs/results/v0.6-medical-tasks.json](docs/results/v0.6-medical-tasks.json).
+
 ## v0.4: medical evaluation base
 
 Version 0.4 turns the first real-model slice into a reusable medical evaluation
@@ -206,7 +234,9 @@ medumm merge-predictions \
 | Model | `medgemma` | Optional medical image-text understanding adapter |
 | Model | `llava_med` | Real LLaVA-Med v1.5 biomedical understanding adapter |
 | Dataset | `medical_vqa_jsonl` | Normalized local JSON/JSONL medical VQA data |
+| Dataset | `medical_tasks_jsonl` | Task-aware perception, reasoning, report, and communication data |
 | Benchmark | `medical_vqa` | Generate/score medical VQA with grouped metrics |
+| Benchmark | `medical_tasks` | Task-specific medical generation and scoring benchmark |
 | Benchmark | `cross_task` | Compose registered benchmark runs |
 | Trainer | `medical_sft` | Dependency-light supervised training smoke path |
 
@@ -232,6 +262,7 @@ execution:
 ```bash
 sbatch scripts/slurm_prepare_llava_med_assets.sh
 sbatch scripts/slurm_llava_med_vqa_rad.sh
+sbatch scripts/slurm_medical_tasks_v0.6.sh
 ```
 
 Outputs are written below `outputs/` and ignored by Git.

@@ -7,7 +7,12 @@ def test_catalog_exposes_four_plugin_kinds():
     assert set(components) == {"models", "datasets", "benchmarks", "trainers"}
     assert {item["name"] for item in components["benchmarks"]} >= {
         "medical_vqa",
+        "medical_tasks",
         "cross_task",
+    }
+    assert {item["name"] for item in components["datasets"]} >= {
+        "medical_vqa_jsonl",
+        "medical_tasks_jsonl",
     }
     llava_med = next(item for item in components["models"] if item["name"] == "llava_med")
     assert llava_med["metadata"]["default_model"] == (

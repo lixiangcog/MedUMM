@@ -1,0 +1,43 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cpu
+evaluation:
+  benchmark: medical_tasks
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/tiny_tasks.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/provenance.json
+    validate_images: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters:
+      fixed_answer: yes
+  output_directory: outputs/evaluation/medical_tasks_smoke
+  protocol:
+    name: medumm_medical_tasks
+    version: "1.0"
+    metric_suite: medical_task_core
+    group_by: [medical_task, task_family, specialty, modality]
+    bootstrap_samples: 200
+    confidence_level: 0.95
+    require_provenance: true
+    require_reference_provenance: true
+    require_deidentified: true
+    required_tasks:
+      - finding_assessment
+      - clinical_description
+      - anatomy_localization
+      - quantitative_assessment
+      - image_context
+      - diagnostic_reasoning
+      - report_generation
+      - patient_communication
+    minimum_samples: 8
+    minimum_samples_per_task: 1
+  mode: full
+  batch_size: 4
+  resume: false

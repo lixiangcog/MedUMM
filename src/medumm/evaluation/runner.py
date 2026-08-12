@@ -119,6 +119,11 @@ class EvaluationRunner:
             for row in predictions.values()
             if row.get("model_metadata", {}).get("peak_gpu_memory_mb") is not None
         ]
+        generated_tokens = [
+            int(row.get("model_metadata", {}).get("generated_tokens"))
+            for row in predictions.values()
+            if row.get("model_metadata", {}).get("generated_tokens") is not None
+        ]
         first_metadata = next(
             (
                 dict(row.get("model_metadata", {}))
@@ -134,6 +139,13 @@ class EvaluationRunner:
             else None,
             "max_duration_ms": round(max(durations), 2) if durations else None,
             "max_peak_gpu_memory_mb": round(max(peak_memory), 2) if peak_memory else None,
+            "mean_generated_tokens": round(
+                sum(generated_tokens) / len(generated_tokens), 2
+            )
+            if generated_tokens
+            else None,
+            "min_generated_tokens": min(generated_tokens) if generated_tokens else None,
+            "max_generated_tokens": max(generated_tokens) if generated_tokens else None,
             "model": first_metadata,
         }
 

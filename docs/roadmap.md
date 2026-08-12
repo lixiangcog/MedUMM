@@ -59,6 +59,20 @@ incomplete evaluation or data-governance path.
 - [ ] cross-modal consistency evaluation across text, image, and editing outputs
 - [ ] signed public leaderboard manifests and reproducibility bundles
 
+## v0.6 — task-aware medical semantics
+
+- [x] eight-intent medical task taxonomy across perception, reasoning, and generation
+- [x] structured concepts, evidence, case/turn, and reference-provenance schema
+- [x] independently registered task-aware dataset, benchmark, and metric suite
+- [x] task-specific success instead of a universal natural-image top-1 score
+- [x] concept/evidence coverage and negation-aware extra affirmed concepts
+- [x] strict diagnostic accuracy plus Wilson and bootstrap confidence intervals
+- [x] task coverage, target completeness, mapping, and governance audit gates
+- [x] balanced six-task real VQA-RAD exporter with explicit heuristic-label disclosure
+- [x] LLaVA-Med A800 acceptance and machine-readable evidence recipe
+- [ ] expert-labelled report-generation benchmark slice
+- [ ] expert-labelled multi-turn patient-communication benchmark slice
+
 ## Scale target
 
 After the platform and governance gates hold across the first real slices,

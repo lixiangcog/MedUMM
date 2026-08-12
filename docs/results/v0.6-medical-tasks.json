@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "release": "v0.6.0",
+  "status": "passed",
+  "scheduler": {
+    "slurm_job_id": "436330",
+    "slurm_step_id": "19"
+  },
+  "hostname": "gpu01",
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB",
+    "gpu_memory_mb": 81221.81
+  },
+  "model": {
+    "id": "microsoft/llava-med-v1.5-mistral-7b",
+    "revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "device": "cuda:0",
+    "dtype": "float16"
+  },
+  "dataset": {
+    "id": "flaviagiammarino/vqa-rad",
+    "revision": "bcf91e7654fb9d51c8ab6a5b82cacf3fafd2fae9",
+    "split": "test",
+    "sample_count": 24,
+    "case_count": 20,
+    "multi_turn_case_count": 4,
+    "maximum_turns_per_case": 2,
+    "license": "CC0-1.0",
+    "task_distribution": {
+      "anatomy_localization": 4,
+      "clinical_description": 4,
+      "diagnostic_reasoning": 4,
+      "finding_assessment": 4,
+      "image_context": 4,
+      "quantitative_assessment": 4
+    },
+    "task_mapping": {
+      "method": "heuristic",
+      "version": "vqa_rad_question_rules_v1",
+      "expert_validated": false,
+      "source_distribution": {
+        "anatomy_localization": 59,
+        "clinical_description": 88,
+        "diagnostic_reasoning": 5,
+        "finding_assessment": 250,
+        "image_context": 32,
+        "quantitative_assessment": 17
+      }
+    },
+    "audit_status": "warning",
+    "audit_warnings": [
+      "All 24 task mappings are transparent heuristics, not expert labels.",
+      "The four diagnostic samples have no evidence targets; diagnostic accuracy can be scored but diagnostic-reasoning task success cannot."
+    ]
+  },
+  "evaluation": {
+    "protocol": {
+      "name": "vqa_rad_medical_tasks",
+      "version": "1.0",
+      "metric_suite": "medical_task_core",
+      "metric_suite_version": "1.0",
+      "bootstrap_samples": 2000,
+      "confidence_level": 0.95,
+      "seed": 42,
+      "require_provenance": true,
+      "require_reference_provenance": true,
+      "require_deidentified": true
+    },
+    "prediction_count": 24,
+    "metrics": {
+      "overall": {
+        "total": 24,
+        "task_success": 20.83,
+        "exact_match": 12.5,
+        "token_f1": 18.05,
+        "concept_precision": 25.0,
+        "concept_recall": 29.41,
+        "concept_f1": 25.0,
+        "extra_concept_rate": 10.0,
+        "strict_diagnostic_accuracy": 75.0,
+        "abstention_rate": 0.0
+      },
+      "macro_task_success": 20.83,
+      "uncertainty": {
+        "task_success": {
+          "method": "wilson",
+          "confidence_level": 0.95,
+          "lower": 9.24,
+          "upper": 40.47,
+          "total": 24
+        },
+        "strict_diagnostic_accuracy": {
+          "method": "wilson",
+          "confidence_level": 0.95,
+          "lower": 30.06,
+          "upper": 95.44,
+          "total": 4
+        },
+        "concept_recall": {
+          "method": "bootstrap",
+          "confidence_level": 0.95,
+          "lower": 11.76,
+          "upper": 52.94,
+          "bootstrap_samples": 2000
+        }
+      },
+      "by_medical_task": {
+        "anatomy_localization": {"total": 4, "task_success": 25.0},
+        "clinical_description": {"total": 4, "task_success": 0.0},
+        "diagnostic_reasoning": {
+          "total": 4,
+          "task_success": 0.0,
+          "strict_diagnostic_accuracy": 75.0
+        },
+        "finding_assessment": {"total": 4, "task_success": 50.0},
+        "image_context": {"total": 4, "task_success": 0.0},
+        "quantitative_assessment": {"total": 4, "task_success": 50.0}
+      }
+    },
+    "inference": {
+      "sample_count": 24,
+      "mean_duration_ms": 868.47,
+      "max_duration_ms": 1572.64,
+      "max_peak_gpu_memory_mb": 15213.8,
+      "mean_generated_tokens": 36.0,
+      "min_generated_tokens": 12,
+      "max_generated_tokens": 65,
+      "keyword_stopping": false
+    }
+  },
+  "notes": [
+    "This is a software acceptance result, not a clinical validation claim.",
+    "The diagnosis-only VQA-RAD slice cannot validate evidence-backed diagnostic reasoning.",
+    "Report generation and patient communication are covered by the v0.6 contract and synthetic workflow, not by the VQA-RAD real slice."
+  ]
+}

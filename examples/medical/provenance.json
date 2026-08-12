@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "source": "MedUMM synthetic software fixture",
+  "resolved_revision": "v0.6.0",
+  "license": "Apache-2.0",
+  "clinical_use": false
+}
