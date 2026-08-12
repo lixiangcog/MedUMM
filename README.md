@@ -7,6 +7,30 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v0.7: advanced post-training and research methods
+
+Version 0.7 adds a real parameter-efficient alignment layer rather than another
+classification-style training alias:
+
+- one `medical_alignment` trainer for causal-LM SFT, DPO, SimPO, ORPO, and
+  clinical-relevance-weighted DPO;
+- LoRA and optional 4-bit QLoRA loading with a self-describing PEFT checkpoint;
+- provenance-aware supervised/preference records with rationale, annotation
+  source, safety category, specialty, task, and clinical-relevance fields;
+- deterministic weighted multi-dataset mixtures with source-namespaced sample
+  identifiers and content-stable fingerprints;
+- data gates for license, de-identification, preference provenance, rationale,
+  non-expert disclosure, and invalid relevance weights;
+- token-level completion masking, frozen-reference DPO without a second model
+  copy, gradient/history evidence, and independent adapter reload verification.
+
+The real acceptance recipe performs LoRA-DPO on a pinned eight-pair
+UltraMedical-Preference slice. It uses a small Apache-2.0 Pythia-14M research
+model so the training system is cheap to reproduce; it is not a medical model
+quality claim. See [docs/advanced-post-training-v0.7.md](docs/advanced-post-training-v0.7.md).
+The verified A800 evidence is stored in
+[docs/results/v0.7-advanced-post-training.json](docs/results/v0.7-advanced-post-training.json).
+
 ## v0.6: task-aware medicine, not natural-image classification
 
 Version 0.6 adds a medical semantic layer across perception, reasoning, and
@@ -239,6 +263,7 @@ medumm merge-predictions \
 | Benchmark | `medical_tasks` | Task-specific medical generation and scoring benchmark |
 | Benchmark | `cross_task` | Compose registered benchmark runs |
 | Trainer | `medical_sft` | Dependency-light supervised training smoke path |
+| Trainer | `medical_alignment` | LoRA/QLoRA SFT and offline medical preference optimization |
 
 The reference and linear plugins prove platform behavior; they are not medical
 foundation models. Model and dataset expansion follows

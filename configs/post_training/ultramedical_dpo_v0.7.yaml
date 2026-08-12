@@ -1,0 +1,46 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cuda
+  dtype: bfloat16
+post_training:
+  method: medical_alignment
+  objective: dpo
+  data:
+    path: data/ultramedical_preferences_v0.7/preferences.jsonl
+    provenance: data/ultramedical_preferences_v0.7/provenance.json
+    dataset_id: TsinghuaC3I/UltraMedical-Preference
+    revision: 761eb7935310ba662a96d93c5af342e5269d5759
+    license: MIT
+    deidentified: true
+    require_provenance: true
+    require_preference_provenance: true
+    require_preference_rationale: true
+    require_deidentified: true
+  model:
+    name_or_path: assets/pythia-14m-v0.7/model
+    revision: cf967c0a9a04383db6f7b1108d86b2962634b4ac
+    license: Apache-2.0
+    local_files_only: true
+    dtype: bfloat16
+    quantization: none
+  adapter:
+    type: lora
+    rank: 8
+    alpha: 16
+    dropout: 0.05
+    target_modules: all-linear
+  beta: 0.1
+  max_length: 384
+  per_device_batch_size: 2
+  gradient_accumulation_steps: 2
+  epochs: 3
+  samples_per_epoch: 8
+  learning_rate: 0.0002
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+  gradient_checkpointing: false
+  evaluation_samples: 8
+  seed: 42
+  output_directory: outputs/post_training/ultramedical_dpo_v0.7

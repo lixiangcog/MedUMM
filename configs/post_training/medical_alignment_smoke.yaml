@@ -1,0 +1,36 @@
+schema_version: "1.0"
+runtime:
+  seed: 7
+  device: cpu
+  dtype: float32
+post_training:
+  method: medical_alignment
+  objective: simpo
+  data:
+    path: examples/medical/alignment/tiny_preferences.jsonl
+    provenance: examples/medical/alignment/provenance.json
+    license: CC0-1.0
+    deidentified: true
+    require_provenance: true
+    require_preference_provenance: true
+  model:
+    name_or_path: EleutherAI/pythia-14m
+    revision: cf967c0a9a04383db6f7b1108d86b2962634b4ac
+    license: Apache-2.0
+    dtype: float32
+    quantization: none
+  adapter:
+    type: lora
+    rank: 4
+    alpha: 8
+    dropout: 0.0
+    target_modules: all-linear
+  beta: 2.0
+  margin: 0.5
+  max_length: 256
+  per_device_batch_size: 1
+  gradient_accumulation_steps: 1
+  epochs: 1
+  max_steps: 1
+  learning_rate: 0.0002
+  output_directory: outputs/post_training/medical_alignment_smoke

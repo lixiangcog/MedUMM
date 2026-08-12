@@ -73,6 +73,21 @@ incomplete evaluation or data-governance path.
 - [ ] expert-labelled report-generation benchmark slice
 - [ ] expert-labelled multi-turn patient-communication benchmark slice
 
+## v0.7 — advanced post-training and research methods
+
+- [x] Transformers causal-LM post-training plugin with PEFT checkpoint output
+- [x] LoRA plus optional 4-bit QLoRA loading path
+- [x] completion-only SFT, DPO, SimPO, and ORPO objectives
+- [x] clinical-relevance-weighted DPO objective
+- [x] frozen-reference DPO without a duplicate base-model allocation
+- [x] weighted multi-dataset mixture schema and deterministic epoch sampling
+- [x] preference rationale, annotation-source, safety, and provenance contract
+- [x] license, de-identification, expert-status, and invalid-weight audit gates
+- [x] non-zero gradient, before/after metric, PEFT save/reload, and CUDA evidence gates
+- [ ] clinician-annotated medical safety preference slice
+- [ ] real multimodal MMedPO-style lesion-grounded preference run
+- [ ] multi-node FSDP/DeepSpeed alignment recipe
+
 ## Scale target
 
 After the platform and governance gates hold across the first real slices,

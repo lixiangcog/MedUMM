@@ -1,0 +1,128 @@
+{
+  "schema_version": "1.0",
+  "release": "v0.7.0",
+  "status": "passed",
+  "scheduler": {
+    "slurm_job_id": "436330",
+    "slurm_step_id": "23"
+  },
+  "hostname": "gpu01",
+  "runtime": {
+    "python": "3.10.20",
+    "platform": "Linux-4.18.0-553.el8_10.x86_64-x86_64-with-glibc2.28",
+    "hostname": "gpu01",
+    "git_commit": "",
+    "git_dirty": false,
+    "torch": "2.7.1+cu126",
+    "cuda_available": true,
+    "cuda_version": "12.6",
+    "gpu_count": 1,
+    "gpus": [
+      {
+        "index": 0,
+        "name": "NVIDIA A800-SXM4-80GB",
+        "total_memory_mb": 81221.81,
+        "compute_capability": "8.0"
+      }
+    ]
+  },
+  "model": {
+    "id": "EleutherAI/pythia-14m",
+    "revision": "cf967c0a9a04383db6f7b1108d86b2962634b4ac",
+    "license": "Apache-2.0",
+    "total_parameters": 14166016,
+    "trainable_parameters": 98304,
+    "trainable_parameter_percent": 0.693942
+  },
+  "dataset": {
+    "id": "TsinghuaC3I/UltraMedical-Preference",
+    "revision": "761eb7935310ba662a96d93c5af342e5269d5759",
+    "license": "MIT",
+    "sample_count": 8,
+    "selection": {
+      "method": "shortest_eligible_then_prompt_id",
+      "source_prefixes": [
+        "MedMCQA",
+        "MedQA",
+        "PubMedQA",
+        "TextBookQA"
+      ],
+      "source_distribution": {
+        "MedMCQA": 8
+      },
+      "label_type_distribution": {
+        "easy": 2,
+        "hard": 2,
+        "human": 1,
+        "length": 3
+      },
+      "direct_identifier_patterns": [
+        "email",
+        "phone",
+        "url"
+      ],
+      "rejected_for_direct_identifiers": 3,
+      "rejected_for_structure": 0
+    },
+    "preference_annotation": "Upstream model judgments and label types; not declared clinician preference.",
+    "audit_status": "warning",
+    "audit_warnings": [
+      "8 preference labels are not declared clinician/expert annotations."
+    ]
+  },
+  "training": {
+    "objective": "dpo",
+    "global_steps": 6,
+    "epochs": 3,
+    "duration_seconds": 0.937,
+    "device": "cuda",
+    "dtype": "bfloat16",
+    "quantization": "none",
+    "peak_gpu_memory_mb": 519.42,
+    "metrics": {
+      "initial_loss": 0.6931471824645996,
+      "final_loss": 0.1931297481060028,
+      "initial_preference_accuracy": 0.0,
+      "final_preference_accuracy": 1.0,
+      "initial_reward_margin": 0.0,
+      "final_reward_margin": 1.6611696183681488
+    },
+    "history_sha256": "31e592094ace32de99229427f6f6a80d7895c4653eab209225d11d0489e0d7e0",
+    "adapter_files": [
+      {
+        "path": "README.md",
+        "size": 5262,
+        "sha256": "4251b51ee6fa5b79556f6d3cc2c1cbcda2ec93f6226180daf010a06264b19287"
+      },
+      {
+        "path": "adapter_config.json",
+        "size": 1159,
+        "sha256": "41b80b1b89af4a4c6fbf965be6c3450cc46d0e51c2e9d81e68041e21f77fa32f"
+      },
+      {
+        "path": "adapter_model.safetensors",
+        "size": 399632,
+        "sha256": "f73bb2a14b1e420fa482e4566fd03160ba60cf60c182a92d206a0548a4d91c00"
+      },
+      {
+        "path": "special_tokens_map.json",
+        "size": 473,
+        "sha256": "57491904f8680d4b52ed440f1f7ba48cad1c31ecf3eb453b03484e6ff4723ae8"
+      },
+      {
+        "path": "tokenizer.json",
+        "size": 3564401,
+        "sha256": "35ced7401408f606a136853282bce7afa0c5747defae0b1e743a019fd19198ac"
+      },
+      {
+        "path": "tokenizer_config.json",
+        "size": 4875,
+        "sha256": "4abd8b0368a3a4baae1e2fb084a1d07310ddd0ea433b63b293e039bae5a42bcd"
+      }
+    ]
+  },
+  "notes": [
+    "This verifies software optimization and checkpoint reloadability, not clinical improvement.",
+    "The eight upstream preferences are AI-judged and are not clinician annotations."
+  ]
+}

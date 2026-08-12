@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import platform
 import subprocess
 import sys
@@ -123,7 +124,9 @@ def environment_snapshot(context: RuntimeContext) -> dict[str, Any]:
         "python": sys.version.split()[0],
         "platform": platform.platform(),
         "hostname": platform.node(),
-        "git_commit": _git_value(context.project_root, "rev-parse", "HEAD"),
+        "git_commit": _git_value(context.project_root, "rev-parse", "HEAD")
+        or os.environ.get("MEDUMM_SOURCE_COMMIT")
+        or None,
         "git_dirty": bool(_git_value(context.project_root, "status", "--porcelain")),
     }
     try:

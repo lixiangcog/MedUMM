@@ -93,3 +93,16 @@ def register_builtins() -> None:
             _factory("medumm.post_training.medical_sft", "MedicalSFTTrainer"),
             description="Supervised training smoke implementation",
         )
+    if not registry.trainers.contains("medical_alignment"):
+        registry.trainers.register(
+            "medical_alignment",
+            _factory(
+                "medumm.post_training.medical_alignment", "MedicalAlignmentTrainer"
+            ),
+            description="LoRA/QLoRA medical SFT, DPO, SimPO, ORPO, and relevance-weighted DPO",
+            metadata={
+                "objectives": ["sft", "dpo", "simpo", "orpo", "clinical_dpo"],
+                "adapters": ["lora", "qlora"],
+                "research_only": True,
+            },
+        )

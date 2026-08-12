@@ -15,7 +15,7 @@ flowchart BT
   subgraph core["Core functionality layer"]
     models["Models — unified adapter<br/>AR · hybrid · diffusion · reference"]
     datasets["Medical benchmark datasets<br/>understanding · generation · editing · unified"]
-    training["Post-training plugins<br/>SFT today; preference and unified methods next"]
+    training["Post-training plugins<br/>SFT · DPO · SimPO · ORPO · clinical DPO"]
   end
 
   subgraph tasks["Task and execution layer"]
@@ -169,6 +169,21 @@ details behind adapters.
 2. Write a self-describing checkpoint plus training artifacts.
 3. Return `TrainingResult`; do not invent a method-specific CLI response.
 4. Make distributed assumptions and data-governance requirements explicit.
+
+Starting in v0.7, post-training has three independent contracts:
+
+1. the data contract normalizes supervised or pairwise preference examples and
+   composes weighted sources without losing provenance;
+2. the objective contract computes completion-token SFT, DPO, SimPO, ORPO, or
+   clinical-relevance-weighted DPO losses;
+3. the adaptation contract controls LoRA or QLoRA injection and writes a PEFT
+   adapter that identifies its exact base-model revision and dataset fingerprint.
+
+For reference-based DPO, the frozen policy is evaluated by temporarily disabling
+the active adapter. The base weights stay frozen and are not duplicated. This
+reduces memory while preserving the reference-policy definition. Reference-free
+SimPO and ORPO are explicit alternative objectives, not configuration aliases
+for DPO.
 
 ## Medical expansion gates
 

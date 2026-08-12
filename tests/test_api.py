@@ -14,6 +14,16 @@ def test_catalog_exposes_four_plugin_kinds():
         "medical_vqa_jsonl",
         "medical_tasks_jsonl",
     }
+    alignment = next(
+        item for item in components["trainers"] if item["name"] == "medical_alignment"
+    )
+    assert alignment["metadata"]["objectives"] == [
+        "sft",
+        "dpo",
+        "simpo",
+        "orpo",
+        "clinical_dpo",
+    ]
     llava_med = next(item for item in components["models"] if item["name"] == "llava_med")
     assert llava_med["metadata"]["default_model"] == (
         "microsoft/llava-med-v1.5-mistral-7b"

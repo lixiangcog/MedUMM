@@ -1,6 +1,6 @@
 import json
 
-from medumm.core.runtime import RuntimeContext, write_run_manifest
+from medumm.core.runtime import RuntimeContext, environment_snapshot, write_run_manifest
 from tests.conftest import PROJECT_ROOT
 
 
@@ -49,3 +49,13 @@ def test_distributed_manifest_has_rank_local_name(tmp_path):
         status="completed",
     )
     assert path.name == "run_manifest.rank-00001-of-00002.json"
+
+
+def test_environment_snapshot_accepts_explicit_source_commit(tmp_path, monkeypatch):
+    runtime = RuntimeContext.create(
+        command="test",
+        config_path=tmp_path,
+        output_directory=tmp_path / "out",
+    )
+    monkeypatch.setenv("MEDUMM_SOURCE_COMMIT", "release-source-commit")
+    assert environment_snapshot(runtime)["git_commit"] == "release-source-commit"
