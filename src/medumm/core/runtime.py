@@ -133,6 +133,20 @@ def environment_snapshot(context: RuntimeContext) -> dict[str, Any]:
         snapshot["cuda_available"] = torch.cuda.is_available()
         snapshot["cuda_version"] = torch.version.cuda
         snapshot["gpu_count"] = torch.cuda.device_count()
+        snapshot["gpus"] = [
+            {
+                "index": index,
+                "name": torch.cuda.get_device_properties(index).name,
+                "total_memory_mb": round(
+                    torch.cuda.get_device_properties(index).total_memory / 1024**2,
+                    2,
+                ),
+                "compute_capability": ".".join(
+                    str(value) for value in torch.cuda.get_device_capability(index)
+                ),
+            }
+            for index in range(torch.cuda.device_count())
+        ]
     except (ImportError, OSError):
         snapshot["torch"] = None
     return snapshot

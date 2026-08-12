@@ -36,6 +36,17 @@ def register_builtins() -> None:
             "Medical image-text understanding adapter",
             {"architecture": "autoregressive", "tasks": ["understanding"]},
         ),
+        "llava_med": (
+            "medumm.backbones.llava_med",
+            "LlavaMedAdapter",
+            "LLaVA-Med v1.5 biomedical image understanding adapter",
+            {
+                "architecture": "autoregressive",
+                "tasks": ["understanding"],
+                "default_model": "microsoft/llava-med-v1.5-mistral-7b",
+                "research_only": True,
+            },
+        ),
     }
     for name, (module_name, class_name, description, metadata) in models.items():
         if not registry.models.contains(name):

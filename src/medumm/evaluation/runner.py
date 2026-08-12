@@ -83,12 +83,45 @@ class EvaluationRunner:
                     "prediction": self.parser(output),
                     "fingerprint": self.fingerprint,
                     "model_name": output.model_name,
+                    "model_metadata": output.metadata,
+                    "duration_ms": output.duration_ms,
+                    "scores": output.scores,
                 }
                 write_jsonl(
                     self.predictions_path,
                     [predictions[current.sample_id] for current in items if current.sample_id in predictions],
                 )
         return predictions
+
+    @staticmethod
+    def _inference_summary(predictions: dict[str, dict[str, Any]]) -> dict[str, Any]:
+        durations = [
+            float(row["duration_ms"])
+            for row in predictions.values()
+            if row.get("duration_ms") is not None
+        ]
+        peak_memory = [
+            float(row.get("model_metadata", {}).get("peak_gpu_memory_mb"))
+            for row in predictions.values()
+            if row.get("model_metadata", {}).get("peak_gpu_memory_mb") is not None
+        ]
+        first_metadata = next(
+            (
+                dict(row.get("model_metadata", {}))
+                for row in predictions.values()
+                if row.get("model_metadata")
+            ),
+            {},
+        )
+        return {
+            "sample_count": len(predictions),
+            "mean_duration_ms": round(sum(durations) / len(durations), 2)
+            if durations
+            else None,
+            "max_duration_ms": round(max(durations), 2) if durations else None,
+            "max_peak_gpu_memory_mb": round(max(peak_memory), 2) if peak_memory else None,
+            "model": first_metadata,
+        }
 
     def _score(
         self,
@@ -106,11 +139,15 @@ class EvaluationRunner:
             rows.append({
                 "id": item.sample_id,
                 "prediction": prediction,
+                "duration_ms": predictions[item.sample_id].get("duration_ms"),
+                "model_metadata": predictions[item.sample_id].get("model_metadata", {}),
                 **item.content,
                 **self.scorer(prediction, item.content),
             })
         results_path = write_jsonl(self.output_directory / "results.jsonl", rows)
         metrics = self.summarizer(rows)
+        inference_summary = self._inference_summary(predictions)
+        report_metadata = {**self.metadata, "inference": inference_summary}
         report = {
             "schema_version": "1.0",
             "benchmark": self.benchmark,
@@ -118,7 +155,7 @@ class EvaluationRunner:
             "dataset_size": len(rows),
             "fingerprint": self.fingerprint,
             "metrics": metrics,
-            "metadata": self.metadata,
+            "metadata": report_metadata,
         }
         report_path = write_json(self.output_directory / "score.json", report)
         metrics_path = self._write_metrics(metrics)
@@ -135,7 +172,10 @@ class EvaluationRunner:
                 Artifact("report", str(report_path), "application/json"),
                 Artifact("metrics", str(metrics_path), "text/csv"),
             ],
-            metadata={"fingerprint": self.fingerprint, **self.metadata},
+            metadata={
+                "fingerprint": self.fingerprint,
+                **report_metadata,
+            },
         )
 
     def _write_metrics(self, metrics: dict[str, Any]) -> Path:
@@ -172,6 +212,10 @@ class EvaluationRunner:
                 dataset_size=len(items),
                 output_directory=str(self.output_directory),
                 artifacts=[Artifact("predictions", str(self.predictions_path), "application/jsonl")],
-                metadata={"fingerprint": self.fingerprint, **self.metadata},
+                metadata={
+                    "fingerprint": self.fingerprint,
+                    **self.metadata,
+                    "inference": self._inference_summary(predictions),
+                },
             )
         return self._score(items, predictions)

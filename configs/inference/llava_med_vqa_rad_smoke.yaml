@@ -1,0 +1,22 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: float16
+inference:
+  backbone: llava_med
+  config:
+    model_path: ${LLAVA_MED_MODEL_PATH}
+    source_path: ${LLAVA_MED_SOURCE_PATH}
+    revision: 91bb16c122001ddc9cf1fd36ce1dae09448943a2
+    device: cuda
+    device_map: auto
+    conversation_mode: mistral_instruct
+    parameters:
+      max_new_tokens: 32
+      do_sample: false
+  request:
+    request_id: vqa-rad-real-model-smoke
+    task: understanding
+    prompt: Is there evidence of an aortic aneurysm? Answer yes or no only.
+    images: [data/vqa_rad_smoke/images/smoke.png]
+  output_json: outputs/inference/llava_med_vqa_rad.json

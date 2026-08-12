@@ -43,3 +43,19 @@ def test_score_mode_reads_existing_predictions_even_when_resume_is_false(tmp_pat
 def test_score_mode_requires_predictions(tmp_path):
     with pytest.raises(FileNotFoundError, match="requires predictions"):
         _runner(tmp_path, EvaluationMode.SCORE).run(_items())
+
+
+def test_inference_summary_preserves_real_model_evidence():
+    summary = EvaluationRunner._inference_summary({
+        "one": {
+            "duration_ms": 12.5,
+            "model_metadata": {
+                "model_revision": "abc",
+                "device": "cuda:0",
+                "peak_gpu_memory_mb": 2048.0,
+            },
+        }
+    })
+    assert summary["mean_duration_ms"] == 12.5
+    assert summary["max_peak_gpu_memory_mb"] == 2048.0
+    assert summary["model"]["model_revision"] == "abc"

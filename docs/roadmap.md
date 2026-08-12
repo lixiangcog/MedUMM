@@ -25,9 +25,11 @@ incomplete evaluation or data-governance path.
 
 ## v0.3 — first real medical vertical slices
 
+- [x] real LLaVA-Med v1.5 Mistral-7B understanding adapter
+- [x] revision-pinned VQA-RAD public benchmark slice and provenance
+- [x] A800 Slurm inference/evaluation job with verifiable runtime evidence
 - [ ] production MedGemma inference recipe and checkpoint/license guide
-- [ ] one second medical VLM adapter from a different architecture family
-- [ ] radiology VQA benchmark adapter with public-data provenance
+- [ ] a second real medical VLM adapter from a different architecture family
 - [ ] pathology VQA benchmark adapter with public-data provenance
 - [ ] medical text-to-image model and generation benchmark
 - [ ] medical image editing model and editing benchmark

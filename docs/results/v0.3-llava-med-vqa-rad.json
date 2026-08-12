@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "status": "passed",
+  "scheduler": {
+    "slurm_job_id": "436330",
+    "slurm_step_id": "11"
+  },
+  "hostname": "gpu01",
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB",
+    "gpu_memory_mb": 81221.81
+  },
+  "model": {
+    "id": "microsoft/llava-med-v1.5-mistral-7b",
+    "revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "family": "llava_mistral",
+    "dtype": "float16",
+    "device": "cuda:0"
+  },
+  "dataset": {
+    "id": "flaviagiammarino/vqa-rad",
+    "revision": "bcf91e7654fb9d51c8ab6a5b82cacf3fafd2fae9",
+    "split": "test",
+    "sample_count": 4,
+    "license": "CC0-1.0"
+  },
+  "direct_inference": {
+    "request_id": "vqa-rad-real-model-smoke",
+    "text": "Yes",
+    "duration_ms": 411.47,
+    "peak_gpu_memory_mb": 15157.71
+  },
+  "evaluation": {
+    "prediction_count": 4,
+    "metrics": {
+      "overall": {
+        "total": 4,
+        "exact_match": 50.0,
+        "token_f1": 50.0,
+        "abstention_rate": 0.0
+      },
+      "by_modality": {
+        "radiology": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0
+        }
+      },
+      "by_category": {
+        "radiology": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0
+        }
+      },
+      "by_answer_type": {
+        "closed": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0
+        }
+      },
+      "by_language": {
+        "en": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0
+        }
+      }
+    },
+    "inference": {
+      "sample_count": 4,
+      "mean_duration_ms": 143.62,
+      "max_duration_ms": 342.68,
+      "max_peak_gpu_memory_mb": 15159.58,
+      "model": {
+        "model_id": "microsoft/llava-med-v1.5-mistral-7b",
+        "model_revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+        "model_family": "llava_mistral",
+        "conversation_mode": "mistral_instruct",
+        "device": "cuda:0",
+        "dtype": "float16",
+        "context_length": 2048,
+        "peak_gpu_memory_mb": 15159.02,
+        "clinical_use": false
+      }
+    }
+  }
+}

@@ -7,7 +7,27 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
-## v0.2: stable platform interfaces
+## v0.3: first real medical model
+
+Version 0.3 connects the stable platform to a real biomedical vision-language
+model and public medical benchmark:
+
+- `llava_med`: Microsoft LLaVA-Med v1.5 Mistral-7B through its official model
+  implementation;
+- `flaviagiammarino/vqa-rad`: a revision-pinned VQA-RAD test slice normalized
+  into the MedUMM dataset contract;
+- real CUDA inference and `generate → score → report` evaluation on one A800;
+- run evidence containing exact revisions, device/dtype, latency, peak allocated
+  GPU memory, predictions, and grouped medical-VQA metrics.
+
+This first vertical slice supports medical image understanding only. Generation,
+editing, broader datasets, and post-training remain platform capabilities or
+future real-model slices; v0.3 does not claim clinical model quality.
+
+See [docs/real-model-v0.3.md](docs/real-model-v0.3.md) for the reproducible
+server recipe, pinned revisions, and license boundaries.
+
+## Stable platform interfaces
 
 Version 0.2 establishes one four-layer platform architecture:
 
@@ -40,6 +60,14 @@ Install the `medical` extra only for heavyweight Transformers backbones:
 
 ```bash
 pip install -e ".[medical]"
+```
+
+LLaVA-Med uses the upstream implementation's older Transformers compatibility
+window. Keep it in a separate environment; the supplied setup script creates
+one without modifying the parent Conda environment:
+
+```bash
+bash scripts/setup_llava_med_env.sh
 ```
 
 ## Unified CLI
@@ -142,13 +170,14 @@ write `run_manifest.json` containing the resolved config, component identity,
 run ID, software environment, Git commit, and result. The `cross_task`
 benchmark composes any registered benchmarks behind the same result contract.
 
-## Built-in v0.2 plugins
+## Built-in plugins
 
 | Kind | Name | Purpose |
 |---|---|---|
 | Model | `medical_reference` | Deterministic understanding/generation/editing reference |
 | Model | `medical_linear` | Reloadable trainable VQA smoke baseline |
 | Model | `medgemma` | Optional medical image-text understanding adapter |
+| Model | `llava_med` | Real LLaVA-Med v1.5 biomedical understanding adapter |
 | Dataset | `medical_vqa_jsonl` | Normalized local JSON/JSONL medical VQA data |
 | Benchmark | `medical_vqa` | Generate/score medical VQA with grouped metrics |
 | Benchmark | `cross_task` | Compose registered benchmark runs |
@@ -168,6 +197,14 @@ For Slurm:
 
 ```bash
 sbatch scripts/slurm_reference_workflow.sh
+```
+
+The real-model workflow separates network-bound asset preparation from GPU
+execution:
+
+```bash
+sbatch scripts/slurm_prepare_llava_med_assets.sh
+sbatch scripts/slurm_llava_med_vqa_rad.sh
 ```
 
 Outputs are written below `outputs/` and ignored by Git.

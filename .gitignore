@@ -3,6 +3,7 @@ __pycache__/
 *.so
 .DS_Store
 .venv/
+.venv-*/
 .env
 .pytest_cache/
 .ruff_cache/
@@ -11,6 +12,8 @@ __pycache__/
 build/
 dist/
 outputs/
+data/
+vendor/
 slurm-*.out
 slurm-*.err
 *.log

@@ -57,6 +57,7 @@ class MedicalVQABenchmark(BenchmarkAdapter):
             "backbone": backbone,
             "config": model_config.get("config", {}),
             "parameters": model_config.get("parameters", {}),
+            "prompt_template": evaluation_config.get("prompt_template", "{question}"),
         }
         run_fingerprint = hashlib.sha256(
             json.dumps(
@@ -65,13 +66,16 @@ class MedicalVQABenchmark(BenchmarkAdapter):
                 default=str,
             ).encode()
         ).hexdigest()
+        prompt_template = str(evaluation_config.get("prompt_template", "{question}"))
+        if "{question}" not in prompt_template:
+            raise ValueError("Evaluation prompt_template must contain {question}.")
         items = [
             EvaluationItem(
                 sample_id=sample.sample_id,
                 request={
                     "request_id": sample.sample_id,
                     "task": "understanding",
-                    "prompt": sample.question,
+                    "prompt": prompt_template.format(question=sample.question),
                     "images": sample.image_paths,
                     "parameters": dict(model_config.get("parameters", {})),
                 },

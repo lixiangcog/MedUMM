@@ -1,0 +1,33 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: float16
+evaluation:
+  benchmark: medical_vqa
+  data:
+    adapter: medical_vqa_jsonl
+    source: jsonl
+    path: data/vqa_rad_smoke/samples.jsonl
+    image_root: data/vqa_rad_smoke/images
+    validate_images: true
+    deidentified: true
+  model:
+    backbone: llava_med
+    config:
+      model_path: ${LLAVA_MED_MODEL_PATH}
+      source_path: ${LLAVA_MED_SOURCE_PATH}
+      revision: 91bb16c122001ddc9cf1fd36ce1dae09448943a2
+      device: cuda
+      device_map: auto
+      conversation_mode: mistral_instruct
+      parameters:
+        max_new_tokens: 32
+        do_sample: false
+    parameters:
+      max_new_tokens: 32
+      do_sample: false
+  output_directory: outputs/evaluation/vqa_rad_llava_med_smoke
+  prompt_template: "{question}\nAnswer yes or no only."
+  mode: full
+  batch_size: 1
+  resume: false

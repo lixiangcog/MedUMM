@@ -9,6 +9,10 @@ def test_catalog_exposes_four_plugin_kinds():
         "medical_vqa",
         "cross_task",
     }
+    llava_med = next(item for item in components["models"] if item["name"] == "llava_med")
+    assert llava_med["metadata"]["default_model"] == (
+        "microsoft/llava-med-v1.5-mistral-7b"
+    )
 
 
 def test_high_level_inference_api_accepts_unified_config():
