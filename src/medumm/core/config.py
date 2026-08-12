@@ -8,8 +8,12 @@ from typing import Any
 
 import yaml
 
+from medumm.core.exceptions import ConfigurationError
+
 
 ENVIRONMENT_PATTERN = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
+CURRENT_SCHEMA_VERSION = "1.0"
+CONFIG_KINDS = frozenset({"inference", "evaluation", "post_training"})
 
 
 def _expand_environment(value: Any) -> Any:
@@ -43,6 +47,8 @@ def _set_value(config: dict[str, Any], assignment: str) -> None:
 def load_config(
     path: str | Path,
     overrides: list[str] | None = None,
+    *,
+    validate: bool = True,
 ) -> dict[str, Any]:
     """Load a YAML or JSON mapping and apply dotted ``key=value`` overrides."""
 
@@ -64,7 +70,72 @@ def load_config(
         raise ValueError("The top level of a configuration must be a mapping.")
     for assignment in overrides or []:
         _set_value(config, assignment)
+    if validate:
+        validate_config(config)
     return config
+
+
+def validate_config(config: dict[str, Any]) -> str:
+    """Validate the stable top-level configuration envelope.
+
+    v0.1 files without ``schema_version`` remain readable and are interpreted as
+    schema 1.0. New files should always declare it explicitly.
+    """
+
+    version = str(config.get("schema_version", CURRENT_SCHEMA_VERSION))
+    if version != CURRENT_SCHEMA_VERSION:
+        raise ConfigurationError(
+            f"Unsupported schema_version {version!r}; expected {CURRENT_SCHEMA_VERSION!r}."
+        )
+    present = [kind for kind in CONFIG_KINDS if isinstance(config.get(kind), dict)]
+    if len(present) > 1:
+        raise ConfigurationError(
+            f"A config may define one execution block, found: {', '.join(sorted(present))}."
+        )
+    runtime = config.get("runtime")
+    if runtime is not None and not isinstance(runtime, dict):
+        raise ConfigurationError("runtime must be a mapping when provided.")
+    return version
+
+
+def config_kind(config: dict[str, Any]) -> str:
+    present = [kind for kind in CONFIG_KINDS if isinstance(config.get(kind), dict)]
+    if len(present) == 1:
+        return present[0]
+    if "benchmark" in config:
+        return "evaluation"
+    if "method" in config:
+        return "post_training"
+    if "backbone" in config or "model" in config:
+        return "inference"
+    raise ConfigurationError("Unable to determine configuration kind.")
+
+
+def execution_config(config: dict[str, Any], kind: str | None = None) -> dict[str, Any]:
+    """Return one canonical execution block while accepting v0.1 flat files.
+
+    Schema 1.0 uses ``inference``, ``evaluation``, or ``post_training`` as a
+    single top-level envelope. The merge below is intentionally limited to the
+    legacy evaluation layout where runner options were nested but the benchmark,
+    model, and data selections lived beside them.
+    """
+
+    selected = kind or config_kind(config)
+    if selected not in CONFIG_KINDS:
+        raise ConfigurationError(f"Unknown execution kind: {selected!r}.")
+    nested = config.get(selected)
+    if not isinstance(nested, dict):
+        return dict(config)
+    if selected == "evaluation" and any(
+        key in config for key in ("benchmark", "data", "model")
+    ):
+        legacy = {
+            key: value
+            for key, value in config.items()
+            if key not in {"schema_version", "runtime", "evaluation"}
+        }
+        return {**legacy, **nested}
+    return dict(nested)
 
 
 def find_project_root(start: str | Path) -> Path:

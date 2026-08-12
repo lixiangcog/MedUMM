@@ -1,9 +1,11 @@
+schema_version: "1.0"
 inference:
   backbone: medical_reference
   config:
     seed: 7
     image_size: 64
     output_directory: outputs/reference
+  batch_size: 2
   requests:
     - task: generation
       prompt: synthetic medical phantom for software testing

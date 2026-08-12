@@ -19,8 +19,8 @@ def test_train_infer_evaluate_workflow(tmp_path):
         "output_directory": str(tmp_path / "model"),
     }
     trained = PostTrainingRunner().run(training, config_path=PROJECT_ROOT / "pyproject.toml")
-    assert trained["status"] == "completed"
-    assert trained["train_accuracy"] >= 0.99
+    assert trained.status == "completed"
+    assert trained.metrics["train_accuracy"] >= 0.99
 
     with InferencePipeline("medical_linear", {"model_path": str(tmp_path / "model")}) as pipeline:
         output = pipeline.run({
@@ -28,7 +28,7 @@ def test_train_infer_evaluate_workflow(tmp_path):
             "prompt": "The synthetic centre is brighter than the border. Choose A for yes or B for no.",
             "images": [str(PROJECT_ROOT / "examples/medical/images/synthetic_scan.pgm")],
         })
-    assert output["understandings"][0]["response"] == "A"
+    assert output.text == "A"
 
     evaluation = {
         "benchmark": "medical_vqa",

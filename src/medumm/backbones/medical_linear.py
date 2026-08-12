@@ -1,20 +1,40 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 
+from medumm.core.contracts import ArchitectureFamily, Modality, ModelCapabilities, TaskType
+from medumm.core.interfaces import ModelAdapter
+from medumm.core.results import InferenceResult
+from medumm.core.runtime import RuntimeContext
+from medumm.inference.request import InferenceRequest
 from medumm.medical.linear import featurize, load_model
 
 
-class MedicalLinearAdapter:
+class MedicalLinearAdapter(ModelAdapter):
     name = "medical_linear"
-    supported_tasks = frozenset({"understanding"})
+    capabilities = ModelCapabilities(
+        tasks=frozenset({TaskType.UNDERSTANDING}),
+        input_modalities=frozenset({Modality.TEXT, Modality.IMAGE}),
+        output_modalities=frozenset({Modality.TEXT}),
+        architecture=ArchitectureFamily.REFERENCE,
+        supports_batching=True,
+        max_batch_size=None,
+        max_images=8,
+        notes=("Engineering baseline; not a clinical model.",),
+    )
 
-    def load(self, config: dict[str, Any]) -> None:
+    def load(self, config: dict[str, Any], runtime: RuntimeContext) -> None:
+        self.runtime = runtime
         if not config.get("model_path"):
             raise ValueError("medical_linear requires model_path.")
-        self.weights, self.bias, manifest = load_model(config["model_path"])
+        model_path = str(config["model_path"])
+        candidate = self.runtime.project_root / model_path
+        if not Path(model_path).is_absolute() and candidate.exists():
+            model_path = str(candidate)
+        self.weights, self.bias, manifest = load_model(model_path)
         self.labels = [str(label) for label in manifest["labels"]]
         self.text_dimensions = int(manifest["text_dimensions"])
 
@@ -39,3 +59,22 @@ class MedicalLinearAdapter:
             }],
             "research_only": True,
         }
+
+    def understand_batch(self, requests: list[InferenceRequest]) -> list[InferenceResult]:
+        results = []
+        for request in requests:
+            output = self.understanding(
+                request.prompt, request.images, request.videos, request.parameters
+            )
+            answer = output["understandings"][0]
+            results.append(
+                InferenceResult(
+                    request_id=request.request_id,
+                    task=TaskType.UNDERSTANDING,
+                    model_name=self.name,
+                    text=str(answer["response"]),
+                    scores={"confidence": float(answer["confidence"])},
+                    metadata={"research_only": True, **request.metadata},
+                )
+            )
+        return results

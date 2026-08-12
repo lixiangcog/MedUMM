@@ -1,32 +1,60 @@
 # Roadmap
 
-MedUMM grows by validated vertical slices instead of importing a large set of
-partially working integrations.
+MedUMM grows through validated medical vertical slices. Platform breadth and
+medical scale are tracked separately so a long model list cannot hide an
+incomplete evaluation or data-governance path.
 
-## Phase 1 — workflow foundation
+## v0.1 — executable foundation
 
-- [x] package and CLI
-- [x] model registry and common adapter
-- [x] configuration-driven inference
-- [x] medical VQA evaluation and reports
-- [x] supervised post-training checkpoint loop
-- [x] local and Slurm smoke workflows
+- [x] installable package and unified CLI
+- [x] local reference model and trainable smoke baseline
+- [x] medical VQA data, metrics, reports, and resumable predictions
+- [x] train → infer → evaluate workflow on Slurm
 
-## Phase 2 — real medical backbones and datasets
+## v0.2 — stable platform interfaces
 
-- [ ] production MedGemma recipe and licensed checkpoint documentation
-- [ ] Qwen medical vision-language adapter
-- [ ] radiology and pathology dataset adapters
-- [ ] distributed inference and sharded evaluation
-- [ ] LoRA supervised fine-tuning
+- [x] four typed plugin contracts and lazy registries
+- [x] model capability declaration and task/modality validation
+- [x] understanding, generation, and editing execution pipelines
+- [x] unified YAML schema with v0.1 evaluation compatibility
+- [x] stable request/result objects and high-level Python API
+- [x] generate/score/full evaluation state machine
+- [x] cross-task benchmark composition
+- [x] runtime manifests, dataset/model fingerprints, and leaderboards
+- [x] Slurm-aware distributed context and deterministic sharding primitive
 
-## Phase 3 — scale and safety
+## v0.3 — first real medical vertical slices
 
-- [ ] multi-dataset mixture and provenance registry
-- [ ] calibration, uncertainty, and abstention benchmarks
-- [ ] medical hallucination and localization evaluation
-- [ ] distributed post-training and experiment tracking
-- [ ] reproducible public leaderboard artifacts
+- [ ] production MedGemma inference recipe and checkpoint/license guide
+- [ ] one second medical VLM adapter from a different architecture family
+- [ ] radiology VQA benchmark adapter with public-data provenance
+- [ ] pathology VQA benchmark adapter with public-data provenance
+- [ ] medical text-to-image model and generation benchmark
+- [ ] medical image editing model and editing benchmark
+- [ ] GPU Slurm smoke jobs for every advertised capability
 
-Dataset adapters will store provenance and split metadata. Clinical data is out
-of scope unless its governance, de-identification, and access rules are explicit.
+## v0.4 — post-training and distributed evaluation
+
+- [ ] Transformers SFT plus LoRA/QLoRA trainer plugin
+- [ ] multi-dataset mixture schema with sampling weights and provenance
+- [ ] initialized distributed inference, result gathering, and failure recovery
+- [ ] sharded benchmark scoring and deterministic merge
+- [ ] checkpoint/resume and experiment-tracker hooks
+- [ ] preference-training interface and first medical safety preference recipe
+
+## v0.5 — medical evaluation breadth
+
+- [ ] localization and grounding metrics
+- [ ] report generation and longitudinal reasoning benchmarks
+- [ ] calibration, uncertainty, selective prediction, and abstention
+- [ ] hallucination, demographic robustness, and shortcut audits
+- [ ] cross-modal consistency evaluation across text, image, and editing outputs
+- [ ] signed public leaderboard manifests and reproducibility bundles
+
+## Scale target
+
+After the platform and governance gates hold across the first real slices,
+expand across radiology, pathology, ophthalmology, dermatology, endoscopy,
+ultrasound, medical video, documents, and longitudinal multimodal records. Each
+new entry must ship as a model + dataset + benchmark + reproducible recipe slice
+where applicable; raw counts are not accepted as evidence of platform support.

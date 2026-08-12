@@ -6,7 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from medumm.core.contracts import EvaluationMode
 from medumm.core.io import ensure_directory, read_jsonl, write_json, write_jsonl
+from medumm.core.results import Artifact, EvaluationResult, InferenceResult
 
 
 @dataclass(slots=True)
@@ -17,18 +19,22 @@ class EvaluationItem:
 
 
 class EvaluationRunner:
-    """Reusable generate/score runner with resumable predictions."""
+    """Benchmark-neutral generate/score/full evaluation state machine."""
 
     def __init__(
         self,
         *,
         benchmark: str,
-        pipeline: Any,
+        pipeline: Any | None,
         output_directory: str | Path,
-        parser: Callable[[Any], str],
+        parser: Callable[[InferenceResult], str],
         scorer: Callable[[str, dict[str, Any]], dict[str, Any]],
         summarizer: Callable[[list[dict[str, Any]]], dict[str, Any]],
+        mode: EvaluationMode | str = EvaluationMode.FULL,
         resume: bool = True,
+        fingerprint: str,
+        metadata: dict[str, Any] | None = None,
+        batch_size: int = 1,
     ) -> None:
         self.benchmark = benchmark
         self.pipeline = pipeline
@@ -36,57 +42,136 @@ class EvaluationRunner:
         self.parser = parser
         self.scorer = scorer
         self.summarizer = summarizer
+        self.mode = EvaluationMode(mode)
         self.resume = resume
+        self.fingerprint = fingerprint
+        self.metadata = dict(metadata or {})
+        self.batch_size = batch_size
         self.predictions_path = self.output_directory / "predictions.jsonl"
 
-    def run(self, items: list[EvaluationItem]) -> dict[str, Any]:
-        if not items:
-            raise ValueError("Evaluation requires at least one item.")
-        previous = read_jsonl(self.predictions_path) if self.resume and self.predictions_path.exists() else []
-        predictions = {str(row["id"]): row for row in previous}
+    def _previous_predictions(self, *, required: bool = False) -> dict[str, dict[str, Any]]:
+        if not self.predictions_path.is_file():
+            if required:
+                raise FileNotFoundError(
+                    f"Score mode requires predictions: {self.predictions_path}."
+                )
+            return {}
+        if not self.resume and not required:
+            return {}
+        return {
+            str(row["id"]): row
+            for row in read_jsonl(self.predictions_path)
+            if row.get("fingerprint") == self.fingerprint
+        }
+
+    def _generate(self, items: list[EvaluationItem]) -> dict[str, dict[str, Any]]:
+        if self.pipeline is None:
+            raise ValueError("Generate mode requires an inference pipeline.")
+        predictions = self._previous_predictions()
         active = {item.sample_id for item in items}
-        predictions = {key: value for key, value in predictions.items() if key in active}
-        for item in items:
-            if item.sample_id not in predictions:
+        predictions = {key: row for key, row in predictions.items() if key in active}
+        pending = [item for item in items if item.sample_id not in predictions]
+        if pending:
+            outputs = self.pipeline.run_many(
+                [item.request for item in pending],
+                batch_size=self.batch_size,
+            )
+            for item, output in zip(pending, outputs, strict=True):
                 predictions[item.sample_id] = {
                     "id": item.sample_id,
-                    "prediction": self.parser(self.pipeline.run(item.request)),
+                    "request_id": output.request_id,
+                    "prediction": self.parser(output),
+                    "fingerprint": self.fingerprint,
+                    "model_name": output.model_name,
                 }
                 write_jsonl(
                     self.predictions_path,
                     [predictions[current.sample_id] for current in items if current.sample_id in predictions],
                 )
-        results = []
+        return predictions
+
+    def _score(
+        self,
+        items: list[EvaluationItem],
+        predictions: dict[str, dict[str, Any]],
+    ) -> EvaluationResult:
+        missing = [item.sample_id for item in items if item.sample_id not in predictions]
+        if missing:
+            raise FileNotFoundError(
+                f"Missing predictions for {len(missing)} sample(s): {missing[:3]}."
+            )
+        rows = []
         for item in items:
             prediction = str(predictions[item.sample_id]["prediction"])
-            results.append({
+            rows.append({
                 "id": item.sample_id,
                 "prediction": prediction,
                 **item.content,
                 **self.scorer(prediction, item.content),
             })
-        results_path = write_jsonl(self.output_directory / "results.jsonl", results)
+        results_path = write_jsonl(self.output_directory / "results.jsonl", rows)
+        metrics = self.summarizer(rows)
         report = {
+            "schema_version": "1.0",
             "benchmark": self.benchmark,
-            "dataset_size": len(results),
-            "metrics": self.summarizer(results),
-            "clinical_use": False,
+            "mode": self.mode.value,
+            "dataset_size": len(rows),
+            "fingerprint": self.fingerprint,
+            "metrics": metrics,
+            "metadata": self.metadata,
         }
         report_path = write_json(self.output_directory / "score.json", report)
-        metrics_path = self.output_directory / "metrics.csv"
-        with metrics_path.open("w", encoding="utf-8", newline="") as handle:
+        metrics_path = self._write_metrics(metrics)
+        return EvaluationResult(
+            benchmark=self.benchmark,
+            mode=self.mode.value,
+            status="completed",
+            dataset_size=len(rows),
+            output_directory=str(self.output_directory),
+            metrics=metrics,
+            artifacts=[
+                Artifact("predictions", str(self.predictions_path), "application/jsonl"),
+                Artifact("results", str(results_path), "application/jsonl"),
+                Artifact("report", str(report_path), "application/json"),
+                Artifact("metrics", str(metrics_path), "text/csv"),
+            ],
+            metadata={"fingerprint": self.fingerprint, **self.metadata},
+        )
+
+    def _write_metrics(self, metrics: dict[str, Any]) -> Path:
+        path = self.output_directory / "metrics.csv"
+        with path.open("w", encoding="utf-8", newline="") as handle:
             writer = csv.writer(handle)
             writer.writerow(["section", "group", "metric", "value"])
-            for section, groups in report["metrics"].items():
-                groups = {"overall": groups} if "total" in groups else groups
-                for group, metrics in groups.items():
-                    for metric, value in metrics.items():
+            for section, groups in metrics.items():
+                groups = {"overall": groups} if isinstance(groups, dict) and "total" in groups else groups
+                if not isinstance(groups, dict):
+                    continue
+                for group, group_metrics in groups.items():
+                    if not isinstance(group_metrics, dict):
+                        continue
+                    for metric, value in group_metrics.items():
                         writer.writerow([section, group, metric, value])
-        return {
-            **report,
-            "status": "completed",
-            "predictions_path": str(self.predictions_path),
-            "results_path": str(results_path),
-            "report_path": str(report_path),
-            "metrics_path": str(metrics_path),
-        }
+        return path
+
+    def run(self, items: list[EvaluationItem]) -> EvaluationResult:
+        if not items:
+            raise ValueError("Evaluation requires at least one item.")
+        identifiers = [item.sample_id for item in items]
+        if len(identifiers) != len(set(identifiers)):
+            raise ValueError("Evaluation item identifiers must be unique.")
+        if self.mode in {EvaluationMode.GENERATE, EvaluationMode.FULL}:
+            predictions = self._generate(items)
+        else:
+            predictions = self._previous_predictions(required=True)
+        if self.mode is EvaluationMode.GENERATE:
+            return EvaluationResult(
+                benchmark=self.benchmark,
+                mode=self.mode.value,
+                status="generated",
+                dataset_size=len(items),
+                output_directory=str(self.output_directory),
+                artifacts=[Artifact("predictions", str(self.predictions_path), "application/jsonl")],
+                metadata={"fingerprint": self.fingerprint, **self.metadata},
+            )
+        return self._score(items, predictions)

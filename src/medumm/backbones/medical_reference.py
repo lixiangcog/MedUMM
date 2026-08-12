@@ -8,19 +8,36 @@ from typing import Any
 
 from PIL import Image, ImageEnhance, ImageOps
 
+from medumm.core.contracts import ArchitectureFamily, Modality, ModelCapabilities, TaskType
+from medumm.core.interfaces import ModelAdapter
 from medumm.core.io import ensure_directory
+from medumm.core.results import Artifact, InferenceResult
+from medumm.core.runtime import RuntimeContext
+from medumm.inference.request import InferenceRequest
 
 
-class MedicalReferenceAdapter:
+class MedicalReferenceAdapter(ModelAdapter):
     """Deterministic non-clinical adapter for dependency-light workflow tests."""
 
     name = "medical_reference"
-    supported_tasks = frozenset({"generation", "understanding", "editing"})
+    capabilities = ModelCapabilities(
+        tasks=frozenset(TaskType),
+        input_modalities=frozenset({Modality.TEXT, Modality.IMAGE}),
+        output_modalities=frozenset({Modality.TEXT, Modality.IMAGE}),
+        architecture=ArchitectureFamily.REFERENCE,
+        supports_batching=True,
+        max_batch_size=None,
+        max_images=1,
+        notes=("Synthetic software reference; not a clinical model.",),
+    )
 
-    def load(self, config: dict[str, Any]) -> None:
+    def load(self, config: dict[str, Any], runtime: RuntimeContext) -> None:
+        self.runtime = runtime
         self.seed = int(config.get("seed", 42))
         self.image_size = int(config.get("image_size", 96))
         self.output_directory = Path(config.get("output_directory", "outputs/reference"))
+        if not self.output_directory.is_absolute():
+            self.output_directory = runtime.project_root / self.output_directory
         if self.image_size < 16:
             raise ValueError("image_size must be at least 16.")
 
@@ -105,3 +122,52 @@ class MedicalReferenceAdapter:
         ensure_directory(path.parent)
         image.save(path)
         return {"task": "editing", "output_path": str(path), "research_only": True}
+
+    def understand_batch(self, requests: list[InferenceRequest]) -> list[InferenceResult]:
+        results = []
+        for request in requests:
+            output = self.understanding(
+                request.prompt, request.images, request.videos, request.parameters
+            )
+            results.append(
+                InferenceResult(
+                    request_id=request.request_id,
+                    task=TaskType.UNDERSTANDING,
+                    model_name=self.name,
+                    text=str(output["understandings"][0]["response"]),
+                    metadata={"research_only": True, **request.metadata},
+                )
+            )
+        return results
+
+    def generate_batch(self, requests: list[InferenceRequest]) -> list[InferenceResult]:
+        results = []
+        for request in requests:
+            output = self.generation(request.prompt, request.output_path, request.parameters)
+            results.append(
+                InferenceResult(
+                    request_id=request.request_id,
+                    task=TaskType.GENERATION,
+                    model_name=self.name,
+                    artifacts=[Artifact("image", output["output_path"], "image/png")],
+                    metadata={"research_only": True, **request.metadata},
+                )
+            )
+        return results
+
+    def edit_batch(self, requests: list[InferenceRequest]) -> list[InferenceResult]:
+        results = []
+        for request in requests:
+            output = self.editing(
+                request.prompt, request.images, request.output_path, request.parameters
+            )
+            results.append(
+                InferenceResult(
+                    request_id=request.request_id,
+                    task=TaskType.EDITING,
+                    model_name=self.name,
+                    artifacts=[Artifact("image", output["output_path"], "image/png")],
+                    metadata={"research_only": True, **request.metadata},
+                )
+            )
+        return results

@@ -1,0 +1,19 @@
+schema_version: "1.0"
+evaluation:
+  benchmark: cross_task
+  output_directory: outputs/evaluation/cross_task_smoke
+  benchmarks:
+    - name: medical_vqa_reference
+      benchmark: medical_vqa
+      data:
+        adapter: medical_vqa_jsonl
+        path: examples/medical/tiny_eval.jsonl
+        image_root: examples/medical/images
+        validate_images: true
+      model:
+        backbone: medical_reference
+        parameters:
+          fixed_answer: A
+      mode: full
+      batch_size: 2
+      resume: false

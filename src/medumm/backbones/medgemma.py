@@ -5,6 +5,12 @@ from typing import Any
 
 from PIL import Image
 
+from medumm.core.contracts import ArchitectureFamily, Modality, ModelCapabilities, TaskType
+from medumm.core.interfaces import ModelAdapter
+from medumm.core.results import InferenceResult
+from medumm.core.runtime import RuntimeContext
+from medumm.inference.request import InferenceRequest
+
 
 SYSTEM_PROMPT = (
     "You are a medical imaging research assistant. Use only the supplied evidence. "
@@ -12,13 +18,33 @@ SYSTEM_PROMPT = (
 )
 
 
-class MedGemmaAdapter:
+class MedGemmaAdapter(ModelAdapter):
     """Optional Transformers adapter for image-text medical understanding."""
 
     name = "medgemma"
-    supported_tasks = frozenset({"understanding"})
+    capabilities = ModelCapabilities(
+        tasks=frozenset({TaskType.UNDERSTANDING}),
+        input_modalities=frozenset({
+            Modality.TEXT,
+            Modality.IMAGE,
+            Modality.IMAGE_SET,
+            Modality.VOLUME,
+        }),
+        output_modalities=frozenset({Modality.TEXT}),
+        architecture=ArchitectureFamily.AUTOREGRESSIVE,
+        supports_batching=False,
+        max_batch_size=1,
+        max_images=None,
+        supports_multi_turn=False,
+        supports_hidden_states=True,
+        notes=(
+            "Gated weights with separate Health AI Developer Foundations terms.",
+            "Outputs require independent verification and are not clinical advice.",
+        ),
+    )
 
-    def load(self, config: dict[str, Any]) -> None:
+    def load(self, config: dict[str, Any], runtime: RuntimeContext) -> None:
+        self.runtime = runtime
         try:
             import torch
             from transformers import pipeline
@@ -71,3 +97,20 @@ class MedGemmaAdapter:
         ]
         options = {**self.defaults, **parameters}
         return {"understandings": [{"response": self._response(self.generator(text=messages, **options))}]}
+
+    def understand_batch(self, requests: list[InferenceRequest]) -> list[InferenceResult]:
+        results = []
+        for request in requests:
+            output = self.understanding(
+                request.prompt, request.images, request.videos, request.parameters
+            )
+            results.append(
+                InferenceResult(
+                    request_id=request.request_id,
+                    task=TaskType.UNDERSTANDING,
+                    model_name=self.name,
+                    text=str(output["understandings"][0]["response"]),
+                    metadata={"clinical_use": False, **request.metadata},
+                )
+            )
+        return results

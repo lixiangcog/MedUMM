@@ -5,23 +5,27 @@ from typing import Any
 
 import numpy as np
 
-from medumm.core.config import find_project_root
+from medumm.core.interfaces import PostTrainer
 from medumm.core.io import write_json
+from medumm.core.results import Artifact, TrainingResult
+from medumm.core.runtime import RuntimeContext
 from medumm.medical import load_medical_vqa
 from medumm.medical.linear import featurize, save_model, train_classifier
 
 
-class MedicalSFTTrainer:
-    """Train the v0.1 softmax baseline and write a loadable model manifest."""
+class MedicalSFTTrainer(PostTrainer):
+    """Train the dependency-light softmax baseline and write a loadable checkpoint."""
 
     name = "medical_sft"
 
     def fit(
         self,
         config: dict[str, Any],
+        *,
         config_path: str | Path | None = None,
-    ) -> dict[str, Any]:
-        root = find_project_root(config_path or Path.cwd())
+        runtime: RuntimeContext,
+    ) -> TrainingResult:
+        root = runtime.project_root
         data_config = config.get("data")
         if not isinstance(data_config, dict):
             raise ValueError("Medical SFT requires a data mapping.")
@@ -58,15 +62,22 @@ class MedicalSFTTrainer:
             metadata={"method": self.name, "samples": len(samples), "train_accuracy": accuracy},
         )
         history_path = write_json(output_directory / "history.json", history)
-        result = {
-            "method": self.name,
-            "status": "completed",
-            "samples": len(samples),
-            "labels": len(labels),
-            "train_accuracy": accuracy,
-            "manifest_path": str(manifest),
-            "history_path": str(history_path),
-            "clinical_use": False,
-        }
-        write_json(output_directory / "result.json", result)
+        result = TrainingResult(
+            method=self.name,
+            status="completed",
+            output_directory=str(output_directory),
+            checkpoint_path=str(manifest),
+            metrics={"train_accuracy": accuracy},
+            artifacts=[
+                Artifact("checkpoint_manifest", str(manifest), "application/json"),
+                Artifact("training_history", str(history_path), "application/json"),
+            ],
+            metadata={
+                "samples": len(samples),
+                "labels": len(labels),
+                "clinical_use": False,
+                "run_id": runtime.run_id,
+            },
+        )
+        write_json(output_directory / "result.json", result.to_dict())
         return result

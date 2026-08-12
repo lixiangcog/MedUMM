@@ -6,6 +6,7 @@ MEDUMM_PYTHON="${MEDUMM_PYTHON:-python}"
 export PYTHONPATH="${MEDUMM_ROOT}/src${PYTHONPATH:+:${PYTHONPATH}}"
 cd "${MEDUMM_ROOT}"
 
+"${MEDUMM_PYTHON}" -m medumm catalog --json >/dev/null
 "${MEDUMM_PYTHON}" -m medumm post-train \
   --config configs/post_training/medical_sft_smoke.yaml
 "${MEDUMM_PYTHON}" -m medumm infer \
@@ -14,5 +15,12 @@ cd "${MEDUMM_ROOT}"
   --config configs/inference/medical_linear_understanding.yaml
 "${MEDUMM_PYTHON}" -m medumm evaluate \
   --config configs/evaluation/medical_vqa_linear_smoke.yaml
+"${MEDUMM_PYTHON}" -m medumm evaluate \
+  --config configs/evaluation/cross_task_smoke.yaml
+"${MEDUMM_PYTHON}" -m medumm report \
+  --scores \
+    outputs/evaluation/medical_vqa_linear/score.json \
+    outputs/evaluation/cross_task_smoke/medical_vqa_reference/score.json \
+  --output-directory outputs/reports/smoke
 
 echo "[MedUMM] workflow completed"

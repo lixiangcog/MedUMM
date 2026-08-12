@@ -46,7 +46,7 @@ def load_medical_vqa(
     """Load local JSON/JSONL records into the MedUMM medical VQA schema."""
 
     if str(config.get("source", "jsonl")) not in {"json", "jsonl"}:
-        raise ValueError("v0.1 supports local JSON and JSONL datasets only.")
+        raise ValueError("The medical_vqa_jsonl adapter supports local JSON and JSONL only.")
     data_path = Path(str(config.get("path", ""))).expanduser()
     data_path = data_path if data_path.is_absolute() else project_root / data_path
     if not data_path.is_file():

@@ -1,18 +1,22 @@
-benchmark: medical_vqa
-data:
-  source: jsonl
-  path: examples/medical/tiny_eval.jsonl
-  image_root: examples/medical/images
-  validate_images: true
-model:
-  backbone: medgemma
-  config:
-    model_path: google/medgemma-1.5-4b-it
-    torch_dtype: bfloat16
-    device_map: auto
-  parameters:
-    max_new_tokens: 64
-    do_sample: false
+schema_version: "1.0"
 evaluation:
+  benchmark: medical_vqa
+  data:
+    adapter: medical_vqa_jsonl
+    source: jsonl
+    path: examples/medical/tiny_eval.jsonl
+    image_root: examples/medical/images
+    validate_images: true
+  model:
+    backbone: medgemma
+    config:
+      model_path: google/medgemma-1.5-4b-it
+      torch_dtype: bfloat16
+      device_map: auto
+    parameters:
+      max_new_tokens: 64
+      do_sample: false
   output_directory: outputs/evaluation/medical_vqa_medgemma
   resume: true
+  mode: full
+  batch_size: 1

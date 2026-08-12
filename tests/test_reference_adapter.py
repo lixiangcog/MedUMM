@@ -19,6 +19,8 @@ def test_reference_adapter_supports_three_tasks(tmp_path):
             "prompt": "increase contrast",
             "images": [str(image)],
         })
-    assert Path(generated["output_path"]).is_file()
-    assert understood["understandings"][0]["response"] == "A"
-    assert Path(edited["output_path"]).is_file()
+    assert Path(generated.output_path).is_file()
+    assert understood.text == "A"
+    assert Path(edited.output_path).is_file()
+    assert generated.model_name == "medical_reference"
+    assert pipeline.capabilities.supports("editing")
