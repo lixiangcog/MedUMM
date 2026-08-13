@@ -44,7 +44,11 @@ test -f "${MEDUMM_SERVER_MODEL_PATH}/config.json"
 "${MEDUMM_RUNTIME_ENV}/bin/python" -m pip install --no-deps --no-build-isolation \
   -e "${MEDUMM_ROOT}"
 nvidia-smi --query-gpu=index,name,memory.total,memory.used,driver_version --format=csv,noheader
-"${MEDUMM_RUNTIME_ENV}/bin/python" -m pytest -q tests/test_inference_optimization.py
+if "${MEDUMM_RUNTIME_ENV}/bin/python" -c "import pytest" 2>/dev/null; then
+  "${MEDUMM_RUNTIME_ENV}/bin/python" -m pytest -q tests/test_inference_optimization.py
+else
+  echo "[MedUMM] pytest unavailable in the engine-only runtime; tests run before Slurm submission"
+fi
 "${MEDUMM_RUNTIME_ENV}/bin/python" -m medumm backends --json > "${RUN_ROOT}/backend-catalog.json"
 
 setsid "${MEDUMM_RUNTIME_ENV}/bin/python" -m medumm serve \
