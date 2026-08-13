@@ -1,4 +1,4 @@
-catalog_version: "0.8.0"
+catalog_version: "0.9.0"
 models:
   - name: medgemma_1_5_4b_it
     display_name: MedGemma 1.5 4B IT
@@ -196,16 +196,16 @@ models:
     source: https://huggingface.co/lingshu-medical-mllm/Lingshu-7B
     paper: https://arxiv.org/abs/2506.07044
     official_code:
-    license: source-specific terms
+    license: MIT
     access: open
     runtime_family: hf_image_text_to_text
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image, image_set]
     medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
-    parameters_b: 7
+    parameters_b: 8
     languages: [en, zh]
-    trust_remote_code: true
+    trust_remote_code: false
     revision_policy: require_immutable_revision
     notes: ["General medical image understanding across multiple specialties."]
 
@@ -536,12 +536,12 @@ models:
     display_name: PubMedCLIP
     artifact_id: flaviagiammarino/pubmed-clip-vit-base-patch32
     source: https://huggingface.co/flaviagiammarino/pubmed-clip-vit-base-patch32
-    paper: https://arxiv.org/abs/2210.02318
+    paper: https://arxiv.org/abs/2112.13906
     official_code: https://github.com/sarahESL/PubMedCLIP
-    license: source-specific terms
+    license: MIT
     access: open
     runtime_family: hf_contrastive
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image]
     medical_domains: [biomedicine, radiology, pathology]

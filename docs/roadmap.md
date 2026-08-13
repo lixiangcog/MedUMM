@@ -104,6 +104,18 @@ incomplete evaluation or data-governance path.
 - [ ] raw-source exporters and acceptance runs for SLAKE and PathVQA
 - [ ] source-specific report, grounding, measurement, fairness, 3D, and video scorers
 
+## v0.9 — architecture-diverse runtime slices
+
+- [x] native Lingshu-7B Qwen2.5-VL adapter with immutable revision and run metadata
+- [x] SLAKE and PathVQA raw-source exporters with image/provenance normalization
+- [x] sample-level candidate propagation for contrastive zero-shot evaluation
+- [x] fixed MedMNIST v2 PneumoniaMNIST exporter
+- [x] pinned PubMedCLIP asset recipe and shared benchmark/report path
+- [x] passed A800 acceptance for Lingshu-7B + SLAKE
+- [x] passed A800 acceptance for PubMedCLIP + PneumoniaMNIST
+- [ ] gated MedSigLIP acceptance after source terms and weight access
+- [ ] PathVQA full acceptance and pathology-specific scoring protocol
+
 ## Scale target
 
 After the platform and governance gates hold across the first real slices,

@@ -7,6 +7,25 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v0.9: architecture-diverse runtime slices
+
+Version 0.9 turns the first items in the v0.8 validation queue into reproducible
+vertical slices:
+
+- a native `lingshu_7b` Qwen2.5-VL adapter with multi-image input, immutable
+  revision enforcement, official chat templating, and CUDA/Slurm evidence;
+- source-pinned SLAKE and PathVQA exporters into the common medical VQA schema;
+- a real PubMedCLIP contrastive path with per-sample candidate ranking;
+- a fixed MedMNIST v2 PneumoniaMNIST exporter and zero-shot classification
+  evaluation through the same benchmark/report contract;
+- CPU asset-preparation and offline A800 acceptance jobs for both model families.
+
+Both open slices passed a pinned A800 Slurm acceptance run and are marked
+`runtime_validated`. Gated MedSigLIP remains interface-validated until its
+upstream terms are accepted and weights are available. See
+[docs/runtime-slices-v0.9.md](docs/runtime-slices-v0.9.md) and the committed
+[machine-readable evidence](docs/results/v0.9-runtime-slices.json).
+
 ## v0.8: scale catalog for medical models and evaluation data
 
 Version 0.8 registers 32 medical multimodal model releases and 34 evaluation
@@ -279,6 +298,7 @@ medumm merge-predictions \
 | Model | `medical_linear` | Reloadable trainable VQA smoke baseline |
 | Model | `medgemma` | Optional medical image-text understanding adapter |
 | Model | `llava_med` | Real LLaVA-Med v1.5 biomedical understanding adapter |
+| Model | `lingshu_7b` | Native Lingshu medical Qwen2.5-VL understanding adapter |
 | Dataset | `medical_vqa_jsonl` | Normalized local JSON/JSONL medical VQA data |
 | Dataset | `medical_tasks_jsonl` | Task-aware perception, reasoning, report, and communication data |
 | Benchmark | `medical_vqa` | Generate/score medical VQA with grouped metrics |
@@ -315,6 +335,8 @@ execution:
 sbatch scripts/slurm_prepare_llava_med_assets.sh
 sbatch scripts/slurm_llava_med_vqa_rad.sh
 sbatch scripts/slurm_medical_tasks_v0.6.sh
+sbatch scripts/slurm_prepare_runtime_slices_v0.9.sh
+sbatch scripts/slurm_runtime_slices_v0.9.sh
 ```
 
 Outputs are written below `outputs/` and ignored by Git.

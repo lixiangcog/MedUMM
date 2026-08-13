@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+import platform
 from importlib import import_module
 from pathlib import Path
 from time import perf_counter
@@ -79,6 +81,8 @@ class CatalogModelAdapter(ModelAdapter):
                 f"{self.name} requires config.revision with an immutable source commit. "
                 "Use a local model_path to load an already pinned snapshot."
             )
+        self.model_path = model_path
+        self.model_revision = revision
         if self.spec.runtime_family is ModelRuntimeFamily.HF_IMAGE_TEXT:
             self._load_hf_pipeline(config, model_path=model_path, revision=revision)
         elif self.spec.runtime_family is ModelRuntimeFamily.HF_CONTRASTIVE:
@@ -275,21 +279,50 @@ class CatalogModelAdapter(ModelAdapter):
             )
         device = next(self._model.parameters()).device
         inputs = {key: value.to(device) for key, value in inputs.items()}
+        uses_cuda = str(device).startswith("cuda")
+        if uses_cuda:
+            torch.cuda.reset_peak_memory_stats(device)
+            torch.cuda.synchronize(device)
+        started = perf_counter()
         with torch.inference_mode():
             outputs = self._model(**inputs)
             logits = getattr(outputs, "logits_per_image", None)
             if logits is None:
                 raise RuntimeError("The contrastive model did not return logits_per_image.")
             probabilities = logits[0].float().softmax(dim=-1).cpu().tolist()
+        if uses_cuda:
+            torch.cuda.synchronize(device)
+        duration_ms = (perf_counter() - started) * 1000
         scores = {candidate: float(score) for candidate, score in zip(candidates, probabilities)}
         prediction = max(scores, key=scores.get)
+        peak_memory_mb = (
+            round(torch.cuda.max_memory_allocated(device) / 1024**2, 2)
+            if uses_cuda
+            else None
+        )
         return InferenceResult(
             request_id=request.request_id,
             task=TaskType.UNDERSTANDING,
             model_name=self.name,
             text=prediction,
             scores=scores,
-            metadata={"resource": self.name, "clinical_use": False, **request.metadata},
+            metadata={
+                "resource": self.name,
+                "model_id": self.model_path,
+                "model_revision": self.model_revision,
+                "model_family": "hf_contrastive",
+                "device": str(device),
+                "dtype": str(next(self._model.parameters()).dtype).removeprefix("torch."),
+                "peak_gpu_memory_mb": peak_memory_mb,
+                "hostname": platform.node(),
+                "scheduler": {
+                    "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+                    "slurm_step_id": os.environ.get("SLURM_STEP_ID"),
+                },
+                "clinical_use": False,
+                **request.metadata,
+            },
+            duration_ms=round(duration_ms, 2),
         )
 
     def _open_clip_rank(self, request: InferenceRequest) -> InferenceResult:

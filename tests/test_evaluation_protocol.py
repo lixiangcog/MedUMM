@@ -4,7 +4,7 @@ import pytest
 
 from medumm.core import EvaluationMode
 from medumm.evaluation import EvaluationProtocol, MedicalVQACoreMetrics
-from medumm.evaluation.medical_vqa import MedicalVQABenchmark
+from medumm.evaluation.medical_vqa import MedicalVQABenchmark, _sample_parameters
 from medumm.core.runtime import RuntimeContext
 from tests.conftest import PROJECT_ROOT
 
@@ -39,6 +39,20 @@ def test_metric_suite_reports_closed_accuracy_and_seeded_intervals():
     assert first == second
     assert first["overall"]["closed_accuracy"] == 50.0
     assert first["uncertainty"]["exact_match"]["bootstrap_samples"] == 100
+
+
+def test_choice_candidates_are_added_per_sample_without_mutating_model_defaults():
+    defaults = {"temperature": 0.0}
+    result = _sample_parameters(
+        defaults,
+        {"A": "normal chest x-ray", "B": "pneumonia chest x-ray"},
+        use_choice_candidates=True,
+    )
+    assert result == {
+        "temperature": 0.0,
+        "candidates": ["normal chest x-ray", "pneumonia chest x-ray"],
+    }
+    assert defaults == {"temperature": 0.0}
 
 
 def test_audit_mode_needs_no_model_and_writes_quality_report(tmp_path):

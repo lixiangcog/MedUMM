@@ -150,8 +150,12 @@ def environment_snapshot(context: RuntimeContext) -> dict[str, Any]:
             }
             for index in range(torch.cuda.device_count())
         ]
-    except (ImportError, OSError):
-        snapshot["torch"] = None
+    except (ImportError, OSError, RuntimeError) as error:
+        snapshot.setdefault("torch", None)
+        snapshot["cuda_available"] = False
+        snapshot["gpu_count"] = 0
+        snapshot["gpus"] = []
+        snapshot["cuda_error"] = f"{type(error).__name__}: {error}"
     return snapshot
 
 

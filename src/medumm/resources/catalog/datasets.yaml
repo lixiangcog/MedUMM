@@ -1,4 +1,4 @@
-catalog_version: "0.8.0"
+catalog_version: "0.9.0"
 datasets:
   - name: vqa_rad
     display_name: VQA-RAD
@@ -22,13 +22,13 @@ datasets:
   - name: slake
     display_name: SLAKE
     artifact_id: BoKelvin/SLAKE
-    source: https://huggingface.co/datasets/Voxel51/SLAKE
+    source: https://huggingface.co/datasets/BoKelvin/SLAKE
     paper: https://arxiv.org/abs/2102.09542
     official_code:
     license: CC-BY-4.0
     access: open
     adapter_family: vqa
-    status: interface_validated
+    status: runtime_validated
     benchmark: medical_vqa
     tasks: [open_vqa, closed_vqa, knowledge_vqa]
     modalities: [text, image]
@@ -541,7 +541,7 @@ datasets:
     license: CC-BY-4.0
     access: open
     adapter_family: classification
-    status: interface_validated
+    status: runtime_validated
     benchmark: medical_tasks
     tasks: [pneumonia_classification]
     modalities: [text, image]

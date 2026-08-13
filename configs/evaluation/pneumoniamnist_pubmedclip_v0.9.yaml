@@ -1,0 +1,43 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cuda
+  dtype: float32
+evaluation:
+  benchmark: medical_vqa
+  data:
+    adapter: pneumoniamnist
+    normalized_adapter: medical_vqa_jsonl
+    source: jsonl
+    path: ${MEDUMM_PNEUMONIAMNIST_MANIFEST}
+    image_root: ${MEDUMM_PNEUMONIAMNIST_IMAGE_ROOT}
+    provenance: ${MEDUMM_PNEUMONIAMNIST_PROVENANCE}
+    source_revision: v2
+    validate_images: true
+    deidentified: true
+  model:
+    backbone: pubmedclip
+    config:
+      model_path: ${PUBMEDCLIP_MODEL_PATH}
+      revision: 26c0c67f6da303ad2a38909130bd35744ea93517
+      torch_dtype: float32
+      device_map: auto
+  output_directory: outputs/evaluation/pneumoniamnist_pubmedclip_v0.9
+  prompt_template: "{question}"
+  use_choice_candidates: true
+  protocol:
+    name: pneumoniamnist_pubmedclip_acceptance
+    version: "1.0"
+    metric_suite: medical_vqa_core
+    group_by: [modality, category, answer_type, language]
+    bootstrap_samples: 1000
+    confidence_level: 0.95
+    seed: 42
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 16
+  checkpoint:
+    flush_every: 16
+  mode: full
+  batch_size: 1
+  resume: false

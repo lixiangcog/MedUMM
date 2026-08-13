@@ -23,6 +23,18 @@ def _parse_output(output: InferenceResult) -> str:
     return str(output.text or "")
 
 
+def _sample_parameters(
+    model_parameters: dict[str, Any],
+    choices: dict[str, str],
+    *,
+    use_choice_candidates: bool,
+) -> dict[str, Any]:
+    parameters = dict(model_parameters)
+    if use_choice_candidates and choices:
+        parameters["candidates"] = list(choices.values())
+    return parameters
+
+
 class MedicalVQABenchmark(BenchmarkAdapter):
     name = "medical_vqa"
 
@@ -107,6 +119,9 @@ class MedicalVQABenchmark(BenchmarkAdapter):
             "config": model_config.get("config", {}),
             "parameters": model_config.get("parameters", {}),
             "prompt_template": evaluation_config.get("prompt_template", "{question}"),
+            "use_choice_candidates": bool(
+                evaluation_config.get("use_choice_candidates", False)
+            ),
         }
         run_fingerprint = hashlib.sha256(
             json.dumps(
@@ -122,6 +137,9 @@ class MedicalVQABenchmark(BenchmarkAdapter):
         prompt_template = str(evaluation_config.get("prompt_template", "{question}"))
         if "{question}" not in prompt_template:
             raise ValueError("Evaluation prompt_template must contain {question}.")
+        use_choice_candidates = bool(
+            evaluation_config.get("use_choice_candidates", False)
+        )
         items = [
             EvaluationItem(
                 sample_id=sample.sample_id,
@@ -132,7 +150,11 @@ class MedicalVQABenchmark(BenchmarkAdapter):
                     "images": sample.image_paths,
                     "volumes": sample.volume_paths,
                     "videos": sample.video_paths,
-                    "parameters": dict(model_config.get("parameters", {})),
+                    "parameters": _sample_parameters(
+                        dict(model_config.get("parameters", {})),
+                        sample.choices,
+                        use_choice_candidates=use_choice_candidates,
+                    ),
                 },
                 content={
                     "references": sample.answers,

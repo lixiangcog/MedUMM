@@ -26,12 +26,12 @@ def test_runtime_validated_status_is_reserved_for_committed_acceptance_paths():
         item.name
         for item in MODEL_RESOURCES.values()
         if item.status is IntegrationStatus.RUNTIME_VALIDATED
-    } == {"llava_med_v1_5_7b"}
+    } == {"llava_med_v1_5_7b", "lingshu_7b", "pubmedclip"}
     assert {
         item.name
         for item in DATASET_RESOURCES.values()
         if item.status is IntegrationStatus.RUNTIME_VALIDATED
-    } == {"vqa_rad"}
+    } == {"vqa_rad", "slake", "pneumoniamnist"}
     assert len(MODEL_RESOURCES.names()) == len(set(MODEL_RESOURCES.names()))
     assert len(DATASET_RESOURCES.names()) == len(set(DATASET_RESOURCES.names()))
 

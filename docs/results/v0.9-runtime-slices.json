@@ -1,0 +1,237 @@
+{
+  "schema_version": "1.0",
+  "release": "v0.9.0",
+  "status": "passed",
+  "scheduler": {
+    "verification_job_id": "437260"
+  },
+  "hostname": "gpu02",
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB"
+  },
+  "slices": [
+    {
+      "model": "lingshu_7b",
+      "model_revision": "b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9",
+      "dataset": "slake",
+      "dataset_revision": "a9083ce6c34ac3ffb17671a605962924d8a8f9e9",
+      "sample_count": 4,
+      "metrics": {
+        "overall": {
+          "total": 4,
+          "exact_match": 75.0,
+          "token_f1": 87.5,
+          "abstention_rate": 0.0,
+          "closed_accuracy": null
+        },
+        "uncertainty": {
+          "exact_match": {
+            "confidence_level": 0.95,
+            "lower": 25.0,
+            "upper": 100.0,
+            "bootstrap_samples": 1000
+          },
+          "token_f1": {
+            "confidence_level": 0.95,
+            "lower": 62.5,
+            "upper": 100.0,
+            "bootstrap_samples": 1000
+          },
+          "abstention_rate": {
+            "confidence_level": 0.95,
+            "lower": 0.0,
+            "upper": 0.0,
+            "bootstrap_samples": 1000
+          }
+        },
+        "by_modality": {
+          "ct": {
+            "total": 4,
+            "exact_match": 75.0,
+            "token_f1": 87.5,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          }
+        },
+        "by_category": {
+          "Modality": {
+            "total": 1,
+            "exact_match": 100.0,
+            "token_f1": 100.0,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          },
+          "Organ": {
+            "total": 1,
+            "exact_match": 0.0,
+            "token_f1": 50.0,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          },
+          "Position": {
+            "total": 1,
+            "exact_match": 100.0,
+            "token_f1": 100.0,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          },
+          "Size": {
+            "total": 1,
+            "exact_match": 100.0,
+            "token_f1": 100.0,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          }
+        },
+        "by_answer_type": {
+          "open": {
+            "total": 4,
+            "exact_match": 75.0,
+            "token_f1": 87.5,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          }
+        },
+        "by_language": {
+          "en": {
+            "total": 4,
+            "exact_match": 75.0,
+            "token_f1": 87.5,
+            "abstention_rate": 0.0,
+            "closed_accuracy": null
+          }
+        }
+      },
+      "inference": {
+        "sample_count": 4,
+        "mean_duration_ms": 341.67,
+        "max_duration_ms": 918.07,
+        "max_peak_gpu_memory_mb": 15908.22,
+        "mean_generated_tokens": 3.75,
+        "min_generated_tokens": 3,
+        "max_generated_tokens": 4,
+        "model": {
+          "model_id": "/data/user/hd66945/MedUMM-assets/v0.9/lingshu-7b",
+          "model_revision": "b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9",
+          "model_family": "qwen2_5_vl",
+          "resource": "lingshu_7b",
+          "source": "https://huggingface.co/lingshu-medical-mllm/Lingshu-7B",
+          "device": "cuda:0",
+          "dtype": "bfloat16",
+          "input_images": 1,
+          "generated_tokens": 3,
+          "hostname": "gpu02",
+          "scheduler": {
+            "slurm_job_id": "437260",
+            "slurm_step_id": null
+          },
+          "peak_gpu_memory_mb": 15906.96,
+          "clinical_use": false
+        }
+      },
+      "audit_status": "passed"
+    },
+    {
+      "model": "pubmedclip",
+      "model_revision": "26c0c67f6da303ad2a38909130bd35744ea93517",
+      "dataset": "pneumoniamnist",
+      "dataset_revision": "v2",
+      "sample_count": 32,
+      "metrics": {
+        "overall": {
+          "total": 32,
+          "exact_match": 28.12,
+          "token_f1": 28.12,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 28.12
+        },
+        "uncertainty": {
+          "exact_match": {
+            "confidence_level": 0.95,
+            "lower": 12.5,
+            "upper": 43.75,
+            "bootstrap_samples": 1000
+          },
+          "token_f1": {
+            "confidence_level": 0.95,
+            "lower": 15.62,
+            "upper": 43.75,
+            "bootstrap_samples": 1000
+          },
+          "abstention_rate": {
+            "confidence_level": 0.95,
+            "lower": 0.0,
+            "upper": 0.0,
+            "bootstrap_samples": 1000
+          }
+        },
+        "by_modality": {
+          "chest_xray": {
+            "total": 32,
+            "exact_match": 28.12,
+            "token_f1": 28.12,
+            "abstention_rate": 0.0,
+            "closed_accuracy": 28.12
+          }
+        },
+        "by_category": {
+          "pneumonia_classification": {
+            "total": 32,
+            "exact_match": 28.12,
+            "token_f1": 28.12,
+            "abstention_rate": 0.0,
+            "closed_accuracy": 28.12
+          }
+        },
+        "by_answer_type": {
+          "multiple_choice": {
+            "total": 32,
+            "exact_match": 28.12,
+            "token_f1": 28.12,
+            "abstention_rate": 0.0,
+            "closed_accuracy": 28.12
+          }
+        },
+        "by_language": {
+          "en": {
+            "total": 32,
+            "exact_match": 28.12,
+            "token_f1": 28.12,
+            "abstention_rate": 0.0,
+            "closed_accuracy": 28.12
+          }
+        }
+      },
+      "inference": {
+        "sample_count": 32,
+        "mean_duration_ms": 27.75,
+        "max_duration_ms": 637.42,
+        "max_peak_gpu_memory_mb": 588.12,
+        "mean_generated_tokens": null,
+        "min_generated_tokens": null,
+        "max_generated_tokens": null,
+        "model": {
+          "resource": "pubmedclip",
+          "model_id": "/data/user/hd66945/MedUMM-assets/v0.9/pubmedclip",
+          "model_revision": "26c0c67f6da303ad2a38909130bd35744ea93517",
+          "model_family": "hf_contrastive",
+          "device": "cuda:0",
+          "dtype": "float32",
+          "peak_gpu_memory_mb": 588.12,
+          "hostname": "gpu02",
+          "scheduler": {
+            "slurm_job_id": "437260",
+            "slurm_step_id": null
+          },
+          "clinical_use": false
+        }
+      },
+      "audit_status": "passed"
+    }
+  ],
+  "validation_scope": "Two pinned medical model/dataset slices through MedUMM evaluation; not a claim that every catalog entry is runtime validated."
+}

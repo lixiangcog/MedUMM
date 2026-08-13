@@ -54,6 +54,17 @@ def register_builtins() -> None:
                 "research_only": True,
             },
         ),
+        "lingshu_7b": (
+            "medumm.backbones.lingshu",
+            "LingshuAdapter",
+            "Lingshu-7B native medical Qwen2.5-VL adapter",
+            {
+                "architecture": "autoregressive",
+                "tasks": ["understanding"],
+                "default_model": "lingshu-medical-mllm/Lingshu-7B",
+                "research_only": True,
+            },
+        ),
     }
     for name, (module_name, class_name, description, metadata) in models.items():
         if not registry.models.contains(name):

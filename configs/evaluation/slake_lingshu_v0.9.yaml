@@ -1,0 +1,48 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cuda
+  dtype: bfloat16
+evaluation:
+  benchmark: medical_vqa
+  data:
+    adapter: slake
+    normalized_adapter: medical_vqa_jsonl
+    source: jsonl
+    path: ${MEDUMM_SLAKE_MANIFEST}
+    image_root: ${MEDUMM_SLAKE_IMAGE_ROOT}
+    provenance: ${MEDUMM_SLAKE_PROVENANCE}
+    source_revision: a9083ce6c34ac3ffb17671a605962924d8a8f9e9
+    validate_images: true
+    deidentified: true
+  model:
+    backbone: lingshu_7b
+    config:
+      model_path: ${LINGSHU_MODEL_PATH}
+      revision: b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9
+      torch_dtype: bfloat16
+      device_map: auto
+      parameters:
+        max_new_tokens: 32
+        do_sample: false
+    parameters:
+      max_new_tokens: 32
+      do_sample: false
+  output_directory: outputs/evaluation/slake_lingshu_v0.9
+  prompt_template: "{question}\nAnswer concisely."
+  protocol:
+    name: slake_lingshu_acceptance
+    version: "1.0"
+    metric_suite: medical_vqa_core
+    group_by: [modality, category, answer_type, language]
+    bootstrap_samples: 1000
+    confidence_level: 0.95
+    seed: 42
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 4
+  checkpoint:
+    flush_every: 1
+  mode: full
+  batch_size: 1
+  resume: false

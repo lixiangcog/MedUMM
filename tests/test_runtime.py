@@ -1,5 +1,7 @@
 import json
 
+import medumm.core.runtime as runtime_module
+
 from medumm.core.runtime import RuntimeContext, environment_snapshot, write_run_manifest
 from tests.conftest import PROJECT_ROOT
 
@@ -59,3 +61,24 @@ def test_environment_snapshot_accepts_explicit_source_commit(tmp_path, monkeypat
     )
     monkeypatch.setenv("MEDUMM_SOURCE_COMMIT", "release-source-commit")
     assert environment_snapshot(runtime)["git_commit"] == "release-source-commit"
+
+
+def test_environment_snapshot_records_cuda_initialization_failure(tmp_path, monkeypatch):
+    runtime = RuntimeContext.create(
+        command="test",
+        config_path=tmp_path,
+        output_directory=tmp_path / "out",
+    )
+    import torch
+
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 1)
+    monkeypatch.setattr(
+        torch.cuda,
+        "get_device_properties",
+        lambda _index: (_ for _ in ()).throw(RuntimeError("MPS unavailable")),
+    )
+    snapshot = runtime_module.environment_snapshot(runtime)
+    assert snapshot["cuda_available"] is False
+    assert snapshot["gpu_count"] == 0
+    assert "MPS unavailable" in snapshot["cuda_error"]
