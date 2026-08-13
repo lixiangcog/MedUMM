@@ -21,6 +21,10 @@ Use `medumm backends`, `medumm serve`, and `medumm benchmark-inference` to
 inspect, launch, and measure the new paths. Reproducible setup, configs, A800
 Slurm acceptance, metrics, capability boundaries, and validation levels are in
 [docs/inference-optimization-v1.2.md](docs/inference-optimization-v1.2.md).
+The vLLM and SGLang two-A800 paths passed real TP=2 sequential/concurrent
+benchmarks; [the evidence record](docs/results/v1.2-inference-optimization.json)
+keeps the full Emu3.5 weight run explicitly blocked until its pinned assets and
+FlashAttention dependency are available.
 
 ## v1.1: research post-training CLI
 

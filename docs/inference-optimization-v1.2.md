@@ -42,8 +42,9 @@ continuous batching, and parallelism. Inspect the active environment with:
 medumm backends --json
 ```
 
-The capability report declares Emu3.5 CFG only when both vLLM `0.11.0` and the
-patched `vllm.v1.core.sched.batch_scheduler` module are present.
+The capability report declares Emu3.5 CFG only when vLLM `0.11.0`, the patched
+model module, model-registry entry, and `vllm.v1.core.sched.batch_scheduler`
+module are all present.
 
 ## Emu3.5
 
@@ -112,6 +113,30 @@ The sequential/concurrent comparison proves that the request path admits a
 real concurrent workload; it does not promise that every short-prompt workload
 will obtain a speedup. Hardware, prompt lengths, output lengths, cache state,
 and scheduler settings must be retained with any performance claim.
+
+## A800 acceptance result
+
+The two generic serving paths passed on the same pinned Qwen2.5-VL-3B model
+with tensor parallel size 2 and two NVIDIA A800-SXM4-80GB GPUs. Each profile
+completed one warm-up plus 24 measured requests with 24 output tokens per
+request.
+
+| Backend | Slurm job | Sequential | Eight-way concurrent | Ratio |
+|---|---:|---:|---:|---:|
+| vLLM 0.11.0 | 437399 | 7.487907 req/s | 39.173504 req/s | 5.231569x |
+| SGLang 0.5.4.post3 | 437398 | 7.144201 req/s | 41.789132 req/s | 5.849378x |
+
+Both jobs exited `0:0`. Their logs record TP ranks 0 and 1, NCCL initialization,
+and real multi-request decode batches. The compact, reviewable evidence is in
+`docs/results/v1.2-inference-optimization.json`; full server and benchmark logs
+remain under the server run directories recorded there.
+
+Emu3.5 is at a lower validation level. Its immutable upstream checkout and all
+20 official vLLM patches passed inspection, but the server could not retrieve
+the approximately 68 GB image model and 3.6 GB vision-tokenizer weights from
+Hugging Face. FlashAttention 2.8.3 was also not accepted as installed after an
+incomplete source build. Consequently no Emu3.5 image or token-rate claim is
+made in v1.2.
 
 ## Validation levels
 

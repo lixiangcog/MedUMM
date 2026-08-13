@@ -1,0 +1,121 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.2.0",
+  "scope": "optimized inference backends, scheduling, parallelism, and performance evidence",
+  "status": "backend_runtime_passed_emu3_5_runtime_blocked",
+  "clinical_use": false,
+  "local_validation": {
+    "tests_passed": 169,
+    "tests_skipped": 2,
+    "inference_optimization_tests_passed": 19,
+    "python": "3.12.13"
+  },
+  "server_validation": {
+    "host": "dl01.hpcmaster.com",
+    "scheduler": "Slurm",
+    "partition": "A800-N",
+    "node": "gpu02",
+    "python": "3.12.4",
+    "torch": "2.8.0+cu128",
+    "cuda_version": "12.8",
+    "gpus": [
+      "NVIDIA A800-SXM4-80GB",
+      "NVIDIA A800-SXM4-80GB"
+    ],
+    "tested_source_commit": "639d9f841a41cc86c20df84aac6c15c9347a1d68",
+    "model": {
+      "resource": "Qwen2.5-VL-3B-Instruct",
+      "revision": "66285546d2b821cf421d4f5eb2576359d3770cd3",
+      "served_name": "medumm-medical-vlm"
+    },
+    "profiles": {
+      "warmup_iterations": 1,
+      "measured_iterations": 3,
+      "requests_per_iteration": 8,
+      "requests_per_profile": 24,
+      "generated_tokens_per_profile": 576,
+      "sequential_batch_size": 1,
+      "concurrent_batch_size": 8
+    },
+    "vllm": {
+      "status": "passed",
+      "version": "0.11.0",
+      "job_id": 437399,
+      "state": "COMPLETED",
+      "exit_code": "0:0",
+      "elapsed": "00:03:26",
+      "tensor_parallel_size": 2,
+      "parallel_world_size": 2,
+      "sequential_requests_per_second": 7.487907,
+      "concurrent_requests_per_second": 39.173504,
+      "concurrent_throughput_ratio": 5.231569,
+      "sequential_output_tokens_per_second": 179.709769,
+      "concurrent_output_tokens_per_second": 940.164104,
+      "sequential_latency_p50_ms": 132.017,
+      "concurrent_latency_p50_ms": 200.856,
+      "run_directory": "/data/user/hd66945/MedUMM/outputs/inference-optimization/v1.2-vllm-437399"
+    },
+    "sglang": {
+      "status": "passed",
+      "version": "0.5.4.post3",
+      "job_id": 437398,
+      "state": "COMPLETED",
+      "exit_code": "0:0",
+      "elapsed": "00:02:22",
+      "tensor_parallel_size": 2,
+      "parallel_world_size": 2,
+      "sequential_requests_per_second": 7.144201,
+      "concurrent_requests_per_second": 41.789132,
+      "concurrent_throughput_ratio": 5.849378,
+      "sequential_output_tokens_per_second": 171.460822,
+      "concurrent_output_tokens_per_second": 1002.939169,
+      "sequential_latency_p50_ms": 139.911,
+      "concurrent_latency_p50_ms": 188.93,
+      "run_directory": "/data/user/hd66945/MedUMM/outputs/inference-optimization/v1.2-sglang-437398"
+    }
+  },
+  "emu3_5_validation": {
+    "status": "blocked",
+    "highest_completed_level": "patched_runtime_preflight",
+    "source_repository": "https://github.com/baaivision/Emu3.5",
+    "source_revision": "8fcf1da48f9c5252fe0a0b8dc842e07b6efcd745",
+    "model_revision": "b94be7d41ff2b9c971e4e0dd43bcbb5b21c28e6b",
+    "vision_tokenizer_revision": "a5c45bdb8084763048e094ae124778bfeca7d5ee",
+    "vllm": "0.11.0",
+    "transformers": "4.56.1",
+    "official_patches_applied": 20,
+    "patched_model_module_present": true,
+    "patched_model_registry_present": true,
+    "patched_cfg_scheduler_present": true,
+    "flash_attention_2_8_3_installed": false,
+    "model_weights_complete": false,
+    "vision_tokenizer_weights_complete": false,
+    "runtime_generation_completed": false,
+    "blocker": "The compute environment could not retrieve the pinned Hugging Face assets through its configured proxy or direct network path; the FlashAttention source build did not complete and was terminated.",
+    "claim": "No Emu3.5 generation, image quality, or tokens-per-second result is claimed."
+  },
+  "failed_attempts": [
+    {
+      "job_id": 437396,
+      "backend": "vllm",
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "observed_failure": "The generic Qwen HTTP request returned 500 in the Emu3.5-patched vLLM environment.",
+      "resolution": "Separate generic vLLM serving from the Emu3.5-patched runtime and encode text-only OpenAI messages as strings. Job 437399 passed in the isolated unpatched environment."
+    },
+    {
+      "job_id": 437397,
+      "backend": "sglang",
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "observed_failure": "FlashInfer JIT could not find the ninja executable during CUDA graph capture.",
+      "resolution": "Pin ninja and prepend the engine environment bin directory to PATH. Job 437398 passed."
+    }
+  ],
+  "validation_levels": {
+    "interface": "passed",
+    "runtime_preflight": "passed for vLLM and SGLang; partially passed for Emu3.5",
+    "backend_runtime": "passed for vLLM and SGLang on two A800 GPUs",
+    "emu3_5_runtime": "blocked on pinned weights and FlashAttention 2.8.3"
+  }
+}
