@@ -153,3 +153,27 @@ def register_builtins() -> None:
                 "research_only": True,
             },
         )
+    from medumm.post_training.research_routes import ROUTES
+
+    for route in ROUTES.values():
+        if registry.trainers.contains(route.name):
+            continue
+
+        def create_route_trainer(name: str = route.name):
+            from medumm.post_training.research_routes import ResearchRouteTrainer
+
+            return ResearchRouteTrainer(name)
+
+        registry.trainers.register(
+            route.name,
+            create_route_trainer,
+            description=route.summary,
+            metadata={
+                "display_name": route.display_name,
+                "fidelity": route.fidelity,
+                "stages": [stage.name for stage in route.stages],
+                "paper_url": route.paper_url,
+                "code_url": route.code_url,
+                "research_only": True,
+            },
+        )

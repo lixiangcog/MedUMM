@@ -1,0 +1,57 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cuda, dtype: bfloat16}
+post_training:
+  method: irg
+  execution: plan
+  source:
+    repository: https://github.com/Osilly/Interleaving-Reasoning-Generation
+    revision: a4ce0da2833e2d1bf778b40691e5ed5f8329ddef
+    license: VERIFY_AT_PINNED_REVISION
+    code_root: ${IRG_SOURCE_ROOT}
+    strict_git_revision: true
+  data: &medical_data
+    contract_manifest: ${MEDUMM_POST_TRAIN_MANIFEST}
+    provenance: ${MEDUMM_POST_TRAIN_PROVENANCE}
+    license: ${MEDUMM_POST_TRAIN_DATA_LICENSE}
+    deidentified: false
+  launcher: &irg_launcher
+    entrypoint: torchrun
+    cwd: ${IRG_SOURCE_ROOT}/SFT
+    script: train/pretrain_unified_navit.py
+    flag_style: underscore
+    bool_style: value
+  stages:
+    - name: think_generate
+      data: *medical_data
+      launcher:
+        <<: *irg_launcher
+        torchrun: {nnodes: 1, node_rank: 0, nproc_per_node: 4, master_port: 29531}
+        args:
+          dataset_config_file: ${IRG_MEDICAL_STAGE1_DATASET_CONFIG}
+          model_path: ${BAGEL_MODEL_PATH}
+          resume_from: ${BAGEL_MODEL_PATH}
+          checkpoint_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/irg/stage1/checkpoints
+          max_latent_size: 64
+          finetune_from_hf: true
+          resume_model_only: true
+          finetune_from_ema: true
+          lr: 0.00002
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/irg/stage1/checkpoints"}
+    - name: reflect_refine
+      data: *medical_data
+      inputs: {think_generate_checkpoint: "{{stages.think_generate.checkpoint}}"}
+      launcher:
+        <<: *irg_launcher
+        torchrun: {nnodes: 1, node_rank: 0, nproc_per_node: 4, master_port: 29532}
+        args:
+          dataset_config_file: ${IRG_MEDICAL_STAGE2_DATASET_CONFIG}
+          model_path: "{{stages.think_generate.checkpoint}}"
+          resume_from: "{{stages.think_generate.checkpoint}}"
+          checkpoint_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/irg/stage2/checkpoints
+          max_latent_size: 64
+          finetune_from_hf: true
+          resume_model_only: true
+          finetune_from_ema: true
+          lr: 0.00002
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/irg/stage2/checkpoints"}
+  output_directory: ${MEDUMM_POST_TRAIN_OUTPUT}/irg

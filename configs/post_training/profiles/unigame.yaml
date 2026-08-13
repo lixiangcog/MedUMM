@@ -1,0 +1,36 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cuda, dtype: bfloat16}
+post_training:
+  method: unigame
+  execution: plan
+  source:
+    repository: https://github.com/AIFrontierLab/TorchUMM
+    revision: 083395e0ae633d44ec237b2cdff98f2a7de89e5b
+    license: VERIFY_AT_PINNED_REVISION
+    code_root: ${UNIGAME_SOURCE_ROOT}
+    strict_git_revision: true
+  data: &medical_data
+    contract_manifest: ${MEDUMM_POST_TRAIN_MANIFEST}
+    provenance: ${MEDUMM_POST_TRAIN_PROVENANCE}
+    license: ${MEDUMM_POST_TRAIN_DATA_LICENSE}
+    deidentified: false
+  stages:
+    - name: self_adversarial
+      data: *medical_data
+      launcher:
+        entrypoint: callable
+        cwd: ${UNIGAME_SOURCE_ROOT}
+        callable: umm.post_training.unigame.janus_pro.train:run_janus_pro_train
+        env:
+          PYTHONPATH: ${UNIGAME_SOURCE_ROOT}/src
+        args:
+          model_path: ${UNIGAME_MODEL_PATH}
+          dataset_path: ${UNIGAME_MEDICAL_DATASET_PATH}
+          logdir: ${MEDUMM_POST_TRAIN_OUTPUT}/unigame
+          eps_max: 0.02
+          disc_lr: 0.000005
+          gen_lr: 0.01
+          cand_K: 4
+          hard_topk: 2
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unigame/checkpoints"}
+  output_directory: ${MEDUMM_POST_TRAIN_OUTPUT}/unigame

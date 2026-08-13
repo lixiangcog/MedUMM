@@ -92,8 +92,34 @@ def _evaluation_command(arguments: argparse.Namespace) -> int:
 
 def _training_command(arguments: argparse.Namespace) -> int:
     from medumm.api import post_train
+    from medumm.post_training.research_routes import (
+        research_route_catalog,
+        route_template,
+    )
 
-    config = load_config(arguments.config, arguments.overrides)
+    if arguments.list_methods:
+        routes = research_route_catalog()
+        if arguments.json:
+            print(json.dumps(routes, indent=2, ensure_ascii=False))
+        else:
+            for route in routes:
+                stages = " -> ".join(route["stage_order"])
+                print(f"{route['name']}: {route['summary']} [{stages}]")
+        return 0
+    if arguments.template:
+        import yaml
+
+        print(yaml.safe_dump(route_template(arguments.template), sort_keys=False))
+        return 0
+    if not arguments.config:
+        raise ValueError(
+            "post-train requires --config, --list-methods, or --template METHOD."
+        )
+
+    overrides = list(arguments.overrides)
+    if arguments.plan:
+        overrides.append("post_training.execution=plan")
+    config = load_config(arguments.config, overrides)
     block = _block(config, "post_training")
     runtime = RuntimeContext.create(
         command="post_training",
@@ -109,7 +135,10 @@ def _training_command(arguments: argparse.Namespace) -> int:
         status=result.status,
         result=result.to_dict(),
     )
-    print(f"[MedUMM] post-training completed: {result.checkpoint_path}")
+    if result.status == "planned":
+        print(f"[MedUMM] post-training plan written: {result.output_directory}")
+    else:
+        print(f"[MedUMM] post-training completed: {result.checkpoint_path}")
     return 0
 
 
@@ -288,7 +317,7 @@ def _merge_command(arguments: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 1.0.0")
+    parser.add_argument("--version", action="version", version="MedUMM 1.1.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")
@@ -303,8 +332,16 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.set_defaults(handler=_evaluation_command)
 
     train = commands.add_parser("post-train", aliases=["train"], help="Run post-training")
-    train.add_argument("--config", required=True)
+    train.add_argument("--config")
     train.add_argument("--set", dest="overrides", action="append", default=[])
+    train.add_argument(
+        "--plan", action="store_true", help="Validate and write a launch plan without executing"
+    )
+    train.add_argument(
+        "--list-methods", action="store_true", help="List research post-training routes"
+    )
+    train.add_argument("--template", help="Print a plan-only template for one research route")
+    train.add_argument("--json", action="store_true", help="Use JSON for method discovery")
     train.set_defaults(handler=_training_command)
 
     catalog = commands.add_parser("catalog", help="List registered platform components")

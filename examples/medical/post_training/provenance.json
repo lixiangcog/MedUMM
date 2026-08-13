@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "dataset_id": "medumm/research-routes-contract-smoke",
+  "kind": "synthetic_contract_acceptance",
+  "license": "CC0-1.0",
+  "deidentified": true,
+  "contains_patient_data": false,
+  "paper_fidelity_claim": false,
+  "purpose": "Validate CLI routing, stage dependencies, process execution, and artifacts only."
+}

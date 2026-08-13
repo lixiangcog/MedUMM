@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.1.0",
+  "scope": "research post-training CLI contracts and orchestration",
+  "clinical_use": false,
+  "paper_fidelity_claim": false,
+  "routes": [
+    "bagel_sft",
+    "reca",
+    "unicot",
+    "irg",
+    "unigame",
+    "unipath",
+    "latentumm"
+  ],
+  "stage_count": 13,
+  "local_validation": {
+    "tests_passed": 150,
+    "tests_skipped": 2,
+    "route_tests_passed": 35,
+    "python": "3.12.13",
+    "sequential_acceptance": {
+      "status": "passed",
+      "routes_passed": 7,
+      "stages_executed": 13
+    }
+  },
+  "server_validation": {
+    "host": "dl01.hpcmaster.com",
+    "scheduler": "Slurm",
+    "partition": "Intel-8358",
+    "node": "node06",
+    "python": "3.12.4",
+    "torch": "2.8.0+cu126",
+    "cuda_available": false,
+    "successful_job": {
+      "job_id": 437367,
+      "state": "COMPLETED",
+      "exit_code": "0:0",
+      "elapsed": "00:01:19",
+      "route_tests_passed": 35,
+      "method_catalog_count": 7,
+      "stage_catalog_count": 13,
+      "routes_passed": 7,
+      "stages_executed": 13
+    },
+    "failed_attempt": {
+      "job_id": 437345,
+      "state": "FAILED",
+      "exit_code": "1:0",
+      "elapsed": "00:00:04",
+      "cause": "The test fixture assumed the synchronized server snapshot contained .git metadata and called git rev-parse before route execution.",
+      "resolution": "Use the known immutable snapshot id in the fixture while retaining strict Git revision validation in production profiles. Jobs 437346 through 437351 passed as source/runtime isolation, callable-runtime, license, and immutable-revision checks were added."
+    },
+    "sequential_acceptance": {
+      "status": "passed",
+      "summary_path": "/data/user/hd66945/MedUMM/outputs/post_training/v1.1-sequential-437367/summary.json",
+      "duration_seconds": 36.050287,
+      "validation_levels": {
+        "paper_profile_plan": "passed for all seven routes; stage graphs and native launcher contracts only",
+        "contract_execution": "passed for all seven routes and all 13 stages",
+        "paper_runtime": "not run"
+      },
+      "routes": [
+        {
+          "method": "bagel_sft",
+          "status": "passed",
+          "stages_completed": ["joint_sft"]
+        },
+        {
+          "method": "reca",
+          "status": "passed",
+          "stages_completed": ["reconstruction_alignment"]
+        },
+        {
+          "method": "unicot",
+          "status": "passed",
+          "stages_completed": ["hierarchical_cot_sft"]
+        },
+        {
+          "method": "irg",
+          "status": "passed",
+          "stages_completed": ["think_generate", "reflect_refine"],
+          "dependency_checkpoint_consumed": true
+        },
+        {
+          "method": "unigame",
+          "status": "passed",
+          "stages_completed": ["self_adversarial"]
+        },
+        {
+          "method": "unipath",
+          "status": "passed",
+          "stages_completed": [
+            "executor_understanding_text",
+            "executor_understanding_visual",
+            "executor_image_answer_plain",
+            "executor_image_answer_visual",
+            "planner"
+          ],
+          "dependency_checkpoint_consumed": true
+        },
+        {
+          "method": "latentumm",
+          "status": "passed",
+          "stages_completed": ["dual_latent_alignment", "latent_dynamics"],
+          "dependency_checkpoint_consumed": true
+        }
+      ],
+      "data_contract_rows_audited_per_stage": 1,
+      "data_contract_sha256": "64e0d93b80daa96f4dca4ca2eca0e5fb9e69013b44c7c2e890a4870c29544fde"
+    }
+  },
+  "limitations": [
+    "Every route was executed sequentially through the public CLI, but with a dependency-light synthetic worker rather than an official paper runtime.",
+    "No large medical model was trained in this acceptance run.",
+    "No clinical performance or safety claim is made.",
+    "Official profiles stay plan-only and fail closed until pinned source, audited medical data, model assets, and output paths are supplied."
+  ]
+}

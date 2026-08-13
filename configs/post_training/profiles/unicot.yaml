@@ -1,0 +1,40 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cuda, dtype: bfloat16}
+post_training:
+  method: unicot
+  execution: plan
+  source:
+    repository: https://github.com/Fr0zenCrane/UniCoT
+    revision: 2a35249d8adb52f43dc15efa44f54ac6ec945100
+    license: Apache-2.0
+    code_root: ${UNICOT_SOURCE_ROOT}
+    strict_git_revision: true
+  data: &medical_data
+    contract_manifest: ${MEDUMM_POST_TRAIN_MANIFEST}
+    provenance: ${MEDUMM_POST_TRAIN_PROVENANCE}
+    license: ${MEDUMM_POST_TRAIN_DATA_LICENSE}
+    deidentified: false
+  stages:
+    - name: hierarchical_cot_sft
+      data: *medical_data
+      launcher:
+        entrypoint: torchrun
+        cwd: ${UNICOT_SOURCE_ROOT}
+        script: train/pretrain_unified_navit_lora.py
+        flag_style: underscore
+        bool_style: value
+        torchrun: {nnodes: 1, node_rank: 0, nproc_per_node: 4, master_port: 29521}
+        args:
+          dataset_config_file: ${UNICOT_MEDICAL_DATASET_CONFIG}
+          model_path: ${BAGEL_MODEL_PATH}
+          resume_from: ${BAGEL_MODEL_PATH}
+          checkpoint_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/unicot/checkpoints
+          max_latent_size: 64
+          finetune_from_hf: true
+          resume_model_only: true
+          finetune_from_ema: true
+          lora_rank: 256
+          lora_alpha: 512
+          lr: 0.00002
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unicot/checkpoints"}
+  output_directory: ${MEDUMM_POST_TRAIN_OUTPUT}/unicot

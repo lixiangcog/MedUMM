@@ -1,0 +1,49 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cpu
+  dtype: float32
+post_training:
+  method: latentumm
+  execution: launch
+  acceptance_mode: contract_smoke
+  source:
+    repository: https://github.com/lixiangcog/MedUMM
+    revision: d34cd2cce472fd5f2279c471c6a45ac48080b9dc
+    license: Apache-2.0
+    code_root: .
+    strict_git_revision: false
+  data:
+    contract_manifest: examples/medical/post_training/research_routes_contract.jsonl
+    provenance: examples/medical/post_training/provenance.json
+    license: CC0-1.0
+    deidentified: true
+  launcher:
+    entrypoint: python
+    cwd: .
+    module: medumm.post_training.contract_smoke_worker
+    flag_style: underscore
+    bool_style: value
+  stages:
+    - name: dual_latent_alignment
+      launcher:
+        args:
+          method: latentumm
+          stage: dual_latent_alignment
+          checkpoint_path: outputs/post_training/research_routes_contract_smoke/stage1.json
+          steps: 6
+      artifacts:
+        checkpoint_path: outputs/post_training/research_routes_contract_smoke/stage1.json
+    - name: latent_dynamics
+      inputs:
+        dual_latent_alignment_checkpoint: "{{stages.dual_latent_alignment.checkpoint}}"
+      launcher:
+        args:
+          method: latentumm
+          stage: latent_dynamics
+          previous_checkpoint: "{{stages.dual_latent_alignment.checkpoint}}"
+          checkpoint_path: outputs/post_training/research_routes_contract_smoke/stage2.json
+          steps: 6
+      artifacts:
+        checkpoint_path: outputs/post_training/research_routes_contract_smoke/stage2.json
+  output_directory: outputs/post_training/research_routes_contract_smoke

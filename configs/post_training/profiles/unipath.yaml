@@ -1,0 +1,103 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cuda, dtype: bfloat16}
+post_training:
+  method: unipath
+  execution: plan
+  source:
+    repository: https://github.com/AIFrontierLab/TorchUMM
+    revision: 083395e0ae633d44ec237b2cdff98f2a7de89e5b
+    license: VERIFY_AT_PINNED_REVISION
+    code_root: ${UNIPATH_SOURCE_ROOT}
+    strict_git_revision: true
+  data: &medical_data
+    contract_manifest: ${MEDUMM_POST_TRAIN_MANIFEST}
+    provenance: ${MEDUMM_POST_TRAIN_PROVENANCE}
+    license: ${MEDUMM_POST_TRAIN_DATA_LICENSE}
+    deidentified: false
+  launcher: &executor
+    entrypoint: torchrun
+    cwd: ${UNIPATH_SOURCE_ROOT}
+    module: umm.post_training.unipath.image_aware_train
+    flag_style: hyphen
+    bool_style: flag
+    compact_list_args: [target_modules]
+  stages:
+    - name: executor_understanding_text
+      data: *medical_data
+      launcher:
+        <<: *executor
+        torchrun: {nnodes: 1, node_rank: 0, nproc_per_node: 4, master_port: 29541}
+        args:
+          model_path: ${BAGEL_MODEL_PATH}
+          train_jsonl: ${UNIPATH_MEDICAL_UNDERSTANDING_TEXT}
+          output_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/unipath/understanding_text
+          stage: imitation
+          visual_loss_weight: 0.0
+          lora_r: 16
+          lora_alpha: 32
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unipath/understanding_text/adapter_imitation_best"}
+    - name: executor_understanding_visual
+      data: *medical_data
+      inputs: {executor_understanding_text_checkpoint: "{{stages.executor_understanding_text.checkpoint}}"}
+      launcher:
+        <<: *executor
+        torchrun: {nnodes: 1, node_rank: 0, nproc_per_node: 4, master_port: 29542}
+        args:
+          model_path: ${BAGEL_MODEL_PATH}
+          train_jsonl: ${UNIPATH_MEDICAL_UNDERSTANDING_VISUAL}
+          output_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/unipath/understanding_visual
+          stage: imitation
+          visual_loss_weight: 0.2
+          resume_adapter_path: "{{stages.executor_understanding_text.checkpoint}}"
+          lora_r: 16
+          lora_alpha: 32
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unipath/understanding_visual/adapter_imitation_best"}
+    - name: executor_image_answer_plain
+      data: *medical_data
+      inputs: {executor_understanding_visual_checkpoint: "{{stages.executor_understanding_visual.checkpoint}}"}
+      launcher:
+        <<: *executor
+        entrypoint: python
+        module: umm.post_training.unipath.native_answer_train
+        args:
+          model_path: ${BAGEL_MODEL_PATH}
+          train_jsonl: ${UNIPATH_MEDICAL_IMAGE_ANSWER_PLAIN}
+          output_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/unipath/image_answer_plain
+          resume_adapter_path: "{{stages.executor_understanding_visual.checkpoint}}"
+          ce_weight: 2.0
+          mse_weight: 0.3
+          visual_summary_weight: 0.0
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unipath/image_answer_plain/adapter_imitation_best"}
+    - name: executor_image_answer_visual
+      data: *medical_data
+      inputs: {executor_image_answer_plain_checkpoint: "{{stages.executor_image_answer_plain.checkpoint}}"}
+      launcher:
+        <<: *executor
+        entrypoint: python
+        module: umm.post_training.unipath.native_answer_train
+        args:
+          model_path: ${BAGEL_MODEL_PATH}
+          train_jsonl: ${UNIPATH_MEDICAL_IMAGE_ANSWER_VISUAL}
+          output_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/unipath/image_answer_visual
+          resume_adapter_path: "{{stages.executor_image_answer_plain.checkpoint}}"
+          ce_weight: 2.0
+          mse_weight: 0.3
+          visual_summary_weight: 0.05
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unipath/image_answer_visual/adapter_imitation_best"}
+    - name: planner
+      data: *medical_data
+      inputs: {executor_image_answer_visual_checkpoint: "{{stages.executor_image_answer_visual.checkpoint}}"}
+      launcher:
+        entrypoint: python
+        cwd: ${UNIPATH_SOURCE_ROOT}
+        module: umm.post_training.unipath.planner.train
+        flag_style: hyphen
+        bool_style: flag
+        args:
+          features_pt: ${UNIPATH_MEDICAL_PLANNER_FEATURES}
+          output_dir: ${MEDUMM_POST_TRAIN_OUTPUT}/unipath/planner
+          executor_checkpoint: "{{stages.executor_image_answer_visual.checkpoint}}"
+          planner_type: mlp
+          hidden_dim: 768
+      artifacts: {checkpoint_path: "${MEDUMM_POST_TRAIN_OUTPUT}/unipath/planner/planner.pt"}
+  output_directory: ${MEDUMM_POST_TRAIN_OUTPUT}/unipath

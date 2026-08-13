@@ -7,6 +7,23 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.1: research post-training CLI
+
+Version 1.1 adds one validated CLI contract for BAGEL SFT, RecA, Uni-CoT, IRG,
+UniGame, UniPath, and LatentUMM. Each method retains its real stage graph, data
+requirements, official/reference runtime boundary, and checkpoint dependencies.
+The CLI now supports route discovery, safe templates, preflight-only planning,
+pinned-source checks, medical data governance gates, child-process failure
+propagation, and checkpoint/log collection.
+
+The dependency-light acceptance suite invokes the public CLI independently for
+all seven methods (13 ordered stages), while explicitly making no paper-
+fidelity claim. Every method receives its own preflight, CLI log, stage logs,
+checkpoints, and result. See
+[docs/post-training-routes-v1.1.md](docs/post-training-routes-v1.1.md). The
+successful Slurm evidence and the first failed attempt are both preserved in
+[docs/results/v1.1-post-training-routes.json](docs/results/v1.1-post-training-routes.json).
+
 ## v1.0: medical-specific evaluation contracts
 
 Version 1.0 adds independently registered, versioned metric suites for
@@ -201,6 +218,9 @@ medumm resources validate
 medumm resources template vqa_rad --kind dataset
 
 # Post-train, infer, and evaluate
+medumm post-train --list-methods
+medumm post-train --template reca > reca-medical.yaml
+medumm post-train --config reca-medical.yaml --plan
 medumm post-train --config configs/post_training/medical_sft_smoke.yaml
 medumm infer --config configs/inference/medical_reference_workflow.yaml
 medumm evaluate --config configs/evaluation/medical_vqa_linear_smoke.yaml
