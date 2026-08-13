@@ -130,6 +130,8 @@ class MedicalVQABenchmark(BenchmarkAdapter):
                     "task": "understanding",
                     "prompt": prompt_template.format(question=sample.question),
                     "images": sample.image_paths,
+                    "volumes": sample.volume_paths,
+                    "videos": sample.video_paths,
                     "parameters": dict(model_config.get("parameters", {})),
                 },
                 content={

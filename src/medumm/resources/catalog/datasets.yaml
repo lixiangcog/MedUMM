@@ -1,0 +1,647 @@
+catalog_version: "0.8.0"
+datasets:
+  - name: vqa_rad
+    display_name: VQA-RAD
+    artifact_id: flaviagiammarino/vqa-rad
+    source: https://osf.io/89kps/
+    paper: https://www.nature.com/articles/sdata2018251
+    official_code:
+    license: CC0-1.0
+    access: open
+    adapter_family: vqa
+    status: runtime_validated
+    benchmark: medical_vqa
+    tasks: [open_vqa, closed_vqa]
+    modalities: [text, image]
+    medical_domains: [radiology]
+    languages: [en]
+    metrics: [exact_match, token_f1, closed_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Existing MedUMM real-model and task-aware acceptance dataset."]
+
+  - name: slake
+    display_name: SLAKE
+    artifact_id: BoKelvin/SLAKE
+    source: https://huggingface.co/datasets/Voxel51/SLAKE
+    paper: https://arxiv.org/abs/2102.09542
+    official_code:
+    license: CC-BY-4.0
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [open_vqa, closed_vqa, knowledge_vqa]
+    modalities: [text, image]
+    medical_domains: [radiology]
+    languages: [en, zh]
+    metrics: [exact_match, token_f1, closed_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Bilingual radiology VQA with semantic labels and medical knowledge."]
+
+  - name: path_vqa
+    display_name: PathVQA
+    artifact_id: flaviagiammarino/path-vqa
+    source: https://huggingface.co/datasets/flaviagiammarino/path-vqa
+    paper: https://arxiv.org/abs/2003.10286
+    official_code:
+    license: source-specific terms
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [open_vqa, closed_vqa]
+    modalities: [text, image]
+    medical_domains: [pathology]
+    languages: [en]
+    metrics: [exact_match, token_f1, closed_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Pathology textbook-image visual question answering."]
+
+  - name: pmc_vqa
+    display_name: PMC-VQA
+    artifact_id: RadGenome/PMC-VQA
+    source: https://huggingface.co/datasets/RadGenome/PMC-VQA
+    paper: https://arxiv.org/abs/2305.10415
+    official_code: https://github.com/xiaoman-zhang/PMC-VQA
+    license: source-specific terms
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [multiple_choice_vqa]
+    modalities: [text, image]
+    medical_domains: [general_medicine, radiology, pathology]
+    languages: [en]
+    metrics: [choice_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Large multiple-choice VQA benchmark derived from biomedical articles."]
+
+  - name: omnimed_vqa
+    display_name: OmniMedVQA
+    artifact_id: foreverbeliever/OmniMedVQA
+    source: https://huggingface.co/datasets/foreverbeliever/OmniMedVQA
+    paper: https://arxiv.org/abs/2402.09181
+    official_code: https://github.com/OpenGVLab/Multi-Modality-Arena
+    license: source-specific per constituent dataset
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [multiple_choice_vqa]
+    modalities: [text, image]
+    medical_domains: [radiology, pathology, ophthalmology, dermatology, microscopy]
+    languages: [en]
+    metrics: [choice_accuracy, subgroup_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Multi-source benchmark; users must also follow each constituent dataset license."]
+
+  - name: medxpertqa_mm
+    display_name: MedXpertQA-MM
+    artifact_id: TsinghuaC3I/MedXpertQA
+    source: https://huggingface.co/datasets/TsinghuaC3I/MedXpertQA
+    paper: https://arxiv.org/abs/2501.18362
+    official_code: https://github.com/TsinghuaC3I/MedXpertQA
+    license: source-specific terms
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [expert_reasoning, multiple_choice_vqa]
+    modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology]
+    languages: [en]
+    metrics: [choice_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Expert-level medical reasoning subset with multimodal cases."]
+
+  - name: mmmu_medical
+    display_name: MMMU Health and Medicine
+    artifact_id: MMMU/MMMU
+    source: https://huggingface.co/datasets/MMMU/MMMU
+    paper: https://arxiv.org/abs/2311.16502
+    official_code: https://github.com/MMMU-Benchmark/MMMU
+    license: source-specific per image
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [expert_reasoning, multiple_choice_vqa]
+    modalities: [text, image, image_set]
+    medical_domains: [basic_medical_science, clinical_medicine, pharmacy, public_health, diagnostics]
+    languages: [en]
+    metrics: [choice_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Only health-and-medicine subject configurations are in scope."]
+
+  - name: gmai_mmbench
+    display_name: GMAI-MMBench
+    artifact_id: General-Medical-AI/GMAI-MMBench
+    source: https://huggingface.co/datasets/General-Medical-AI/GMAI-MMBench
+    paper: https://arxiv.org/abs/2408.03361
+    official_code: https://github.com/uni-medical/GMAI-MMBench
+    license: source-specific terms
+    access: open
+    adapter_family: medical_task
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [perception, knowledge, reasoning, clinical_decision]
+    modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
+    languages: [en]
+    metrics: [choice_accuracy, task_accuracy, subgroup_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Comprehensive general medical AI benchmark with multi-level taxonomy."]
+
+  - name: path_mmu
+    display_name: PathMMU
+    artifact_id: JZPeterPan/PathMMU
+    source: https://huggingface.co/datasets/JZPeterPan/PathMMU
+    paper: https://arxiv.org/abs/2406.13816
+    official_code: https://github.com/PathMMU-Benchmark/PathMMU
+    license: source-specific terms
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [pathology_reasoning, multiple_choice_vqa]
+    modalities: [text, image]
+    medical_domains: [pathology]
+    languages: [en]
+    metrics: [choice_accuracy, subgroup_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Expert-level pathology multimodal reasoning benchmark."]
+
+  - name: asclepius
+    display_name: Asclepius
+    artifact_id: Starmpcc/Asclepius
+    source: https://huggingface.co/datasets/Starmpcc/Asclepius
+    paper: https://arxiv.org/abs/2402.11217
+    official_code: https://github.com/starmpcc/Asclepius
+    license: source-specific terms
+    access: open
+    adapter_family: medical_task
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [diagnosis, multimodal_clinical_reasoning]
+    modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology]
+    languages: [en]
+    metrics: [clinical_concept_f1, answer_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Multimodal clinical conversation and diagnosis evaluation."]
+
+  - name: mediconfusion
+    display_name: MediConfusion
+    artifact_id: MShahabSepehri/MediConfusion
+    source: https://github.com/MShahabSepehri/MediConfusion
+    paper: https://arxiv.org/abs/2401.12522
+    official_code: https://github.com/MShahabSepehri/MediConfusion
+    license: source-specific terms
+    access: open
+    adapter_family: vqa
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [diagnosis, ambiguity_robustness]
+    modalities: [text, image]
+    medical_domains: [general_medicine, radiology, pathology, dermatology]
+    languages: [en]
+    metrics: [choice_accuracy, confusion_gap]
+    revision_policy: require_immutable_revision
+    notes: ["Audits clinically confusable visual concepts and answer robustness."]
+
+  - name: cares
+    display_name: CARES
+    artifact_id: richard-peng-xia/CARES
+    source: https://github.com/richard-peng-xia/CARES
+    paper: https://arxiv.org/abs/2406.06007
+    official_code: https://github.com/richard-peng-xia/CARES
+    license: source-specific terms
+    access: open
+    adapter_family: medical_task
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [fairness, privacy, safety, robustness, hallucination]
+    modalities: [text, image]
+    medical_domains: [general_medicine, radiology, pathology, dermatology]
+    languages: [en]
+    metrics: [accuracy, refusal_rate, calibration, subgroup_gap]
+    revision_policy: require_immutable_revision
+    notes: ["Trustworthiness benchmark; metrics require task-specific protocol configuration."]
+
+  - name: medblink
+    display_name: MedBLINK
+    artifact_id: MahtabBg/MedBLINK
+    source: https://huggingface.co/datasets/MahtabBg/MedBLINK
+    paper: https://arxiv.org/abs/2508.02951
+    official_code: https://medblink-benchmark.github.io
+    license: source-specific terms
+    access: open
+    adapter_family: medical_task
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [basic_visual_perception, anatomy_orientation, morphology, depth_estimation]
+    modalities: [text, image]
+    medical_domains: [general_medicine, radiology, pathology]
+    languages: [en]
+    metrics: [choice_accuracy, task_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Eight clinically meaningful basic-perception tasks over multiple modalities."]
+
+  - name: gemex
+    display_name: GEMeX
+    artifact_id: BoKelvin/GEMeX
+    source: https://huggingface.co/datasets/BoKelvin/GEMeX
+    paper: https://arxiv.org/abs/2411.16778
+    official_code: https://github.com/Awenbocc/GEMeX-Project
+    license: source-specific terms
+    access: open
+    adapter_family: report_generation
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [report_generation, grounding, explanation]
+    modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [clinical_concept_f1, grounding_score, text_overlap]
+    revision_policy: require_immutable_revision
+    notes: ["Chest X-ray explanation and grounding benchmark."]
+
+  - name: drvdb
+    display_name: DrVD-Bench
+    artifact_id: jerry1565/DrVD-Bench
+    source: https://huggingface.co/datasets/jerry1565/DrVD-Bench
+    paper: https://arxiv.org/abs/2505.24173
+    official_code: https://github.com/Jerry-Boss/DrVD-Bench
+    license: source-specific terms
+    access: open
+    adapter_family: medical_task
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [visual_diagnosis, reasoning]
+    modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
+    languages: [en]
+    metrics: [answer_accuracy, clinical_concept_f1]
+    revision_policy: require_immutable_revision
+    notes: ["Diagnostic visual reasoning benchmark."]
+
+  - name: mm_skin
+    display_name: MM-Skin
+    artifact_id: ZwQ803/MM-Skin
+    source: https://github.com/ZwQ803/MM-Skin
+    paper: https://arxiv.org/abs/2505.06152
+    official_code: https://github.com/ZwQ803/MM-Skin
+    license: source-specific terms
+    access: open
+    adapter_family: medical_task
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [diagnosis, lesion_description, patient_communication]
+    modalities: [text, image]
+    medical_domains: [dermatology]
+    languages: [en, zh]
+    metrics: [diagnosis_accuracy, clinical_concept_f1]
+    revision_policy: require_immutable_revision
+    notes: ["Dermatology multimodal evaluation subset; training assets remain separately licensed."]
+
+  - name: surgmllmbench
+    display_name: SurgMLLMBench
+    artifact_id: KIST-HARILAB/SurgMLLMBench
+    source: https://huggingface.co/datasets/KIST-HARILAB/SurgMLLMBench
+    paper: https://arxiv.org/abs/2511.21339
+    official_code: https://huggingface.co/datasets/KIST-HARILAB/SurgMLLMBench
+    license: source-specific per constituent surgical dataset
+    access: open
+    adapter_family: video
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [surgical_phase, action_recognition, procedure_reasoning]
+    modalities: [text, image, video]
+    medical_domains: [surgery]
+    languages: [en]
+    metrics: [accuracy, temporal_reasoning_accuracy]
+    revision_policy: require_immutable_revision
+    notes: ["Unified surgical VQA, workflow, action, and segmentation annotations; constituent assets retain source terms."]
+
+  - name: medvision
+    display_name: MedVision
+    artifact_id: FreedomIntelligence/MedVision
+    source: https://huggingface.co/datasets/FreedomIntelligence/MedVision
+    paper: https://arxiv.org/abs/2411.14125
+    official_code: https://github.com/YongchengYAO/MedVision
+    license: source-specific per constituent dataset
+    access: open
+    adapter_family: detection_measurement
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [detection, localization, quantitative_measurement]
+    modalities: [text, image]
+    medical_domains: [radiology, pathology, ophthalmology, dermatology]
+    languages: [en]
+    metrics: [iou, point_distance, normalized_measurement_error]
+    revision_policy: require_immutable_revision
+    notes: ["Quantitative medical vision benchmark assembled from multiple source datasets."]
+
+  - name: iu_xray
+    display_name: IU X-Ray / Open-I
+    artifact_id: NLM-OpenI/IU-Xray
+    source: https://openi.nlm.nih.gov/faq
+    paper: https://aclanthology.org/W16-2913
+    official_code: https://github.com/ysmiura/ifcc
+    license: Open-I source terms
+    access: open
+    adapter_family: report_generation
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [report_generation, image_text_retrieval]
+    modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [clinical_concept_f1, text_overlap, retrieval_recall]
+    revision_policy: record_source_snapshot
+    notes: ["Use official Open-I access and preserve report/image linkage."]
+
+  - name: mimic_cxr
+    display_name: MIMIC-CXR-JPG
+    artifact_id: physionet/mimic-cxr-jpg/2.1.0
+    source: https://physionet.org/content/mimic-cxr-jpg/2.1.0
+    paper: https://www.nature.com/articles/s41597-019-0322-0
+    official_code: https://github.com/MIT-LCP/mimic-cxr
+    license: PhysioNet Credentialed Health Data License
+    access: credentialed
+    adapter_family: report_generation
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [report_generation, finding_classification, image_text_retrieval]
+    modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [clinical_concept_f1, text_overlap, retrieval_recall]
+    revision_policy: fixed_release
+    notes: ["Requires credentialing, CITI training, and a signed data-use agreement."]
+
+  - name: chexpert_plus
+    display_name: CheXpert Plus
+    artifact_id: StanfordAIMI/chexpert-plus
+    source: https://aimi.stanford.edu/datasets/chexpert-plus
+    paper: https://arxiv.org/abs/2405.19538
+    official_code: https://github.com/Stanford-AIMI/chexpert-plus
+    license: Stanford CheXpert Plus research agreement
+    access: credentialed
+    adapter_family: report_generation
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [report_generation, finding_classification, report_summarization]
+    modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [clinical_concept_f1, text_overlap, classification_auc]
+    revision_policy: fixed_release
+    notes: ["Access and redistribution are governed by Stanford's dataset agreement."]
+
+  - name: fairvlmed10k
+    display_name: FairVLMed10k
+    artifact_id: luoyan407/FairCLIP
+    source: https://github.com/luoyan407/FairCLIP
+    paper: https://arxiv.org/abs/2403.19949
+    official_code: https://github.com/luoyan407/FairCLIP
+    license: source-specific terms
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [disease_classification, fairness]
+    modalities: [text, image]
+    medical_domains: [ophthalmology]
+    languages: [en]
+    metrics: [auc, accuracy, demographic_parity_gap, equalized_odds_gap]
+    revision_policy: require_immutable_revision
+    notes: ["Fairness-sensitive retinal imaging benchmark."]
+
+  - name: ham10000
+    display_name: HAM10000
+    artifact_id: Harvard-Dataverse/HAM10000
+    source: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/DBW86T
+    paper: https://www.nature.com/articles/sdata2018161
+    official_code: https://github.com/ptschandl/HAM10000_dataset
+    license: CC-BY-NC-4.0
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [skin_lesion_classification]
+    modalities: [text, image]
+    medical_domains: [dermatology]
+    languages: [en]
+    metrics: [balanced_accuracy, macro_f1, auc]
+    revision_policy: fixed_release
+    notes: ["Non-commercial terms apply; labels are normalized as text candidates."]
+
+  - name: papila
+    display_name: PAPILA
+    artifact_id: figshare/PAPILA
+    source: https://figshare.com/articles/dataset/PAPILA/14798004
+    paper: https://www.nature.com/articles/s41597-022-01388-1
+    official_code:
+    license: CC-BY-4.0
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [glaucoma_classification, optic_disc_localization]
+    modalities: [text, image, image_set]
+    medical_domains: [ophthalmology]
+    languages: [en]
+    metrics: [balanced_accuracy, macro_f1, iou]
+    revision_policy: fixed_release
+    notes: ["Paired fundus images and clinical labels for glaucoma assessment."]
+
+  - name: gf3300
+    display_name: GF3300
+    artifact_id: MedVLMBench/GF3300
+    source: https://github.com/ubc-tea/MedVLMBench
+    paper: https://arxiv.org/abs/2506.17337
+    official_code: https://github.com/ubc-tea/MedVLMBench
+    license: source-specific terms
+    access: request
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_vqa
+    tasks: [glaucoma_classification]
+    modalities: [text, image]
+    medical_domains: [ophthalmology]
+    languages: [en]
+    metrics: [balanced_accuracy, macro_f1]
+    revision_policy: require_immutable_revision
+    notes: ["Prepared through MedVLMBench; obtain underlying images under their source terms."]
+
+  - name: chexpert
+    display_name: CheXpert
+    artifact_id: StanfordMLGroup/chexpert
+    source: https://stanfordmlgroup.github.io/competitions/chexpert
+    paper: https://arxiv.org/abs/1901.07031
+    official_code: https://github.com/stanfordmlgroup/chexpert-labeler
+    license: Stanford CheXpert research agreement
+    access: credentialed
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [multilabel_finding_classification]
+    modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [auc, macro_f1]
+    revision_policy: fixed_release
+    notes: ["Credentialed download; uncertainty-label policy must be declared in evaluation protocol."]
+
+  - name: chestxray14
+    display_name: NIH ChestX-ray14
+    artifact_id: NIHCC/ChestXray-NIHCC
+    source: https://nihcc.app.box.com/v/ChestXray-NIHCC/folder/36938765345
+    paper: https://arxiv.org/abs/1705.02315
+    official_code:
+    license: NIH dataset terms
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [multilabel_finding_classification]
+    modalities: [text, image]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [auc, macro_f1]
+    revision_policy: fixed_release
+    notes: ["Weak report-derived labels; report label uncertainty and known dataset limitations."]
+
+  - name: camelyon17
+    display_name: Camelyon17-WILDS
+    artifact_id: WILDS/camelyon17
+    source: https://wilds.stanford.edu/datasets/#camelyon17
+    paper: https://arxiv.org/abs/2012.07421
+    official_code: https://github.com/p-lambda/wilds
+    license: CC0-1.0 image source with WILDS packaging terms
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [tumor_patch_classification, domain_shift]
+    modalities: [text, image]
+    medical_domains: [pathology]
+    languages: [en]
+    metrics: [accuracy, worst_group_accuracy]
+    revision_policy: fixed_release
+    notes: ["Hospital-held-out pathology domain-shift benchmark."]
+
+  - name: pneumoniamnist
+    display_name: PneumoniaMNIST
+    artifact_id: MedMNIST/PneumoniaMNIST-v2
+    source: https://medmnist.com
+    paper: https://www.nature.com/articles/s41597-022-01721-8
+    official_code: https://github.com/MedMNIST/MedMNIST
+    license: CC-BY-4.0
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [pneumonia_classification]
+    modalities: [text, image]
+    medical_domains: [radiology, chest_xray]
+    languages: [en]
+    metrics: [auc, accuracy]
+    revision_policy: fixed_release
+    notes: ["Use MedMNIST v2 official train/validation/test split."]
+
+  - name: breastmnist
+    display_name: BreastMNIST
+    artifact_id: MedMNIST/BreastMNIST-v2
+    source: https://medmnist.com
+    paper: https://www.nature.com/articles/s41597-022-01721-8
+    official_code: https://github.com/MedMNIST/MedMNIST
+    license: CC-BY-4.0
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [breast_ultrasound_classification]
+    modalities: [text, image]
+    medical_domains: [radiology, ultrasound]
+    languages: [en]
+    metrics: [auc, accuracy]
+    revision_policy: fixed_release
+    notes: ["Use MedMNIST v2 official train/validation/test split."]
+
+  - name: dermamnist
+    display_name: DermaMNIST
+    artifact_id: MedMNIST/DermaMNIST-v2
+    source: https://medmnist.com
+    paper: https://www.nature.com/articles/s41597-022-01721-8
+    official_code: https://github.com/MedMNIST/MedMNIST
+    license: CC-BY-4.0
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [skin_lesion_classification]
+    modalities: [text, image]
+    medical_domains: [dermatology]
+    languages: [en]
+    metrics: [auc, accuracy, macro_f1]
+    revision_policy: fixed_release
+    notes: ["Use MedMNIST v2 official train/validation/test split."]
+
+  - name: octmnist
+    display_name: OCTMNIST
+    artifact_id: MedMNIST/OCTMNIST-v2
+    source: https://medmnist.com
+    paper: https://www.nature.com/articles/s41597-022-01721-8
+    official_code: https://github.com/MedMNIST/MedMNIST
+    license: CC-BY-4.0
+    access: open
+    adapter_family: classification
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [retinal_oct_classification]
+    modalities: [text, image]
+    medical_domains: [ophthalmology, oct]
+    languages: [en]
+    metrics: [auc, accuracy, macro_f1]
+    revision_policy: fixed_release
+    notes: ["Use MedMNIST v2 official train/validation/test split."]
+
+  - name: organmnist3d
+    display_name: OrganMNIST3D
+    artifact_id: MedMNIST/OrganMNIST3D-v2
+    source: https://medmnist.com
+    paper: https://www.nature.com/articles/s41597-022-01721-8
+    official_code: https://github.com/MedMNIST/MedMNIST
+    license: CC-BY-4.0
+    access: open
+    adapter_family: volume
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [3d_organ_classification]
+    modalities: [text, volume]
+    medical_domains: [radiology, 3d_imaging]
+    languages: [en]
+    metrics: [auc, accuracy, macro_f1]
+    revision_policy: fixed_release
+    notes: ["3D volume benchmark using the MedMNIST v2 official split."]
+
+  - name: abdomenatlas3
+    display_name: AbdomenAtlas 3.0
+    artifact_id: AbdomenAtlas/AbdomenAtlas3.0
+    source: https://huggingface.co/datasets/AbdomenAtlas/AbdomenAtlas3.0
+    paper: https://arxiv.org/abs/2407.16697
+    official_code: https://github.com/MrGiovanni/AbdomenAtlas
+    license: CC-BY-NC-SA-4.0
+    access: open
+    adapter_family: volume
+    status: interface_validated
+    benchmark: medical_tasks
+    tasks: [3d_segmentation, lesion_detection, anatomy_localization]
+    modalities: [text, volume]
+    medical_domains: [radiology, ct, 3d_imaging]
+    languages: [en]
+    metrics: [dice, surface_distance, lesion_recall]
+    revision_policy: fixed_release
+    notes: ["Non-commercial 3D CT resource; large download and dedicated segmentation metrics required."]

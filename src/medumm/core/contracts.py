@@ -21,6 +21,7 @@ class Modality(str, Enum):
 
 class ArchitectureFamily(str, Enum):
     AUTOREGRESSIVE = "autoregressive"
+    CONTRASTIVE = "contrastive"
     HYBRID = "autoregressive_diffusion_hybrid"
     DIFFUSION = "diffusion"
     REFERENCE = "reference"

@@ -40,10 +40,15 @@ class TaskPipeline(ABC):
                 raise ValueError(f"{self.adapter.name!r} does not accept text input.")
             accepts_images = bool(
                 self.adapter.capabilities.input_modalities
-                & {Modality.IMAGE, Modality.IMAGE_SET, Modality.VOLUME}
+                & {Modality.IMAGE, Modality.IMAGE_SET}
             )
             if request.images and not accepts_images:
                 raise ValueError(f"{self.adapter.name!r} does not accept image input.")
+            if (
+                request.volumes
+                and Modality.VOLUME not in self.adapter.capabilities.input_modalities
+            ):
+                raise ValueError(f"{self.adapter.name!r} does not accept volume input.")
             if (
                 request.videos
                 and Modality.VIDEO not in self.adapter.capabilities.input_modalities

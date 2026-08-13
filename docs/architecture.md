@@ -50,7 +50,7 @@ The following names and serialized fields form the v0.2 compatibility surface:
 - `registry.models`, `registry.datasets`, `registry.benchmarks`, and
   `registry.trainers`, plus the generic `register/create/names` facade;
 - `InferencePipeline`, `EvaluationRunner`, `PostTrainingRunner`, and the
-  high-level `infer/evaluate/post_train/catalog` functions;
+  high-level `infer/evaluate/post_train/catalog/resources` functions;
 - configuration and result schema version `1.0`.
 
 A minor release may add optional fields or enum values. Removing a field,
@@ -126,6 +126,15 @@ Datasets normalize external records into benchmark-owned sample objects and
 provide stable fingerprints. Benchmarks own request construction, parsing,
 scoring, and aggregation. Trainers own model-specific optimization but return
 the common `TrainingResult`.
+
+Starting in v0.8, typed model and dataset resource specs generate individual
+registry entries without duplicating executor code. Resource specs include the
+official artifact identity, paper/code URLs, license, access level, immutable
+revision policy, tasks, modalities, domains, adapter family, and validation
+status. Shared executor families handle compatible Transformers and OpenCLIP
+releases; incompatible upstream dependency stacks connect through a standard
+`ModelAdapter` bridge. Dataset resource adapters enforce a local normalized
+manifest, source revision, and access confirmation before evaluation.
 
 ## Layer 4: infrastructure
 

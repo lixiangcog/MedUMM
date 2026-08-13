@@ -88,6 +88,22 @@ incomplete evaluation or data-governance path.
 - [ ] real multimodal MMedPO-style lesion-grounded preference run
 - [ ] multi-node FSDP/DeepSpeed alignment recipe
 
+## v0.8 — medical resource scale catalog
+
+- [x] 32 individually registered medical multimodal model resources
+- [x] 34 individually registered medical evaluation dataset resources
+- [x] typed source, paper/code, license, access, revision, task, modality, and domain specs
+- [x] Transformers image-text, Transformers contrastive, OpenCLIP, and official-runtime families
+- [x] normalized source-pinned dataset adapter with gated/credentialed access checks
+- [x] resource list/show/template/validate CLI and Python catalog API
+- [x] explicit catalog/interface/runtime validation levels
+- [x] 188/188 populated source, paper, and official-code URLs reachable at release audit
+- [x] catalog-alias LLaVA-Med + official OSF VQA-RAD A800 acceptance job and evidence
+- [ ] runtime validation for one Qwen-derived medical generative VLM
+- [ ] runtime validation for one medical contrastive encoder
+- [ ] raw-source exporters and acceptance runs for SLAKE and PathVQA
+- [ ] source-specific report, grounding, measurement, fairness, 3D, and video scorers
+
 ## Scale target
 
 After the platform and governance gates hold across the first real slices,

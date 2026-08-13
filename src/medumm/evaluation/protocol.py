@@ -129,10 +129,22 @@ def audit_medical_vqa_dataset(
         )
 
     image_paths = [path for sample in samples for path in sample.image_paths]
+    volume_paths = [path for sample in samples for path in sample.volume_paths]
+    video_paths = [path for sample in samples for path in sample.video_paths]
     missing_images = sorted(path for path in image_paths if not Path(path).is_file())
-    samples_without_images = [sample.sample_id for sample in samples if not sample.image_paths]
+    missing_volumes = sorted(path for path in volume_paths if not Path(path).is_file())
+    missing_videos = sorted(path for path in video_paths if not Path(path).is_file())
+    samples_without_images = [
+        sample.sample_id
+        for sample in samples
+        if not (sample.image_paths or sample.volume_paths or sample.video_paths)
+    ]
     if missing_images:
         errors.append(f"{len(missing_images)} referenced images are missing.")
+    if missing_volumes:
+        errors.append(f"{len(missing_volumes)} referenced volumes are missing.")
+    if missing_videos:
+        errors.append(f"{len(missing_videos)} referenced videos are missing.")
     if samples_without_images:
         errors.append(f"{len(samples_without_images)} medical VQA samples have no image.")
     unknown_fields = {
@@ -162,8 +174,14 @@ def audit_medical_vqa_dataset(
         "reference_count": sum(len(sample.answers) for sample in samples),
         "image_count": len(image_paths),
         "unique_image_count": len(set(image_paths)),
+        "volume_count": len(volume_paths),
+        "unique_volume_count": len(set(volume_paths)),
+        "video_count": len(video_paths),
+        "unique_video_count": len(set(video_paths)),
         "samples_without_images": samples_without_images,
         "missing_images": missing_images,
+        "missing_volumes": missing_volumes,
+        "missing_videos": missing_videos,
         "question_answer_format": dict(sorted(answer_counts.items())),
         "distributions": {
             field: _distribution(samples, field) for field in DEFAULT_GROUPS

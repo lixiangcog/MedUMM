@@ -33,6 +33,7 @@ def infer(
                 "medical_task",
                 "prompt",
                 "images",
+                "volumes",
                 "videos",
                 "parameters",
                 "metadata",
@@ -111,3 +112,11 @@ def catalog() -> dict[str, list[dict[str, Any]]]:
 
     register_builtins()
     return registry.catalog()
+
+
+def resources(kind: str = "all") -> dict[str, Any]:
+    """Return the audited medical model and dataset resource specifications."""
+
+    from medumm.resources import resource_catalog
+
+    return resource_catalog(kind)

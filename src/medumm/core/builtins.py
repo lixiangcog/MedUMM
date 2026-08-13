@@ -13,6 +13,13 @@ def _factory(module_name: str, class_name: str):
     return create
 
 
+def _resource_factory(module_name: str, factory_name: str, resource_name: str):
+    def create() -> Any:
+        return getattr(import_module(module_name), factory_name)(resource_name)()
+
+    return create
+
+
 def register_builtins() -> None:
     models = {
         "medical_reference": (
@@ -57,6 +64,22 @@ def register_builtins() -> None:
                 metadata=metadata,
             )
 
+    from medumm.resources import DATASET_RESOURCES, MODEL_RESOURCES
+
+    for spec in MODEL_RESOURCES.values():
+        if not registry.models.contains(spec.name):
+            registry.models.register(
+                spec.name,
+                _resource_factory(
+                    "medumm.backbones.catalog_model", "catalog_model_factory", spec.name
+                ),
+                description=f"{spec.display_name} medical resource adapter",
+                metadata={
+                    **spec.to_dict(),
+                    "catalog_version": MODEL_RESOURCES.version,
+                },
+            )
+
     if not registry.datasets.contains("medical_vqa_jsonl"):
         registry.datasets.register(
             "medical_vqa_jsonl",
@@ -69,6 +92,19 @@ def register_builtins() -> None:
             _factory("medumm.medical.dataset", "MedicalTasksDatasetAdapter"),
             description="Task-aware medical perception, reasoning, and generation dataset",
         )
+    for spec in DATASET_RESOURCES.values():
+        if not registry.datasets.contains(spec.name):
+            registry.datasets.register(
+                spec.name,
+                _resource_factory(
+                    "medumm.medical.catalog_dataset", "catalog_dataset_factory", spec.name
+                ),
+                description=f"{spec.display_name} normalized medical dataset adapter",
+                metadata={
+                    **spec.to_dict(),
+                    "catalog_version": DATASET_RESOURCES.version,
+                },
+            )
     if not registry.benchmarks.contains("medical_vqa"):
         registry.benchmarks.register(
             "medical_vqa",

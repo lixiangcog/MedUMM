@@ -7,6 +7,22 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v0.8: scale catalog for medical models and evaluation data
+
+Version 0.8 registers 32 medical multimodal model releases and 34 evaluation
+datasets behind the stable platform interfaces. Every resource has an audited
+primary source, paper/code links, license and access level, revision policy,
+medical domains, tasks/modalities, an executor or normalized-dataset family,
+and an explicit validation status.
+
+The catalog distinguishes `interface_validated` from `runtime_validated`.
+Only real pinned server runs receive the latter; a model name or downloadable
+weight is not counted as execution evidence. Gated and credentialed resources
+require explicit acceptance/access flags, and remote runs require immutable
+revisions. See [docs/resource-catalog-v0.8.md](docs/resource-catalog-v0.8.md).
+The v0.8 A800 acceptance evidence is stored in
+[docs/results/v0.8-scale-catalog.json](docs/results/v0.8-scale-catalog.json).
+
 ## v0.7: advanced post-training and research methods
 
 Version 0.7 adds a real parameter-efficient alignment layer rather than another
@@ -144,6 +160,12 @@ bash scripts/setup_llava_med_env.sh
 # Inspect plugins without loading model weights
 medumm catalog
 
+# Inspect and validate the medical resource catalog
+medumm resources list --kind model
+medumm resources list --kind dataset
+medumm resources validate
+medumm resources template vqa_rad --kind dataset
+
 # Post-train, infer, and evaluate
 medumm post-train --config configs/post_training/medical_sft_smoke.yaml
 medumm infer --config configs/inference/medical_reference_workflow.yaml
@@ -264,6 +286,11 @@ medumm merge-predictions \
 | Benchmark | `cross_task` | Compose registered benchmark runs |
 | Trainer | `medical_sft` | Dependency-light supervised training smoke path |
 | Trainer | `medical_alignment` | LoRA/QLoRA SFT and offline medical preference optimization |
+
+The v0.8 resource catalog adds 32 individually registered model resources and
+34 individually registered dataset resources. Run `medumm resources list` for
+the current machine-readable inventory instead of maintaining a duplicate
+table here.
 
 The reference and linear plugins prove platform behavior; they are not medical
 foundation models. Model and dataset expansion follows

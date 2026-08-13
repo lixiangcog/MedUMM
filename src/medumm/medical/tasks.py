@@ -46,6 +46,8 @@ class MedicalTaskSample:
     prompt: str
     image_paths: list[str]
     references: list[str]
+    volume_paths: list[str] = field(default_factory=list)
+    video_paths: list[str] = field(default_factory=list)
     specialty: str = "unknown"
     modality: str = "unknown"
     anatomy: str = "unknown"
@@ -92,6 +94,29 @@ def _choices(value: Any) -> dict[str, str]:
     return {}
 
 
+def _media_paths(
+    record: dict[str, Any],
+    *,
+    plural: str,
+    singular: str,
+    media_root: Path,
+    sample_id: str,
+    validate: bool,
+) -> list[str]:
+    raw_values = record.get(plural, record.get(singular, []))
+    values = raw_values if isinstance(raw_values, list) else [raw_values]
+    paths: list[str] = []
+    for value in values:
+        if value in {None, ""}:
+            continue
+        path = Path(str(value)).expanduser()
+        path = path if path.is_absolute() else media_root / path
+        if validate and not path.is_file():
+            raise FileNotFoundError(f"Media for sample {sample_id} not found: {path}")
+        paths.append(str(path))
+    return paths
+
+
 def load_medical_tasks(
     config: dict[str, Any],
     *,
@@ -131,17 +156,31 @@ def load_medical_tasks(
         )
         if not references:
             raise ValueError(f"Sample {sample_id} has no reference output.")
-        raw_images = record.get("images", record.get("image", []))
-        raw_images = raw_images if isinstance(raw_images, list) else [raw_images]
-        paths: list[str] = []
-        for value in raw_images:
-            if value in {None, ""}:
-                continue
-            path = Path(str(value)).expanduser()
-            path = path if path.is_absolute() else image_root / path
-            if bool(config.get("validate_images", True)) and not path.is_file():
-                raise FileNotFoundError(f"Image for sample {sample_id} not found: {path}")
-            paths.append(str(path))
+        validate_media = bool(config.get("validate_images", config.get("validate_media", True)))
+        paths = _media_paths(
+            record,
+            plural="images",
+            singular="image",
+            media_root=image_root,
+            sample_id=sample_id,
+            validate=validate_media,
+        )
+        volume_paths = _media_paths(
+            record,
+            plural="volumes",
+            singular="volume",
+            media_root=image_root,
+            sample_id=sample_id,
+            validate=validate_media,
+        )
+        video_paths = _media_paths(
+            record,
+            plural="videos",
+            singular="video",
+            media_root=image_root,
+            sample_id=sample_id,
+            validate=validate_media,
+        )
         raw_provenance = record.get("reference_provenance", {})
         raw_metadata = record.get("metadata", {})
         samples.append(
@@ -151,6 +190,8 @@ def load_medical_tasks(
                 prompt=prompt,
                 image_paths=paths,
                 references=references,
+                volume_paths=volume_paths,
+                video_paths=video_paths,
                 specialty=str(record.get("specialty", "unknown")),
                 modality=str(record.get("modality", "unknown")),
                 anatomy=str(record.get("anatomy", "unknown")),

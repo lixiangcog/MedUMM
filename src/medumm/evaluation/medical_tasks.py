@@ -171,6 +171,8 @@ class MedicalTasksBenchmark(BenchmarkAdapter):
                         prompt=sample.prompt
                     ),
                     "images": sample.image_paths,
+                    "volumes": sample.volume_paths,
+                    "videos": sample.video_paths,
                     "parameters": dict(model_config.get("parameters", {})),
                     "metadata": {
                         "medical_task": sample.task.value,

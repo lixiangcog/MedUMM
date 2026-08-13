@@ -18,6 +18,7 @@ class InferenceRequest:
     model: str | None = None
     prompt: str | None = None
     images: list[str] = field(default_factory=list)
+    volumes: list[str] = field(default_factory=list)
     videos: list[str] = field(default_factory=list)
     parameters: dict[str, Any] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -30,6 +31,7 @@ class InferenceRequest:
         self.request_id = str(self.request_id).strip()
         self.model = str(self.model).strip().lower() if self.model else None
         self.images = [str(Path(item).expanduser()) for item in self.images]
+        self.volumes = [str(Path(item).expanduser()) for item in self.volumes]
         self.videos = [str(Path(item).expanduser()) for item in self.videos]
         self.validate()
 
@@ -45,6 +47,7 @@ class InferenceRequest:
             model=value.get("model", value.get("backbone")),
             prompt=value.get("prompt"),
             images=list(value.get("images", [])),
+            volumes=list(value.get("volumes", [])),
             videos=list(value.get("videos", [])),
             parameters=dict(value.get("parameters", value.get("params", {}))),
             metadata=dict(value.get("metadata", {})),
@@ -63,6 +66,7 @@ class InferenceRequest:
         return replace(
             self,
             images=[resolve(path) for path in self.images],
+            volumes=[resolve(path) for path in self.volumes],
             videos=[resolve(path) for path in self.videos],
             output_path=resolve(self.output_path) if self.output_path else None,
             parameters=dict(self.parameters),
@@ -74,8 +78,10 @@ class InferenceRequest:
             raise ValueError("request_id cannot be empty.")
         if self.task is TaskType.GENERATION and not self.prompt:
             raise ValueError("Generation requires a prompt.")
-        if self.task is TaskType.UNDERSTANDING and not (self.prompt or self.images):
-            raise ValueError("Understanding requires a prompt or an image.")
+        if self.task is TaskType.UNDERSTANDING and not (
+            self.prompt or self.images or self.volumes or self.videos
+        ):
+            raise ValueError("Understanding requires text, image, volume, or video input.")
         if self.task is TaskType.EDITING and not (self.prompt and self.images):
             raise ValueError("Editing requires a prompt and at least one image.")
         if self.medical_task is not None and self.task is not TaskType.UNDERSTANDING:
@@ -91,6 +97,7 @@ class InferenceRequest:
             "medical_task": self.medical_task.value if self.medical_task else None,
             "prompt": self.prompt,
             "images": self.images,
+            "volumes": self.volumes,
             "videos": self.videos,
             "parameters": self.parameters,
             "metadata": self.metadata,

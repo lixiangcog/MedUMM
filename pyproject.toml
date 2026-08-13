@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "medumm"
-version = "0.7.0"
+version = "0.8.0"
 description = "Unified medical multimodal model toolkit"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -20,6 +20,7 @@ medical = [
   "torch>=2.2",
   "transformers>=4.50",
 ]
+contrastive = ["open-clip-torch>=2.30", "torch>=2.2", "transformers>=4.50"]
 alignment = [
   "accelerate>=1.0,<2",
   "peft>=0.14,<1",
@@ -44,6 +45,9 @@ medumm = "medumm.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"medumm.resources" = ["catalog/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -12,6 +12,8 @@ class MedicalVQASample:
     question: str
     image_paths: list[str]
     answers: list[str]
+    volume_paths: list[str] = field(default_factory=list)
+    video_paths: list[str] = field(default_factory=list)
     choices: dict[str, str] = field(default_factory=dict)
     answer_type: str = "open"
     modality: str = "unknown"
@@ -37,6 +39,29 @@ def _choices(value: Any) -> dict[str, str]:
     if isinstance(value, list):
         return {chr(65 + index): str(option) for index, option in enumerate(value)}
     return {}
+
+
+def _media_paths(
+    record: dict[str, Any],
+    *,
+    plural: str,
+    singular: str,
+    media_root: Path,
+    sample_id: str,
+    validate: bool,
+) -> list[str]:
+    raw_values = record.get(plural, record.get(singular, []))
+    values = raw_values if isinstance(raw_values, list) else [raw_values]
+    paths: list[str] = []
+    for value in values:
+        if value in {None, ""}:
+            continue
+        path = Path(str(value)).expanduser()
+        path = path if path.is_absolute() else media_root / path
+        if validate and not path.is_file():
+            raise FileNotFoundError(f"Media for sample {sample_id} not found: {path}")
+        paths.append(str(path))
+    return paths
 
 
 def load_medical_vqa(
@@ -71,23 +96,39 @@ def load_medical_vqa(
         answers = [str(answer).strip() for answer in answers if answer is not None]
         if not answers:
             raise ValueError(f"Sample {sample_id} has no reference answer.")
-        raw_images = record.get("images", record.get("image", []))
-        raw_images = raw_images if isinstance(raw_images, list) else [raw_images]
-        paths = []
-        for value in raw_images:
-            if value in {None, ""}:
-                continue
-            path = Path(str(value)).expanduser()
-            path = path if path.is_absolute() else image_root / path
-            if bool(config.get("validate_images", True)) and not path.is_file():
-                raise FileNotFoundError(f"Image for sample {sample_id} not found: {path}")
-            paths.append(str(path))
+        validate_media = bool(config.get("validate_images", config.get("validate_media", True)))
+        paths = _media_paths(
+            record,
+            plural="images",
+            singular="image",
+            media_root=image_root,
+            sample_id=sample_id,
+            validate=validate_media,
+        )
+        volume_paths = _media_paths(
+            record,
+            plural="volumes",
+            singular="volume",
+            media_root=image_root,
+            sample_id=sample_id,
+            validate=validate_media,
+        )
+        video_paths = _media_paths(
+            record,
+            plural="videos",
+            singular="video",
+            media_root=image_root,
+            sample_id=sample_id,
+            validate=validate_media,
+        )
         samples.append(
             MedicalVQASample(
                 sample_id=sample_id,
                 question=question,
                 image_paths=paths,
                 answers=answers,
+                volume_paths=volume_paths,
+                video_paths=video_paths,
                 choices=_choices(record.get("choices")),
                 answer_type=str(record.get("answer_type", "open")),
                 modality=str(record.get("modality", "unknown")),

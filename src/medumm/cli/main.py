@@ -126,6 +126,146 @@ def _catalog_command(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _resource_template(kind: str, name: str) -> dict[str, Any]:
+    from medumm.resources import DATASET_RESOURCES, MODEL_RESOURCES, AccessLevel
+
+    if kind == "model":
+        spec = MODEL_RESOURCES.get(name)
+        model_config: dict[str, Any] = {
+            "model_path": spec.artifact_id,
+            "revision": "REPLACE_WITH_IMMUTABLE_COMMIT",
+            "parameters": {"max_new_tokens": 128, "do_sample": False},
+        }
+        if spec.access is not AccessLevel.OPEN:
+            model_config["accept_terms"] = False
+        if (
+            spec.runtime_family.value == "official_bridge"
+            and spec.name != "llava_med_v1_5_7b"
+        ):
+            model_config["bridge"] = "REPLACE_WITH_MODULE:ModelAdapterClass"
+        if spec.runtime_family.value == "open_clip":
+            model_config.update(
+                {
+                    "open_clip_model_name": "REPLACE_WITH_ARCHITECTURE",
+                    "checkpoint_path": "REPLACE_WITH_LOCAL_PINNED_CHECKPOINT",
+                }
+            )
+        return {
+            "schema_version": "1.0",
+            "runtime": {"seed": 42, "device": "auto"},
+            "inference": {
+                "backbone": spec.name,
+                "config": model_config,
+                "requests": [
+                    {
+                        "request_id": "case-001",
+                        "task": "understanding",
+                        "prompt": "Describe the medically relevant visual findings.",
+                        "images": ["REPLACE_WITH_LOCAL_IMAGE"],
+                    }
+                ],
+            },
+        }
+    spec = DATASET_RESOURCES.get(name)
+    data: dict[str, Any] = {
+        "adapter": spec.name,
+        "path": "REPLACE_WITH_NORMALIZED_MANIFEST.jsonl",
+        "image_root": "REPLACE_WITH_LOCAL_IMAGE_ROOT",
+        "source_revision": "REPLACE_WITH_IMMUTABLE_COMMIT_OR_RELEASE",
+    }
+    if spec.access is not AccessLevel.OPEN:
+        data["access_confirmed"] = False
+    return {
+        "schema_version": "1.0",
+        "runtime": {"seed": 42, "device": "auto"},
+        "evaluation": {
+            "benchmark": spec.benchmark,
+            "data": data,
+            "model": {"backbone": "medical_reference", "parameters": {}},
+            "mode": "audit",
+            "output_directory": f"outputs/evaluation/{spec.name}",
+        },
+    }
+
+
+def _resources_command(arguments: argparse.Namespace) -> int:
+    from medumm.resources import DATASET_RESOURCES, MODEL_RESOURCES, resource_catalog
+
+    if arguments.resource_action == "show":
+        catalogs = (
+            [MODEL_RESOURCES]
+            if arguments.kind == "model"
+            else [DATASET_RESOURCES]
+            if arguments.kind == "dataset"
+            else [MODEL_RESOURCES, DATASET_RESOURCES]
+        )
+        matches = []
+        for catalog_value in catalogs:
+            if arguments.name in catalog_value.names():
+                matches.append(catalog_value.get(arguments.name).to_dict())
+        if not matches:
+            raise KeyError(f"Unknown medical resource: {arguments.name!r}.")
+        print(json.dumps(matches[0], indent=2, ensure_ascii=False))
+        return 0
+    if arguments.resource_action == "template":
+        import yaml
+
+        template = _resource_template(arguments.kind, arguments.name)
+        print(yaml.safe_dump(template, sort_keys=False, allow_unicode=True), end="")
+        return 0
+    if arguments.resource_action == "validate":
+        register_builtins()
+        missing_models = sorted(set(MODEL_RESOURCES.names()) - set(registry.models.names()))
+        missing_datasets = sorted(set(DATASET_RESOURCES.names()) - set(registry.datasets.names()))
+        result = {
+            "catalog_version": MODEL_RESOURCES.version,
+            "models": len(MODEL_RESOURCES.values()),
+            "datasets": len(DATASET_RESOURCES.values()),
+            "registered_models": len(MODEL_RESOURCES.values()) - len(missing_models),
+            "registered_datasets": len(DATASET_RESOURCES.values()) - len(missing_datasets),
+            "missing_models": missing_models,
+            "missing_datasets": missing_datasets,
+            "valid": not missing_models and not missing_datasets,
+            "validation_scope": "schema_and_interface_registration",
+        }
+        if arguments.online:
+            from medumm.resources import verify_sources
+
+            online = verify_sources(
+                kind=arguments.kind,
+                fields=arguments.fields or ("source",),
+                timeout=arguments.timeout,
+                workers=arguments.workers,
+            )
+            result["online"] = online
+            result["valid"] = bool(result["valid"] and online["valid"])
+        if arguments.output:
+            write_json(Path(arguments.output), result)
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0 if result["valid"] else 1
+    values = resource_catalog(arguments.kind)
+    if arguments.json:
+        print(json.dumps(values, indent=2, ensure_ascii=False))
+        return 0
+    resources = values.get("resources") if arguments.kind != "all" else None
+    if resources is None:
+        for kind in ("models", "datasets"):
+            print(f"{kind} ({len(values[kind])}):")
+            for item in values[kind]:
+                print(
+                    f"  {item['name']}: {item['display_name']} "
+                    f"[{item['status']}; {item['access']}]"
+                )
+    else:
+        print(f"{arguments.kind}s ({len(resources)}):")
+        for item in resources:
+            print(
+                f"  {item['name']}: {item['display_name']} "
+                f"[{item['status']}; {item['access']}]"
+            )
+    return 0
+
+
 def _report_command(arguments: argparse.Namespace) -> int:
     from medumm.reporting import build_leaderboard
 
@@ -148,7 +288,7 @@ def _merge_command(arguments: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 0.7.0")
+    parser.add_argument("--version", action="version", version="MedUMM 0.8.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")
@@ -170,6 +310,41 @@ def build_parser() -> argparse.ArgumentParser:
     catalog = commands.add_parser("catalog", help="List registered platform components")
     catalog.add_argument("--json", action="store_true")
     catalog.set_defaults(handler=_catalog_command)
+
+    resources = commands.add_parser(
+        "resources", help="Inspect audited medical model and dataset resources"
+    )
+    resource_commands = resources.add_subparsers(dest="resource_action", required=True)
+    resource_list = resource_commands.add_parser("list", help="List resource specs")
+    resource_list.add_argument("--kind", choices=["all", "model", "dataset"], default="all")
+    resource_list.add_argument("--json", action="store_true")
+    resource_list.set_defaults(handler=_resources_command)
+    resource_show = resource_commands.add_parser("show", help="Show one resource spec")
+    resource_show.add_argument("name")
+    resource_show.add_argument("--kind", choices=["all", "model", "dataset"], default="all")
+    resource_show.set_defaults(handler=_resources_command)
+    resource_template = resource_commands.add_parser(
+        "template", help="Print a minimal pinned config for one resource"
+    )
+    resource_template.add_argument("name")
+    resource_template.add_argument("--kind", choices=["model", "dataset"], required=True)
+    resource_template.set_defaults(handler=_resources_command)
+    resource_validate = resource_commands.add_parser(
+        "validate", help="Validate catalog schemas and plugin registrations"
+    )
+    resource_validate.add_argument("--kind", choices=["all", "model", "dataset"], default="all")
+    resource_validate.add_argument("--online", action="store_true")
+    resource_validate.add_argument(
+        "--field",
+        dest="fields",
+        action="append",
+        choices=["source", "paper", "official_code"],
+        default=[],
+    )
+    resource_validate.add_argument("--timeout", type=float, default=10.0)
+    resource_validate.add_argument("--workers", type=int, default=8)
+    resource_validate.add_argument("--output")
+    resource_validate.set_defaults(handler=_resources_command)
 
     report = commands.add_parser("report", help="Build a leaderboard from score files")
     report.add_argument("--scores", nargs="+", required=True)

@@ -1,0 +1,609 @@
+catalog_version: "0.8.0"
+models:
+  - name: medgemma_1_5_4b_it
+    display_name: MedGemma 1.5 4B IT
+    artifact_id: google/medgemma-1.5-4b-it
+    source: https://huggingface.co/google/medgemma-1.5-4b-it
+    paper: https://arxiv.org/abs/2507.05201
+    official_code: https://github.com/google-health/medgemma
+    license: Health AI Developer Foundations terms
+    access: gated
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set, volume]
+    medical_domains: [radiology, pathology, dermatology, ophthalmology]
+    parameters_b: 4
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Existing MedUMM native adapter; gated terms must be accepted upstream. No committed GPU evidence yet for this exact release."]
+
+  - name: medgemma_1_27b_it
+    display_name: MedGemma 27B IT
+    artifact_id: google/medgemma-27b-it
+    source: https://huggingface.co/google/medgemma-27b-it
+    paper: https://arxiv.org/abs/2507.05201
+    official_code: https://github.com/google-health/medgemma
+    license: Health AI Developer Foundations terms
+    access: gated
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [radiology, pathology, dermatology, ophthalmology]
+    parameters_b: 27
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Large MedGemma release; runtime validation requires gated weights and multiple GPUs."]
+
+  - name: llava_med_v1_5_7b
+    display_name: LLaVA-Med v1.5 7B
+    artifact_id: microsoft/llava-med-v1.5-mistral-7b
+    source: https://huggingface.co/microsoft/llava-med-v1.5-mistral-7b
+    paper: https://arxiv.org/abs/2306.00890
+    official_code: https://github.com/microsoft/LLaVA-Med
+    license: research-use source terms
+    access: open
+    runtime_family: official_bridge
+    status: runtime_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: 7
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Existing MedUMM native adapter uses the official LLaVA-Med implementation."]
+
+  - name: med_flamingo_9b
+    display_name: Med-Flamingo 9B
+    artifact_id: med-flamingo/med-flamingo
+    source: https://huggingface.co/med-flamingo/med-flamingo
+    paper: https://arxiv.org/abs/2307.15189
+    official_code: https://github.com/snap-stanford/med-flamingo
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: 9
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Uses the upstream OpenFlamingo-compatible runtime bridge."]
+
+  - name: radfm_14b
+    display_name: RadFM 14B
+    artifact_id: chaoyi-wu/RadFM
+    source: https://huggingface.co/chaoyi-wu/RadFM
+    paper: https://arxiv.org/abs/2308.02463
+    official_code: https://github.com/chaoyi-wu/RadFM
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set, volume]
+    medical_domains: [radiology, 3d_imaging]
+    parameters_b: 14
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["3D inputs are represented as ordered image sets at the MedUMM boundary."]
+
+  - name: chexagent_8b
+    display_name: CheXagent 8B
+    artifact_id: StanfordAIMI/CheXagent-8b
+    source: https://huggingface.co/StanfordAIMI/CheXagent-8b
+    paper: https://arxiv.org/abs/2401.12208
+    official_code: https://github.com/Stanford-AIMI/CheXagent
+    license: research-only source terms
+    access: gated
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    parameters_b: 8
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Research-only terms; not enabled for clinical use."]
+
+  - name: maira_2
+    display_name: MAIRA-2
+    artifact_id: microsoft/maira-2
+    source: https://huggingface.co/microsoft/maira-2
+    paper: https://arxiv.org/abs/2406.04449
+    official_code:
+    license: Microsoft research license
+    access: gated
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [radiology, chest_xray]
+    parameters_b: 7
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Supports findings generation and grounded reporting through text output."]
+
+  - name: xraygpt_7b
+    display_name: XrayGPT 7B
+    artifact_id: mbzuai-oryx/XrayGPT
+    source: https://huggingface.co/mbzuai-oryx/XrayGPT
+    paper: https://arxiv.org/abs/2306.07971
+    official_code: https://github.com/mbzuai-oryx/XrayGPT
+    license: source-specific research terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [radiology, chest_xray]
+    parameters_b: 7
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Official MiniGPT-style runtime is connected through the bridge interface."]
+
+  - name: huatuogpt_vision_7b
+    display_name: HuatuoGPT-Vision 7B
+    artifact_id: FreedomIntelligence/HuatuoGPT-Vision-7B
+    source: https://huggingface.co/FreedomIntelligence/HuatuoGPT-Vision-7B
+    paper: https://arxiv.org/abs/2411.00088
+    official_code: https://github.com/FreedomIntelligence/HuatuoGPT-Vision
+    license: source-specific terms
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, dermatology]
+    parameters_b: 7
+    languages: [en, zh]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Bilingual medical image understanding release."]
+
+  - name: huatuogpt_vision_34b
+    display_name: HuatuoGPT-Vision 34B
+    artifact_id: FreedomIntelligence/HuatuoGPT-Vision-34B
+    source: https://huggingface.co/FreedomIntelligence/HuatuoGPT-Vision-34B
+    paper: https://arxiv.org/abs/2411.00088
+    official_code: https://github.com/FreedomIntelligence/HuatuoGPT-Vision
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, dermatology]
+    parameters_b: 34
+    languages: [en, zh]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Large bilingual release; multi-GPU runtime expected."]
+
+  - name: lingshu_7b
+    display_name: Lingshu 7B
+    artifact_id: lingshu-medical-mllm/Lingshu-7B
+    source: https://huggingface.co/lingshu-medical-mllm/Lingshu-7B
+    paper: https://arxiv.org/abs/2506.07044
+    official_code:
+    license: source-specific terms
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
+    parameters_b: 7
+    languages: [en, zh]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["General medical image understanding across multiple specialties."]
+
+  - name: lingshu_32b
+    display_name: Lingshu 32B
+    artifact_id: lingshu-medical-mllm/Lingshu-32B
+    source: https://huggingface.co/lingshu-medical-mllm/Lingshu-32B
+    paper: https://arxiv.org/abs/2506.07044
+    official_code:
+    license: source-specific terms
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
+    parameters_b: 32
+    languages: [en, zh]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Large Lingshu release; multi-GPU runtime expected."]
+
+  - name: lingshu_i_8b
+    display_name: Lingshu-I 8B
+    artifact_id: lingshu-medical-mllm/Lingshu-I-8B
+    source: https://huggingface.co/lingshu-medical-mllm/Lingshu-I-8B
+    paper: https://arxiv.org/abs/2506.07044
+    official_code:
+    license: source-specific terms
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
+    parameters_b: 8
+    languages: [en, zh]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Instruction-tuned Lingshu release."]
+
+  - name: vila_m3_3b
+    display_name: VILA-M3 3B
+    artifact_id: Vision-CAIR/VILA-M3-3B
+    source: https://huggingface.co/Vision-CAIR/VILA-M3-3B
+    paper: https://arxiv.org/abs/2411.12915
+    official_code: https://github.com/Efficient-Large-Model/VILA
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set, video]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: 3
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Medical multi-task VILA derivative with image and video inputs."]
+
+  - name: bimedix2_8b
+    display_name: BiMediX2 8B
+    artifact_id: MBZUAI/BiMediX2-8B
+    source: https://huggingface.co/MBZUAI/BiMediX2-8B
+    paper: https://arxiv.org/abs/2412.07769
+    official_code: https://github.com/mbzuai-oryx/BiMediX2
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, dermatology]
+    parameters_b: 8
+    languages: [en, ar]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Bilingual English-Arabic medical multimodal model."]
+
+  - name: healthgpt_m3
+    display_name: HealthGPT-M3
+    artifact_id: lintw/HealthGPT-M3
+    source: https://huggingface.co/lintw/HealthGPT-M3
+    paper: https://arxiv.org/abs/2506.12862
+    official_code: https://github.com/DCDmllm/HealthGPT
+    license: source-specific terms
+    access: gated
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: 8
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Gated release; source terms must be reviewed before use."]
+
+  - name: biomedgpt_10b
+    display_name: BioMedGPT 10B
+    artifact_id: PharMolix/BioMedGPT-10B
+    source: https://huggingface.co/PharMolix/BioMedGPT-10B
+    paper: https://arxiv.org/abs/2308.09442
+    official_code: https://github.com/PharMolix/OpenBioMed
+    license: CC-BY-NC-4.0 with healthcare-decision and commercial-use restrictions
+    access: gated
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [general_medicine, biomedicine]
+    parameters_b: 10
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Biomedical foundation model integration uses the official OpenBioMed runtime."]
+
+  - name: meddr
+    display_name: MedDr
+    artifact_id: OpenGVLab/MedDr
+    source: https://huggingface.co/OpenGVLab/MedDr
+    paper: https://arxiv.org/abs/2404.14983
+    official_code: https://github.com/sunanhe/MedDr
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: null
+    languages: [en, zh]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Connected through its official model runtime."]
+
+  - name: m3d_lamed_4b
+    display_name: M3D-LaMed 4B
+    artifact_id: GoodBaiBai88/M3D-LaMed-Phi-3-4B
+    source: https://huggingface.co/GoodBaiBai88/M3D-LaMed-Phi-3-4B
+    paper: https://arxiv.org/abs/2404.00578
+    official_code: https://github.com/BAAI-DCAI/M3D
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, volume]
+    medical_domains: [radiology, 3d_imaging]
+    parameters_b: 4
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Native 3D medical image-language adapter."]
+
+  - name: medmo_4b
+    display_name: MedMO 4B
+    artifact_id: MBZUAI/MedMO-4B
+    source: https://huggingface.co/MBZUAI/MedMO-4B
+    paper: https://arxiv.org/abs/2506.23552
+    official_code: https://github.com/genmilab/MedMO
+    license: Apache-2.0
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set, volume]
+    medical_domains: [radiology, pathology, ophthalmology, dermatology]
+    parameters_b: 4
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Unified medical reasoning, report generation, and grounding through text output."]
+
+  - name: medmo_8b
+    display_name: MedMO 8B
+    artifact_id: MBZUAI/MedMO-8B
+    source: https://huggingface.co/MBZUAI/MedMO-8B
+    paper: https://arxiv.org/abs/2506.23552
+    official_code: https://github.com/genmilab/MedMO
+    license: Apache-2.0
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set, volume]
+    medical_domains: [radiology, pathology, ophthalmology, dermatology]
+    parameters_b: 8
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Larger MedMO release with multi-image and 3D case support."]
+
+  - name: fleming_vl_8b
+    display_name: Fleming-VL 8B
+    artifact_id: UbiquantAI/Fleming-VL-8B
+    source: https://huggingface.co/UbiquantAI/Fleming-VL-8B
+    paper: https://arxiv.org/abs/2508.02502
+    official_code:
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set, volume, video]
+    medical_domains: [radiology, pathology, ophthalmology, dermatology, surgery]
+    parameters_b: 8
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Supports 2D, 3D, longitudinal, and medical video inputs."]
+
+  - name: unimed_vl
+    display_name: UniMed-VL
+    artifact_id: General-Medical-AI/UniMedVL
+    source: https://huggingface.co/General-Medical-AI/UniMedVL
+    paper: https://arxiv.org/abs/2403.03160
+    official_code: https://github.com/mbzuai-oryx/UniMed-CLIP
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Unified medical vision-language model release."]
+
+  - name: gmai_vl
+    display_name: GMAI-VL
+    artifact_id: General-Medical-AI/GMAI_VL_Weight
+    source: https://huggingface.co/General-Medical-AI/GMAI_VL_Weight
+    paper: https://arxiv.org/abs/2411.14522
+    official_code: https://github.com/uni-medical/GMAI-VL
+    license: source-specific terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image, image_set]
+    medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["General medical AI vision-language model evaluated on seven medical benchmarks."]
+
+  - name: medvlm_r1
+    display_name: MedVLM-R1
+    artifact_id: JZPeterPan/MedVLM-R1
+    source: https://huggingface.co/JZPeterPan/MedVLM-R1
+    paper: https://arxiv.org/abs/2502.19634
+    official_code: https://github.com/JZPeterPan/MedVLM-R1
+    license: source-specific terms
+    access: open
+    runtime_family: hf_image_text_to_text
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [general_medicine, radiology, pathology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: true
+    revision_policy: require_immutable_revision
+    notes: ["Reasoning-oriented medical VLM release."]
+
+  - name: biomedclip
+    display_name: BiomedCLIP
+    artifact_id: microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
+    source: https://huggingface.co/microsoft/BiomedCLIP-PubMedBERT_256-vit_base_patch16_224
+    paper: https://arxiv.org/abs/2303.00915
+    official_code: https://github.com/mlfoundations/open_clip
+    license: MIT
+    access: open
+    runtime_family: open_clip
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [biomedicine, radiology, pathology]
+    parameters_b: 0.15
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Contrastive retrieval and zero-shot candidate ranking adapter."]
+
+  - name: medclip
+    display_name: MedCLIP
+    artifact_id: emilyalsentzer/Bio_ClinicalBERT+resnet50
+    source: https://huggingface.co/emilyalsentzer/Bio_ClinicalBERT
+    paper: https://arxiv.org/abs/2210.10163
+    official_code: https://github.com/RyanWangZf/MedCLIP
+    license: MIT code; weights follow source terms
+    access: open
+    runtime_family: official_bridge
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [radiology, chest_xray]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Contrastive zero-shot classification via the official MedCLIP runtime."]
+
+  - name: plip
+    display_name: PLIP
+    artifact_id: vinid/plip
+    source: https://huggingface.co/vinid/plip
+    paper: https://arxiv.org/abs/2306.00908
+    official_code: https://github.com/PathologyFoundation/plip
+    license: Apache-2.0
+    access: open
+    runtime_family: hf_contrastive
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [pathology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Pathology image-text retrieval and candidate ranking."]
+
+  - name: pubmedclip
+    display_name: PubMedCLIP
+    artifact_id: flaviagiammarino/pubmed-clip-vit-base-patch32
+    source: https://huggingface.co/flaviagiammarino/pubmed-clip-vit-base-patch32
+    paper: https://arxiv.org/abs/2210.02318
+    official_code: https://github.com/sarahESL/PubMedCLIP
+    license: source-specific terms
+    access: open
+    runtime_family: hf_contrastive
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [biomedicine, radiology, pathology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Biomedical figure-text retrieval and zero-shot candidate ranking."]
+
+  - name: medsiglip
+    display_name: MedSigLIP
+    artifact_id: google/medsiglip-448
+    source: https://huggingface.co/google/medsiglip-448
+    paper: https://arxiv.org/abs/2502.14786
+    official_code: https://developers.google.com/health-ai-developer-foundations/medsiglip
+    license: Health AI Developer Foundations terms
+    access: gated
+    runtime_family: hf_contrastive
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [radiology, pathology, dermatology, ophthalmology]
+    parameters_b: 0.4
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Gated contrastive encoder; source terms must be accepted."]
+
+  - name: unimed_clip
+    display_name: UniMed-CLIP
+    artifact_id: mbzuai-oryx/UniMed-CLIP-ViT-B-16
+    source: https://huggingface.co/mbzuai-oryx/UniMed-CLIP-ViT-B-16
+    paper: https://arxiv.org/abs/2412.10372
+    official_code: https://github.com/mbzuai-oryx/UniMed-CLIP
+    license: source-specific terms
+    access: open
+    runtime_family: open_clip
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [radiology, pathology, ophthalmology, dermatology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Unified contrastive encoder for multiple medical domains."]
+
+  - name: quiltnet
+    display_name: QuiltNet
+    artifact_id: wisdomik/QuiltNet-B-32
+    source: https://huggingface.co/wisdomik/QuiltNet-B-32
+    paper: https://arxiv.org/abs/2306.11207
+    official_code: https://github.com/wisdomikezogwo/quilt1m
+    license: source-specific terms
+    access: open
+    runtime_family: open_clip
+    status: interface_validated
+    tasks: [understanding]
+    input_modalities: [text, image]
+    medical_domains: [pathology]
+    parameters_b: null
+    languages: [en]
+    trust_remote_code: false
+    revision_policy: require_immutable_revision
+    notes: ["Histopathology image-text retrieval and candidate ranking."]

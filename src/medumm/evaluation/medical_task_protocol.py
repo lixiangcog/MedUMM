@@ -174,15 +174,24 @@ def audit_medical_task_dataset(
         )
 
     image_paths = [path for sample in samples for path in sample.image_paths]
+    volume_paths = [path for sample in samples for path in sample.volume_paths]
+    video_paths = [path for sample in samples for path in sample.video_paths]
     missing_images = sorted(path for path in image_paths if not Path(path).is_file())
+    missing_volumes = sorted(path for path in volume_paths if not Path(path).is_file())
+    missing_videos = sorted(path for path in video_paths if not Path(path).is_file())
     image_optional = {MedicalTaskType.PATIENT_COMMUNICATION}
     invalid_image_free = [
         sample.sample_id
         for sample in samples
-        if not sample.image_paths and sample.task not in image_optional
+        if not (sample.image_paths or sample.volume_paths or sample.video_paths)
+        and sample.task not in image_optional
     ]
     if missing_images:
         errors.append(f"{len(missing_images)} referenced images are missing.")
+    if missing_volumes:
+        errors.append(f"{len(missing_volumes)} referenced volumes are missing.")
+    if missing_videos:
+        errors.append(f"{len(missing_videos)} referenced videos are missing.")
     if invalid_image_free:
         errors.append(f"{len(invalid_image_free)} image-dependent samples have no image.")
 
@@ -227,7 +236,13 @@ def audit_medical_task_dataset(
         "reference_count": sum(len(sample.references) for sample in samples),
         "image_count": len(image_paths),
         "unique_image_count": len(set(image_paths)),
+        "volume_count": len(volume_paths),
+        "unique_volume_count": len(set(volume_paths)),
+        "video_count": len(video_paths),
+        "unique_video_count": len(set(video_paths)),
         "missing_images": missing_images,
+        "missing_volumes": missing_volumes,
+        "missing_videos": missing_videos,
         "image_dependent_samples_without_images": invalid_image_free,
         "task_distribution": dict(sorted(task_counts.items())),
         "task_family_distribution": dict(

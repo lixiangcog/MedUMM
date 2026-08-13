@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0",
+  "release": "v0.8.0",
+  "status": "passed",
+  "validation_scope": {
+    "catalog": "all resource schemas and individual plugin registrations",
+    "runtime": "one pinned model plus one pinned dataset through catalog aliases",
+    "not_claimed": "runtime execution of all cataloged heavyweight resources"
+  },
+  "scheduler": {
+    "slurm_job_id": "437066",
+    "slurm_step_id": null,
+    "verification_job_id": "437066",
+    "verification_step_id": null
+  },
+  "hostname": "gpu01",
+  "runtime": {
+    "python": "3.10.20",
+    "torch": "2.7.1+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB",
+    "gpu_memory_mb": 81221.81
+  },
+  "catalog": {
+    "version": "0.8.0",
+    "model_count": 32,
+    "dataset_count": 34,
+    "registered_model_count": 32,
+    "registered_dataset_count": 34
+  },
+  "acceptance_model": {
+    "name": "llava_med_v1_5_7b",
+    "id": "microsoft/llava-med-v1.5-mistral-7b",
+    "revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "status": "runtime_validated",
+    "runtime_family": "official_bridge"
+  },
+  "acceptance_dataset": {
+    "name": "vqa_rad",
+    "id": "flaviagiammarino/vqa-rad",
+    "revision": "osf:5b213a9886d8510012c26c09:v1",
+    "status": "runtime_validated",
+    "license": "CC0-1.0",
+    "sample_count": 4,
+    "audit_status": "passed"
+  },
+  "evaluation": {
+    "prediction_count": 4,
+    "metrics": {
+      "overall": {
+        "total": 4,
+        "exact_match": 50.0,
+        "token_f1": 50.0,
+        "abstention_rate": 0.0,
+        "closed_accuracy": 50.0
+      },
+      "uncertainty": {
+        "exact_match": {
+          "confidence_level": 0.95,
+          "lower": 0.0,
+          "upper": 100.0,
+          "bootstrap_samples": 1000
+        },
+        "token_f1": {
+          "confidence_level": 0.95,
+          "lower": 0.0,
+          "upper": 100.0,
+          "bootstrap_samples": 1000
+        },
+        "abstention_rate": {
+          "confidence_level": 0.95,
+          "lower": 0.0,
+          "upper": 0.0,
+          "bootstrap_samples": 1000
+        }
+      },
+      "by_modality": {
+        "radiology": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 50.0
+        }
+      },
+      "by_category": {
+        "ABN": {
+          "total": 1,
+          "exact_match": 0.0,
+          "token_f1": 0.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 0.0
+        },
+        "MODALITY": {
+          "total": 1,
+          "exact_match": 100.0,
+          "token_f1": 100.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 100.0
+        },
+        "PRES": {
+          "total": 2,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 50.0
+        }
+      },
+      "by_answer_type": {
+        "closed": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 50.0
+        }
+      },
+      "by_language": {
+        "en": {
+          "total": 4,
+          "exact_match": 50.0,
+          "token_f1": 50.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 50.0
+        }
+      }
+    },
+    "inference": {
+      "sample_count": 4,
+      "mean_duration_ms": 499.32,
+      "max_duration_ms": 786.31,
+      "max_peak_gpu_memory_mb": 15211.37,
+      "mean_generated_tokens": 16.75,
+      "min_generated_tokens": 14,
+      "max_generated_tokens": 20,
+      "model": {
+        "resource": "llava_med_v1_5_7b",
+        "bridge_model": "llava_med",
+        "model_id": "/data/user/hd66945/MedUMM-assets/llava-med-v1.5/llava-med-v1.5-mistral-7b",
+        "model_revision": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+        "model_family": "llava_mistral",
+        "conversation_mode": "mistral_instruct",
+        "device": "cuda:0",
+        "dtype": "float16",
+        "context_length": 2048,
+        "generated_tokens": 18,
+        "keyword_stopping": false,
+        "hostname": "gpu01",
+        "scheduler": {
+          "slurm_job_id": "437066",
+          "slurm_step_id": null
+        },
+        "peak_gpu_memory_mb": 15211.31,
+        "clinical_use": false
+      }
+    }
+  }
+}

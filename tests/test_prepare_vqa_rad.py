@@ -1,4 +1,7 @@
 from importlib.util import module_from_spec, spec_from_file_location
+import json
+
+from PIL import Image
 
 from tests.conftest import PROJECT_ROOT
 
@@ -27,3 +30,45 @@ def test_vqa_rad_script_parser_accepts_closed_only(tmp_path):
     )
     assert values.closed_only
     assert values.max_samples == 2
+
+
+def test_vqa_rad_export_accepts_official_json_and_images(tmp_path):
+    module = _module()
+    source = tmp_path / "official.json"
+    image_root = tmp_path / "official-images"
+    output = tmp_path / "normalized"
+    image_root.mkdir()
+    Image.new("RGB", (4, 4), color="white").save(image_root / "case.jpg")
+    source.write_text(
+        json.dumps(
+            [
+                {
+                    "qid": 7,
+                    "image_name": "case.jpg",
+                    "question": "Is this normal?",
+                    "answer": "No",
+                    "answer_type": "CLOSED",
+                    "question_type": "ABN",
+                }
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    provenance = module.export_vqa_rad(
+        dataset_name="VQA-RAD/official",
+        revision="osf-file-version-1",
+        split="acceptance",
+        output_directory=output,
+        max_samples=1,
+        closed_only=True,
+        json_path=source,
+        image_root=image_root,
+        source_mirror="https://osf.io/89kps/",
+    )
+
+    record = json.loads((output / "samples.jsonl").read_text())
+    assert provenance["resolved_revision"] == "osf-file-version-1"
+    assert provenance["source_json"] == str(source)
+    assert record["metadata"]["source_qid"] == 7
+    assert len(record["metadata"]["source_image_sha256"]) == 64

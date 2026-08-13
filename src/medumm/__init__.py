@@ -1,6 +1,6 @@
 """MedUMM public package."""
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"
 
 from medumm.core import (
     EvaluationMode,
@@ -13,7 +13,7 @@ from medumm.core import (
     TrainingResult,
 )
 from medumm.inference import InferencePipeline, InferenceRequest
-from medumm.api import catalog, evaluate, infer, post_train
+from medumm.api import catalog, evaluate, infer, post_train, resources
 from medumm.evaluation import EvaluationProtocol, MedicalTaskProtocol, create_metric_suite
 from medumm.medical import MedicalTaskSample, MedicalTaskType
 
@@ -37,5 +37,6 @@ __all__ = [
     "evaluate",
     "infer",
     "post_train",
+    "resources",
     "__version__",
 ]
