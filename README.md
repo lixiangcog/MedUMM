@@ -7,6 +7,21 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.2: optimized inference engines
+
+Version 1.2 adds explicit vLLM and SGLang backends, OpenAI-compatible serving,
+continuous request batching, TP/PP/DP launch controls, and a shared inference
+performance benchmark. Emu3.5 has a separate fail-closed native vLLM adapter:
+it requires vLLM 0.11.0 plus BAAI's 20 official patches, sends conditional and
+unconditional token streams through the custom CFG scheduler, and supports
+two-GPU tensor parallel inference. Standard vLLM/SGLang HTTP servers do not
+claim that Emu3.5 CFG path.
+
+Use `medumm backends`, `medumm serve`, and `medumm benchmark-inference` to
+inspect, launch, and measure the new paths. Reproducible setup, configs, A800
+Slurm acceptance, metrics, capability boundaries, and validation levels are in
+[docs/inference-optimization-v1.2.md](docs/inference-optimization-v1.2.md).
+
 ## v1.1: research post-training CLI
 
 Version 1.1 adds one validated CLI contract for BAGEL SFT, RecA, Uni-CoT, IRG,

@@ -1,0 +1,39 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cuda
+inference:
+  backbone: openai_http
+  config:
+    model: medumm-medical-vlm
+    backend:
+      name: sglang
+      mode: openai_http
+      endpoint: http://127.0.0.1:30000
+      request_timeout_seconds: 300
+      parallel:
+        tensor_parallel_size: 2
+        pipeline_parallel_size: 1
+        data_parallel_size: 1
+      scheduler:
+        continuous_batching: true
+        max_num_seqs: 16
+        max_num_batched_tokens: 4096
+        max_queue_size: 128
+    parameters:
+      max_tokens: 24
+      temperature: 0
+  requests:
+    - {request_id: chest-01, task: understanding, prompt: "State one limitation of diagnosing from a chest radiograph alone."}
+    - {request_id: pathology-01, task: understanding, prompt: "State one limitation of diagnosing from a pathology image alone."}
+    - {request_id: retina-01, task: understanding, prompt: "State one limitation of diagnosing from a retinal image alone."}
+    - {request_id: ct-01, task: understanding, prompt: "State one limitation of interpreting one CT slice without its series."}
+    - {request_id: mri-01, task: understanding, prompt: "State one limitation of interpreting one MRI slice without sequence context."}
+    - {request_id: ultrasound-01, task: understanding, prompt: "State one limitation of interpreting a static ultrasound frame."}
+    - {request_id: dermatology-01, task: understanding, prompt: "State one limitation of evaluating a skin lesion from one photograph."}
+    - {request_id: endoscopy-01, task: understanding, prompt: "State one limitation of evaluating one endoscopy frame."}
+benchmark:
+  warmup_iterations: 1
+  measured_iterations: 3
+  batch_size: 8
+  output_directory: outputs/benchmark/sglang-concurrent-v1.2

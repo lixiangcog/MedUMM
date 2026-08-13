@@ -35,6 +35,11 @@ class ModelAdapter(ABC):
     def close(self) -> None:
         """Release model resources when an adapter needs explicit cleanup."""
 
+    def runtime_info(self) -> dict[str, Any]:
+        """Return non-secret, machine-readable details about the loaded runtime."""
+
+        return {}
+
 
 class DatasetAdapter(ABC):
     name: str

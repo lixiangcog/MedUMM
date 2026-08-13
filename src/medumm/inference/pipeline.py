@@ -97,6 +97,13 @@ class InferencePipeline:
     def close(self) -> None:
         self.adapter.close()
 
+    def runtime_info(self) -> dict[str, Any]:
+        return {
+            "backbone": self.backbone_name,
+            "capabilities": self.capabilities.to_dict(),
+            "runtime": self.adapter.runtime_info(),
+        }
+
     def __enter__(self) -> "InferencePipeline":
         return self
 

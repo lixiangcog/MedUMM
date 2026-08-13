@@ -155,6 +155,47 @@ def _catalog_command(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _backends_command(arguments: argparse.Namespace) -> int:
+    from medumm.inference import backend_catalog
+
+    values = backend_catalog()
+    if arguments.json:
+        print(json.dumps(values, indent=2, ensure_ascii=False))
+    else:
+        for item in values:
+            state = f"installed ({item['version']})" if item["installed"] else "not installed"
+            print(
+                f"{item['name']}: {state}; continuous_batching="
+                f"{str(item['continuous_batching']).lower()}; modes={','.join(item['modes'])}"
+            )
+    return 0
+
+
+def _benchmark_inference_command(arguments: argparse.Namespace) -> int:
+    from medumm.inference.benchmark import run_inference_benchmark
+
+    config = load_config(arguments.config, arguments.overrides)
+    result = run_inference_benchmark(config, config_path=arguments.config)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
+    return 0
+
+
+def _serve_command(arguments: argparse.Namespace) -> int:
+    from medumm.core.config import find_project_root
+    from medumm.inference.server import launch_server, plan_server
+
+    config = load_config(arguments.config, arguments.overrides)
+    block = config.get("server", config)
+    if not isinstance(block, dict):
+        raise ValueError("server config must be a mapping.")
+    root = find_project_root(arguments.config)
+    if arguments.plan or str(block.get("execution", "plan")).casefold() == "plan":
+        plan = plan_server(block, project_root=root)
+        print(json.dumps(plan, indent=2, ensure_ascii=False))
+        return 0
+    return launch_server(block, project_root=root)
+
+
 def _resource_template(kind: str, name: str) -> dict[str, Any]:
     from medumm.resources import DATASET_RESOURCES, MODEL_RESOURCES, AccessLevel
 
@@ -317,7 +358,7 @@ def _merge_command(arguments: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 1.1.0")
+    parser.add_argument("--version", action="version", version="MedUMM 1.2.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")
@@ -347,6 +388,27 @@ def build_parser() -> argparse.ArgumentParser:
     catalog = commands.add_parser("catalog", help="List registered platform components")
     catalog.add_argument("--json", action="store_true")
     catalog.set_defaults(handler=_catalog_command)
+
+    backends = commands.add_parser(
+        "backends", help="Inspect inference backend capabilities and installed runtimes"
+    )
+    backends.add_argument("--json", action="store_true")
+    backends.set_defaults(handler=_backends_command)
+
+    benchmark_inference = commands.add_parser(
+        "benchmark-inference", help="Measure inference latency and throughput"
+    )
+    benchmark_inference.add_argument("--config", required=True)
+    benchmark_inference.add_argument("--set", dest="overrides", action="append", default=[])
+    benchmark_inference.set_defaults(handler=_benchmark_inference_command)
+
+    serve = commands.add_parser(
+        "serve", help="Plan or launch a vLLM/SGLang continuous-batching server"
+    )
+    serve.add_argument("--config", required=True)
+    serve.add_argument("--set", dest="overrides", action="append", default=[])
+    serve.add_argument("--plan", action="store_true")
+    serve.set_defaults(handler=_serve_command)
 
     resources = commands.add_parser(
         "resources", help="Inspect audited medical model and dataset resources"

@@ -1,0 +1,48 @@
+schema_version: "1.0"
+runtime:
+  seed: 6666
+  device: cuda
+  dtype: bfloat16
+inference:
+  backbone: emu3_5
+  config:
+    source_root: ${EMU3_5_SOURCE_ROOT}
+    source_revision: ${EMU3_5_SOURCE_REVISION}
+    model_path: ${EMU3_5_MODEL_PATH}
+    model_revision: ${EMU3_5_MODEL_REVISION}
+    vq_path: ${EMU3_5_VQ_PATH}
+    vq_revision: ${EMU3_5_VQ_REVISION}
+    tokenizer_path: ${EMU3_5_SOURCE_ROOT}/src/tokenizer_emu3_ibq
+    vq_device: cuda:0
+    gpu_memory_utilization: 0.7
+    output_directory: outputs/benchmark/emu3_5_vllm/artifacts
+    backend:
+      name: vllm
+      mode: in_process
+      parallel:
+        tensor_parallel_size: 2
+        pipeline_parallel_size: 1
+        data_parallel_size: 1
+        distributed_executor_backend: mp
+      scheduler:
+        continuous_batching: true
+        max_num_seqs: 2
+        max_num_batched_tokens: 26000
+    generation:
+      classifier_free_guidance: 5.0
+      max_new_tokens: 5120
+      image_area: 1048576
+  requests:
+    - request_id: benchmark-a
+      task: generation
+      prompt: Research-only synthetic chest radiograph phantom with a focal opacity.
+      output_path: a.png
+    - request_id: benchmark-b
+      task: generation
+      prompt: Research-only synthetic chest radiograph phantom without focal opacity.
+      output_path: b.png
+benchmark:
+  warmup_iterations: 1
+  measured_iterations: 3
+  batch_size: 2
+  output_directory: outputs/benchmark/emu3_5_vllm

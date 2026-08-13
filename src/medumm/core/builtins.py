@@ -65,6 +65,33 @@ def register_builtins() -> None:
                 "research_only": True,
             },
         ),
+        "emu3_5": (
+            "medumm.backbones.emu3_5",
+            "Emu3_5Adapter",
+            "Emu3.5 native patched-vLLM unified multimodal adapter",
+            {
+                "architecture": "autoregressive",
+                "tasks": ["understanding", "generation", "editing"],
+                "backends": ["vllm"],
+                "continuous_batching": True,
+                "classifier_free_guidance": True,
+                "parallelism": ["tensor_parallel"],
+                "research_only": True,
+            },
+        ),
+        "openai_http": (
+            "medumm.inference.openai_backend",
+            "OpenAIHTTPAdapter",
+            "OpenAI-compatible vLLM/SGLang medical inference client",
+            {
+                "architecture": "autoregressive",
+                "tasks": ["understanding"],
+                "backends": ["vllm", "sglang"],
+                "continuous_batching": True,
+                "parallelism": ["tensor_parallel", "pipeline_parallel", "data_parallel"],
+                "research_only": True,
+            },
+        ),
     }
     for name, (module_name, class_name, description, metadata) in models.items():
         if not registry.models.contains(name):

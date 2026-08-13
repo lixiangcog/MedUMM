@@ -1,0 +1,28 @@
+schema_version: "1.0"
+server:
+  execution: plan
+  model_path: ${MEDUMM_SERVER_MODEL_PATH}
+  model_revision: ${MEDUMM_SERVER_MODEL_REVISION}
+  served_model_name: medumm-medical-vlm
+  host: 127.0.0.1
+  port: 8000
+  trust_remote_code: false
+  gpu_memory_utilization: 0.9
+  output_directory: outputs/serving/vllm
+  backend:
+    name: vllm
+    mode: openai_http
+    endpoint: http://127.0.0.1:8000
+    parallel:
+      tensor_parallel_size: 2
+      pipeline_parallel_size: 1
+      data_parallel_size: 1
+      distributed_executor_backend: mp
+    scheduler:
+      continuous_batching: true
+      max_num_seqs: 16
+      max_num_batched_tokens: 4096
+      max_queue_size: 128
+  extra_args:
+    max_model_len: 2048
+    disable_log_requests: true

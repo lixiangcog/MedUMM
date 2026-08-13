@@ -1,0 +1,21 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cpu
+inference:
+  backbone: medical_reference
+  batch_size: 4
+  config:
+    seed: 42
+    image_size: 32
+    output_directory: outputs/benchmark/reference/artifacts
+  requests:
+    - {request_id: reference-a, task: understanding, prompt: synthetic, parameters: {fixed_answer: A}}
+    - {request_id: reference-b, task: understanding, prompt: synthetic, parameters: {fixed_answer: B}}
+    - {request_id: reference-c, task: understanding, prompt: synthetic, parameters: {fixed_answer: A}}
+    - {request_id: reference-d, task: understanding, prompt: synthetic, parameters: {fixed_answer: B}}
+benchmark:
+  warmup_iterations: 1
+  measured_iterations: 5
+  batch_size: 4
+  output_directory: outputs/benchmark/reference_v1.2

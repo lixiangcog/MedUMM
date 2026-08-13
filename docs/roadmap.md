@@ -129,6 +129,18 @@ incomplete evaluation or data-governance path.
 - [ ] expert-labelled report-generation runtime slice
 - [ ] public grounding/measurement model + dataset runtime slice
 
+## v1.2 — optimized inference engines
+
+- [x] stable native/vLLM/SGLang backend and scheduler configuration
+- [x] OpenAI-compatible vLLM and SGLang continuous-batching client
+- [x] TP/PP/DP server launch planning with immutable model revisions
+- [x] native Emu3.5 vLLM 0.11.0 adapter with cond/uncond CFG scheduling
+- [x] strict rejection of unsupported Emu3.5 CFG over SGLang/HTTP
+- [x] latency, TTFT, queue, request-throughput, and token-throughput reports
+- [x] sequential-versus-concurrent two-GPU Slurm acceptance recipe
+- [ ] full pinned Emu3.5-Image generation evidence after 72 GB asset retrieval
+- [ ] multi-node backend acceptance and production load/stability benchmark
+
 ## Scale target
 
 After the platform and governance gates hold across the first real slices,
