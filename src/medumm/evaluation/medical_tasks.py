@@ -197,6 +197,7 @@ class MedicalTasksBenchmark(BenchmarkAdapter):
                     "case_id": sample.case_id,
                     "turn_index": sample.turn_index,
                     "reference_provenance": sample.reference_provenance,
+                    "annotations": sample.annotations,
                     "sample_metadata": sample.metadata,
                 },
             )

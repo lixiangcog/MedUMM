@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.0.0",
+  "status": "passed",
+  "scheduler": {
+    "verification_job_id": "437271"
+  },
+  "hostname": "gpu01",
+  "runtime": {
+    "python": "3.12.4",
+    "torch": "2.8.0+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB"
+  },
+  "slice": {
+    "model": "lingshu_7b",
+    "model_revision": "b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9",
+    "dataset": "pathvqa",
+    "dataset_revision": "1685832883334b5bb5beaf4e4b333fdeecaa4ad9",
+    "sample_count": 8,
+    "answer_type_counts": {
+      "closed": 4,
+      "open": 4
+    },
+    "metrics": {
+      "overall": {
+        "total": 8,
+        "exact_match": 37.5,
+        "token_f1": 41.07,
+        "abstention_rate": 0.0,
+        "closed_accuracy": 75.0
+      },
+      "uncertainty": {
+        "exact_match": {
+          "confidence_level": 0.95,
+          "lower": 12.5,
+          "upper": 75.0,
+          "bootstrap_samples": 1000
+        },
+        "token_f1": {
+          "confidence_level": 0.95,
+          "lower": 12.5,
+          "upper": 75.0,
+          "bootstrap_samples": 1000
+        },
+        "abstention_rate": {
+          "confidence_level": 0.95,
+          "lower": 0.0,
+          "upper": 0.0,
+          "bootstrap_samples": 1000
+        }
+      },
+      "by_category": {
+        "pathvqa": {
+          "total": 8,
+          "exact_match": 37.5,
+          "token_f1": 41.07,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 75.0
+        }
+      },
+      "by_answer_type": {
+        "closed": {
+          "total": 4,
+          "exact_match": 75.0,
+          "token_f1": 75.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 75.0
+        },
+        "open": {
+          "total": 4,
+          "exact_match": 0.0,
+          "token_f1": 7.14,
+          "abstention_rate": 0.0,
+          "closed_accuracy": null
+        }
+      },
+      "pathology": {
+        "total": 8,
+        "yes_no_count": 4,
+        "free_form_count": 4,
+        "yes_no_accuracy": 75.0,
+        "free_form_accuracy": 0.0,
+        "overall_accuracy": 37.5,
+        "macro_answer_type_accuracy": 37.5
+      }
+    },
+    "inference": {
+      "sample_count": 8,
+      "mean_duration_ms": 576.01,
+      "max_duration_ms": 3409.47,
+      "max_peak_gpu_memory_mb": 16020.72,
+      "mean_generated_tokens": 4.0,
+      "min_generated_tokens": 3,
+      "max_generated_tokens": 6,
+      "model": {
+        "model_id": "/data/user/hd66945/MedUMM-assets/v0.9/lingshu-7b",
+        "model_revision": "b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9",
+        "model_family": "qwen2_5_vl",
+        "resource": "lingshu_7b",
+        "source": "https://huggingface.co/lingshu-medical-mllm/Lingshu-7B",
+        "device": "cuda:0",
+        "dtype": "bfloat16",
+        "input_images": 1,
+        "generated_tokens": 6,
+        "hostname": "gpu01",
+        "scheduler": {
+          "slurm_job_id": "437271",
+          "slurm_step_id": null
+        },
+        "peak_gpu_memory_mb": 15875.23,
+        "clinical_use": false
+      }
+    },
+    "audit_status": "passed"
+  },
+  "metric_suites": [
+    "pathology_vqa",
+    "medical_report_factuality",
+    "medical_grounding",
+    "medical_measurement",
+    "medical_calibration"
+  ],
+  "validation_scope": "Pinned PathVQA pathology VQA wiring plus deterministic specialized-metric tests; not a clinical performance or full-dataset quality claim."
+}

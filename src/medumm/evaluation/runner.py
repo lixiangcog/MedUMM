@@ -162,13 +162,16 @@ class EvaluationRunner:
         rows = []
         for item in items:
             prediction = str(predictions[item.sample_id]["prediction"])
+            model_scores = dict(predictions[item.sample_id].get("scores", {}))
+            scoring_content = {**item.content, "model_scores": model_scores}
             rows.append({
                 "id": item.sample_id,
                 "prediction": prediction,
                 "duration_ms": predictions[item.sample_id].get("duration_ms"),
                 "model_metadata": predictions[item.sample_id].get("model_metadata", {}),
                 **item.content,
-                **self.scorer(prediction, item.content),
+                "model_scores": model_scores,
+                **self.scorer(prediction, scoring_content),
             })
         results_path = write_jsonl(
             self.output_directory / f"results{self.artifact_suffix}.jsonl", rows

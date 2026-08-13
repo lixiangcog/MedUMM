@@ -1,0 +1,49 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cuda
+  dtype: bfloat16
+evaluation:
+  benchmark: medical_vqa
+  data:
+    adapter: path_vqa
+    normalized_adapter: medical_vqa_jsonl
+    source: jsonl
+    path: ${MEDUMM_PATHVQA_MANIFEST}
+    image_root: ${MEDUMM_PATHVQA_IMAGE_ROOT}
+    provenance: ${MEDUMM_PATHVQA_PROVENANCE}
+    source_revision: 1685832883334b5bb5beaf4e4b333fdeecaa4ad9
+    validate_images: true
+    deidentified: true
+  model:
+    backbone: lingshu_7b
+    config:
+      model_path: ${LINGSHU_MODEL_PATH}
+      revision: b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9
+      dtype: bfloat16
+      device_map: auto
+      parameters:
+        max_new_tokens: 48
+        do_sample: false
+    parameters:
+      max_new_tokens: 48
+      do_sample: false
+  output_directory: outputs/evaluation/pathvqa_lingshu_v1.0
+  prompt_template: "{question}\nAnswer the pathology question concisely."
+  protocol:
+    name: pathvqa_lingshu_acceptance
+    version: "1.0"
+    metric_suite: pathology_vqa
+    group_by: [category, answer_type]
+    bootstrap_samples: 1000
+    confidence_level: 0.95
+    seed: 42
+    minimum_group_samples: 4
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 8
+  checkpoint:
+    flush_every: 1
+  mode: full
+  batch_size: 1
+  resume: false

@@ -25,6 +25,9 @@ class EvaluationProtocol:
     bootstrap_samples: int = 1000
     confidence_level: float = 0.95
     seed: int = 42
+    calibration_bins: int = 10
+    selective_thresholds: tuple[float, ...] = (0.5, 0.7, 0.9)
+    minimum_group_samples: int = 1
     require_provenance: bool = False
     require_deidentified: bool = False
     minimum_samples: int = 1
@@ -38,6 +41,12 @@ class EvaluationProtocol:
             raise ValueError("confidence_level must be between zero and one.")
         if self.minimum_samples < 1:
             raise ValueError("minimum_samples must be at least one.")
+        if self.calibration_bins < 2:
+            raise ValueError("calibration_bins must be at least two.")
+        if self.minimum_group_samples < 1:
+            raise ValueError("minimum_group_samples must be at least one.")
+        if any(not 0 <= value <= 1 for value in self.selective_thresholds):
+            raise ValueError("selective_thresholds must be between zero and one.")
         unsupported = sorted(set(self.group_by) - set(DEFAULT_GROUPS))
         if unsupported:
             raise ValueError(f"Unsupported medical VQA group fields: {unsupported}.")
@@ -54,6 +63,9 @@ class EvaluationProtocol:
         raw_groups = config.get("group_by", DEFAULT_GROUPS)
         if not isinstance(raw_groups, (list, tuple)):
             raise ValueError("evaluation.protocol.group_by must be a list.")
+        raw_thresholds = config.get("selective_thresholds", (0.5, 0.7, 0.9))
+        if not isinstance(raw_thresholds, (list, tuple)):
+            raise ValueError("evaluation.protocol.selective_thresholds must be a list.")
         return cls(
             name=str(config.get("name", "medical_vqa")),
             version=str(config.get("version", "1.0")),
@@ -63,6 +75,9 @@ class EvaluationProtocol:
             bootstrap_samples=int(config.get("bootstrap_samples", 1000)),
             confidence_level=float(config.get("confidence_level", 0.95)),
             seed=int(config.get("seed", seed)),
+            calibration_bins=int(config.get("calibration_bins", 10)),
+            selective_thresholds=tuple(float(item) for item in raw_thresholds),
+            minimum_group_samples=int(config.get("minimum_group_samples", 1)),
             require_provenance=bool(config.get("require_provenance", False)),
             require_deidentified=bool(config.get("require_deidentified", False)),
             minimum_samples=int(config.get("minimum_samples", 1)),
@@ -71,6 +86,7 @@ class EvaluationProtocol:
     def to_dict(self) -> dict[str, Any]:
         value = asdict(self)
         value["group_by"] = list(self.group_by)
+        value["selective_thresholds"] = list(self.selective_thresholds)
         return value
 
 

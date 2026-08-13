@@ -64,13 +64,13 @@ class LingshuAdapter(ModelAdapter):
 
         self.torch = torch
         self.process_vision_info = process_vision_info
-        dtype_name = str(config.get("torch_dtype", "bfloat16"))
+        dtype_name = str(config.get("dtype", config.get("torch_dtype", "bfloat16")))
         dtype = getattr(torch, dtype_name, None)
         if dtype is None:
             raise ValueError(f"Unknown torch dtype: {dtype_name}")
         load_options: dict[str, Any] = {
             "revision": self.model_revision,
-            "torch_dtype": dtype,
+            "dtype": dtype,
             "device_map": config.get("device_map", "auto"),
             "trust_remote_code": bool(config.get("trust_remote_code", False)),
         }

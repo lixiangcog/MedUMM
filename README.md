@@ -7,6 +7,21 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.0: medical-specific evaluation contracts
+
+Version 1.0 adds independently registered, versioned metric suites for
+pathology VQA, annotated report factuality, spatial grounding, unit-aware
+measurement, and probabilistic calibration/selective prediction. Model
+candidate scores now survive the shared evaluation runner, and every suite can
+produce subgroup reports plus minimum-sample-gated disparity summaries.
+
+The first real acceptance slice uses a pinned PathVQA test export with both
+yes/no and free-form questions through the native Lingshu adapter. Missing
+structured annotations remain explicitly unavailable rather than being counted
+as failures. See [docs/clinical-evaluation-v1.0.md](docs/clinical-evaluation-v1.0.md)
+for contracts, schemas, limits, the reproducible server recipe, and the passed
+[A800 evidence](docs/results/v1.0-clinical-evaluation.json).
+
 ## v0.9: architecture-diverse runtime slices
 
 Version 0.9 turns the first items in the v0.8 validation queue into reproducible
@@ -337,6 +352,9 @@ sbatch scripts/slurm_llava_med_vqa_rad.sh
 sbatch scripts/slurm_medical_tasks_v0.6.sh
 sbatch scripts/slurm_prepare_runtime_slices_v0.9.sh
 sbatch scripts/slurm_runtime_slices_v0.9.sh
+bash scripts/setup_medical_cuda126_env.sh
+MEDUMM_DYNAMIC_PROXY_TARGET=REACHABLE_LOGIN_HOST sbatch scripts/slurm_prepare_pathvqa_v1.0.sh
+sbatch scripts/slurm_clinical_evaluation_v1.0.sh
 ```
 
 Outputs are written below `outputs/` and ignored by Git.

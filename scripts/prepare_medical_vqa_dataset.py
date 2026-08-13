@@ -56,7 +56,12 @@ def _load_local_records(path: Path, split: str) -> Iterable[dict[str, Any]]:
 
 
 def _load_records(
-    *, dataset_id: str, revision: str, split: str, source_path: Path | None
+    *,
+    dataset_id: str,
+    revision: str,
+    split: str,
+    source_path: Path | None,
+    streaming: bool = False,
 ) -> tuple[Iterable[dict[str, Any]], str]:
     if source_path is not None:
         return _load_local_records(source_path, split), revision
@@ -66,7 +71,12 @@ def _load_records(
     except ModuleNotFoundError as error:
         raise RuntimeError("Install MedUMM with the 'data' extra for remote datasets.") from error
     resolved = str(HfApi().dataset_info(dataset_id, revision=revision).sha)
-    return load_dataset(dataset_id, split=split, revision=resolved), resolved
+    return load_dataset(
+        dataset_id,
+        split=split,
+        revision=resolved,
+        streaming=streaming,
+    ), resolved
 
 
 def _language(record: dict[str, Any], dataset: str) -> str:
@@ -101,6 +111,9 @@ def export_medical_vqa_dataset(
     max_samples: int = 0,
     language: str = "en",
     closed_only: bool = False,
+    closed_samples: int = 0,
+    open_samples: int = 0,
+    streaming: bool = False,
     source_path: Path | None = None,
     image_root: Path | None = None,
 ) -> dict[str, Any]:
@@ -110,6 +123,10 @@ def export_medical_vqa_dataset(
     spec = DATASETS[name]
     if revision.casefold() in {"", "main", "master", "latest", "head"}:
         raise ValueError("A pinned immutable dataset revision is required.")
+    if min(closed_samples, open_samples) < 0:
+        raise ValueError("Answer-type sample quotas cannot be negative.")
+    if closed_only and open_samples:
+        raise ValueError("closed_only cannot be combined with an open sample quota.")
     resolved_source = source_path.expanduser().resolve() if source_path else None
     resolved_images = image_root.expanduser().resolve() if image_root else None
     records, resolved_revision = _load_records(
@@ -117,10 +134,12 @@ def export_medical_vqa_dataset(
         revision=revision,
         split=split,
         source_path=resolved_source,
+        streaming=streaming,
     )
     images_directory = output_directory / "images"
     images_directory.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, Any]] = []
+    selected = {"closed": 0, "open": 0}
     skipped = {"language": 0, "incomplete": 0, "missing_image": 0, "answer_type": 0}
     for source_index, record in enumerate(records):
         record_language = _language(record, name)
@@ -138,6 +157,11 @@ def export_medical_vqa_dataset(
             "closed", "binary", "yes/no", "yes_no",
         }
         if closed_only and not is_closed:
+            skipped["answer_type"] += 1
+            continue
+        answer_type = "closed" if is_closed else "open"
+        quota = closed_samples if is_closed else open_samples
+        if quota and selected[answer_type] >= quota:
             skipped["answer_type"] += 1
             continue
         source_image = _source_image(record, name, resolved_images)
@@ -174,7 +198,7 @@ def export_medical_vqa_dataset(
             "image": image_name,
             "question": question,
             "answer": answer,
-            "answer_type": "closed" if is_closed else "open",
+            "answer_type": answer_type,
             "modality": str(record.get("modality", spec["modality"])).strip().casefold(),
             "category": category or name,
             "language": record_language,
@@ -191,10 +215,25 @@ def export_medical_vqa_dataset(
         if is_closed:
             row["choices"] = {"A": "yes", "B": "no"}
         rows.append(row)
-        if max_samples and len(rows) >= max_samples:
+        selected[answer_type] += 1
+        quotas_complete = (
+            (not closed_samples or selected["closed"] >= closed_samples)
+            and (not open_samples or selected["open"] >= open_samples)
+        )
+        if (closed_samples or open_samples) and quotas_complete:
+            break
+        if not (closed_samples or open_samples) and max_samples and len(rows) >= max_samples:
             break
     if not rows:
         raise ValueError(f"No {name} samples matched the export selection.")
+    if closed_samples and selected["closed"] < closed_samples:
+        raise ValueError(
+            f"Requested {closed_samples} closed samples but only found {selected['closed']}."
+        )
+    if open_samples and selected["open"] < open_samples:
+        raise ValueError(
+            f"Requested {open_samples} open samples but only found {selected['open']}."
+        )
     manifest_path = output_directory / "samples.jsonl"
     manifest_path.write_text(
         "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows),
@@ -212,7 +251,11 @@ def export_medical_vqa_dataset(
             "max_samples": max_samples,
             "language": language,
             "closed_only": closed_only,
+            "closed_samples": closed_samples,
+            "open_samples": open_samples,
+            "streaming": streaming,
         },
+        "answer_type_counts": selected,
         "skipped": skipped,
         "license": spec["license"],
         "source": spec["source"],
@@ -240,6 +283,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-samples", type=int, default=0)
     parser.add_argument("--language", choices=("en", "zh", "all"), default="en")
     parser.add_argument("--closed-only", action="store_true")
+    parser.add_argument("--closed-samples", type=int, default=0)
+    parser.add_argument("--open-samples", type=int, default=0)
+    parser.add_argument("--streaming", action="store_true")
     return parser
 
 
@@ -254,6 +300,9 @@ def main(arguments: list[str] | None = None) -> int:
         max_samples=values.max_samples,
         language=values.language,
         closed_only=values.closed_only,
+        closed_samples=values.closed_samples,
+        open_samples=values.open_samples,
+        streaming=values.streaming,
         source_path=values.source_path,
         image_root=values.image_root,
     )

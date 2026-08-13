@@ -1,4 +1,4 @@
-catalog_version: "0.9.0"
+catalog_version: "1.0.0"
 datasets:
   - name: vqa_rad
     display_name: VQA-RAD
@@ -44,18 +44,18 @@ datasets:
     source: https://huggingface.co/datasets/flaviagiammarino/path-vqa
     paper: https://arxiv.org/abs/2003.10286
     official_code:
-    license: source-specific terms
+    license: MIT (dataset card); source image copyrights retained
     access: open
     adapter_family: vqa
-    status: interface_validated
+    status: runtime_validated
     benchmark: medical_vqa
     tasks: [open_vqa, closed_vqa]
     modalities: [text, image]
     medical_domains: [pathology]
     languages: [en]
-    metrics: [exact_match, token_f1, closed_accuracy]
+    metrics: [yes_no_accuracy, free_form_accuracy, overall_accuracy, token_f1]
     revision_policy: require_immutable_revision
-    notes: ["Pathology textbook-image visual question answering."]
+    notes: ["Balanced pinned PathVQA + Lingshu A800 wiring slice accepted in v1.0; not a full-dataset quality estimate."]
 
   - name: pmc_vqa
     display_name: PMC-VQA

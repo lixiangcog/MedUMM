@@ -1,4 +1,15 @@
-from medumm import EvaluationProtocol, MetricSuite, catalog, create_metric_suite, infer
+from medumm import (
+    EvaluationProtocol,
+    MedicalCalibrationMetrics,
+    MedicalGroundingMetrics,
+    MedicalMeasurementMetrics,
+    MedicalReportMetrics,
+    MetricSuite,
+    PathologyVQAMetrics,
+    catalog,
+    create_metric_suite,
+    infer,
+)
 from tests.conftest import PROJECT_ROOT
 
 
@@ -55,3 +66,11 @@ def test_evaluation_protocol_and_metric_suite_are_public():
     suite = create_metric_suite(protocol.metric_suite)
     assert isinstance(suite, MetricSuite)
     assert suite.version == protocol.metric_suite_version
+
+
+def test_specialized_metric_suite_types_are_public():
+    assert PathologyVQAMetrics.name == "pathology_vqa"
+    assert MedicalReportMetrics.name == "medical_report_factuality"
+    assert MedicalGroundingMetrics.name == "medical_grounding"
+    assert MedicalMeasurementMetrics.name == "medical_measurement"
+    assert MedicalCalibrationMetrics.name == "medical_calibration"

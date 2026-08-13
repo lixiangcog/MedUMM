@@ -59,6 +59,7 @@ class MedicalTaskSample:
     case_id: str | None = None
     turn_index: int | None = None
     reference_provenance: dict[str, Any] = field(default_factory=dict)
+    annotations: dict[str, Any] = field(default_factory=dict)
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
@@ -182,6 +183,7 @@ def load_medical_tasks(
             validate=validate_media,
         )
         raw_provenance = record.get("reference_provenance", {})
+        raw_annotations = record.get("annotations", {})
         raw_metadata = record.get("metadata", {})
         samples.append(
             MedicalTaskSample(
@@ -206,6 +208,9 @@ def load_medical_tasks(
                 else None,
                 reference_provenance=dict(raw_provenance)
                 if isinstance(raw_provenance, dict)
+                else {},
+                annotations=dict(raw_annotations)
+                if isinstance(raw_annotations, dict)
                 else {},
                 metadata=dict(raw_metadata) if isinstance(raw_metadata, dict) else {},
             )

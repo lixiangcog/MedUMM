@@ -31,7 +31,7 @@ def test_runtime_validated_status_is_reserved_for_committed_acceptance_paths():
         item.name
         for item in DATASET_RESOURCES.values()
         if item.status is IntegrationStatus.RUNTIME_VALIDATED
-    } == {"vqa_rad", "slake", "pneumoniamnist"}
+    } == {"vqa_rad", "slake", "path_vqa", "pneumoniamnist"}
     assert len(MODEL_RESOURCES.names()) == len(set(MODEL_RESOURCES.names()))
     assert len(DATASET_RESOURCES.names()) == len(set(DATASET_RESOURCES.names()))
 
@@ -71,6 +71,12 @@ def test_open_dataset_adapter_loads_normalized_manifest_with_provenance():
     assert samples[0].metadata["resource"] == "vqa_rad"
     assert samples[0].metadata["source_revision"] == "0123456789abcdef"
     assert len(adapter.fingerprint(config, PROJECT_ROOT)) == 64
+
+
+def test_pathvqa_uses_public_catalog_resource_name():
+    register_builtins()
+    assert "path_vqa" in registry.datasets.names()
+    assert registry.datasets.create("path_vqa").name == "path_vqa"
 
 
 def test_resource_dataset_requires_source_pin_and_access_confirmation():

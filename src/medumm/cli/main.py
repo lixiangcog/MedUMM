@@ -288,7 +288,7 @@ def _merge_command(arguments: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 0.9.0")
+    parser.add_argument("--version", action="version", version="MedUMM 1.0.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")

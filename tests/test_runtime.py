@@ -1,6 +1,7 @@
 import json
 
 import medumm.core.runtime as runtime_module
+import pytest
 
 from medumm.core.runtime import RuntimeContext, environment_snapshot, write_run_manifest
 from tests.conftest import PROJECT_ROOT
@@ -69,7 +70,7 @@ def test_environment_snapshot_records_cuda_initialization_failure(tmp_path, monk
         config_path=tmp_path,
         output_directory=tmp_path / "out",
     )
-    import torch
+    torch = pytest.importorskip("torch")
 
     monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
     monkeypatch.setattr(torch.cuda, "device_count", lambda: 1)

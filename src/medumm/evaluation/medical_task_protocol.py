@@ -31,6 +31,9 @@ class MedicalTaskProtocol:
     bootstrap_samples: int = 1000
     confidence_level: float = 0.95
     seed: int = 42
+    calibration_bins: int = 10
+    selective_thresholds: tuple[float, ...] = (0.5, 0.7, 0.9)
+    minimum_group_samples: int = 1
     require_provenance: bool = False
     require_reference_provenance: bool = True
     require_deidentified: bool = False
@@ -47,6 +50,12 @@ class MedicalTaskProtocol:
             raise ValueError("confidence_level must be between zero and one.")
         if self.minimum_samples < 1 or self.minimum_samples_per_task < 1:
             raise ValueError("Medical task sample minimums must be at least one.")
+        if self.calibration_bins < 2:
+            raise ValueError("calibration_bins must be at least two.")
+        if self.minimum_group_samples < 1:
+            raise ValueError("minimum_group_samples must be at least one.")
+        if any(not 0 <= value <= 1 for value in self.selective_thresholds):
+            raise ValueError("selective_thresholds must be between zero and one.")
         unsupported_groups = sorted(set(self.group_by) - set(MEDICAL_TASK_GROUPS))
         if unsupported_groups:
             raise ValueError(f"Unsupported medical task group fields: {unsupported_groups}.")
@@ -72,6 +81,9 @@ class MedicalTaskProtocol:
             raise ValueError("evaluation.protocol.group_by must be a list.")
         if not isinstance(raw_tasks, (list, tuple)):
             raise ValueError("evaluation.protocol.required_tasks must be a list.")
+        raw_thresholds = config.get("selective_thresholds", (0.5, 0.7, 0.9))
+        if not isinstance(raw_thresholds, (list, tuple)):
+            raise ValueError("evaluation.protocol.selective_thresholds must be a list.")
         return cls(
             name=str(config.get("name", "medical_tasks")),
             version=str(config.get("version", "1.0")),
@@ -81,6 +93,9 @@ class MedicalTaskProtocol:
             bootstrap_samples=int(config.get("bootstrap_samples", 1000)),
             confidence_level=float(config.get("confidence_level", 0.95)),
             seed=int(config.get("seed", seed)),
+            calibration_bins=int(config.get("calibration_bins", 10)),
+            selective_thresholds=tuple(float(item) for item in raw_thresholds),
+            minimum_group_samples=int(config.get("minimum_group_samples", 1)),
             require_provenance=bool(config.get("require_provenance", False)),
             require_reference_provenance=bool(
                 config.get("require_reference_provenance", True)
@@ -95,6 +110,7 @@ class MedicalTaskProtocol:
         value = asdict(self)
         value["group_by"] = list(self.group_by)
         value["required_tasks"] = list(self.required_tasks)
+        value["selective_thresholds"] = list(self.selective_thresholds)
         return value
 
 

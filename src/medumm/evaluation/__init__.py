@@ -1,7 +1,16 @@
 from medumm.evaluation.cross_task import CrossTaskBenchmark
 from medumm.evaluation.medical_vqa import MedicalVQABenchmark, run_medical_vqa
 from medumm.evaluation.merge import merge_prediction_shards
-from medumm.evaluation.metrics import MedicalTaskCoreMetrics, MedicalVQACoreMetrics, create_metric_suite
+from medumm.evaluation.metrics import (
+    MedicalCalibrationMetrics,
+    MedicalGroundingMetrics,
+    MedicalMeasurementMetrics,
+    MedicalReportMetrics,
+    MedicalTaskCoreMetrics,
+    MedicalVQACoreMetrics,
+    PathologyVQAMetrics,
+    create_metric_suite,
+)
 from medumm.evaluation.medical_task_protocol import MedicalTaskProtocol, audit_medical_task_dataset
 from medumm.evaluation.medical_tasks import MedicalTasksBenchmark
 from medumm.evaluation.runner import EvaluationItem, EvaluationRunner
@@ -13,6 +22,11 @@ __all__ = [
     "EvaluationProtocol",
     "MedicalVQACoreMetrics",
     "MedicalTaskCoreMetrics",
+    "PathologyVQAMetrics",
+    "MedicalReportMetrics",
+    "MedicalGroundingMetrics",
+    "MedicalMeasurementMetrics",
+    "MedicalCalibrationMetrics",
     "MedicalTaskProtocol",
     "MedicalTasksBenchmark",
     "CrossTaskBenchmark",

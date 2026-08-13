@@ -1,6 +1,6 @@
 """MedUMM public package."""
 
-__version__ = "0.9.0"
+__version__ = "1.0.0"
 
 from medumm.core import (
     EvaluationMode,
@@ -14,7 +14,16 @@ from medumm.core import (
 )
 from medumm.inference import InferencePipeline, InferenceRequest
 from medumm.api import catalog, evaluate, infer, post_train, resources
-from medumm.evaluation import EvaluationProtocol, MedicalTaskProtocol, create_metric_suite
+from medumm.evaluation import (
+    EvaluationProtocol,
+    MedicalCalibrationMetrics,
+    MedicalGroundingMetrics,
+    MedicalMeasurementMetrics,
+    MedicalReportMetrics,
+    MedicalTaskProtocol,
+    PathologyVQAMetrics,
+    create_metric_suite,
+)
 from medumm.medical import MedicalTaskSample, MedicalTaskType
 
 __all__ = [
@@ -28,6 +37,11 @@ __all__ = [
     "RuntimeContext",
     "EvaluationProtocol",
     "MedicalTaskProtocol",
+    "PathologyVQAMetrics",
+    "MedicalReportMetrics",
+    "MedicalGroundingMetrics",
+    "MedicalMeasurementMetrics",
+    "MedicalCalibrationMetrics",
     "MedicalTaskSample",
     "MedicalTaskType",
     "TaskType",

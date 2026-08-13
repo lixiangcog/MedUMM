@@ -116,3 +116,34 @@ def test_export_requires_immutable_revision(tmp_path):
             source_path=tmp_path / "missing.json",
             image_root=tmp_path,
         )
+
+
+def test_pathvqa_export_enforces_balanced_answer_type_quotas(tmp_path):
+    module = _module()
+    image_root = tmp_path / "images"
+    image_root.mkdir()
+    for index in range(5):
+        Image.new("RGB", (6, 6), color="pink").save(image_root / f"case-{index}.png")
+    records = [
+        {
+            "image_name": f"case-{index}.png",
+            "question": f"Question {index}?",
+            "answer": "yes" if index < 3 else f"finding {index}",
+        }
+        for index in range(5)
+    ]
+    source = tmp_path / "pathvqa.json"
+    source.write_text(json.dumps(records), encoding="utf-8")
+    output = tmp_path / "normalized"
+    result = module.export_medical_vqa_dataset(
+        dataset="pathvqa",
+        revision="1685832883334b5bb5beaf4e4b333fdeecaa4ad9",
+        split="test",
+        output_directory=output,
+        closed_samples=2,
+        open_samples=2,
+        source_path=source,
+        image_root=image_root,
+    )
+    assert result["sample_count"] == 4
+    assert result["answer_type_counts"] == {"closed": 2, "open": 2}

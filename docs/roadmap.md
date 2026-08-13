@@ -114,7 +114,20 @@ incomplete evaluation or data-governance path.
 - [x] passed A800 acceptance for Lingshu-7B + SLAKE
 - [x] passed A800 acceptance for PubMedCLIP + PneumoniaMNIST
 - [ ] gated MedSigLIP acceptance after source terms and weight access
-- [ ] PathVQA full acceptance and pathology-specific scoring protocol
+- [x] PathVQA balanced real acceptance on A800
+- [x] PathVQA pathology-specific scoring protocol
+
+## v1.0 — medical-specific evaluation contracts
+
+- [x] independently registered pathology VQA answer-type protocol
+- [x] auditable report fact, negation, contradiction, critical-finding, and section scoring
+- [x] normalized box-IoU and point-grounding metrics
+- [x] unit-aware measurement error and per-reference tolerance scoring
+- [x] ECE, Brier, NLL, confidence, and selective prediction from preserved model scores
+- [x] minimum-size-gated subgroup and max-min disparity summaries
+- [x] pinned balanced PathVQA + Lingshu A800 acceptance
+- [ ] expert-labelled report-generation runtime slice
+- [ ] public grounding/measurement model + dataset runtime slice
 
 ## Scale target
 

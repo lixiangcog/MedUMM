@@ -100,6 +100,12 @@ benchmarks and returns one `EvaluationResult` without knowing their internal
 metrics.
 
 The resolved protocol and metric-suite versions are part of the run fingerprint.
+Starting in v1.0, scorer-specific calibration bins, selective thresholds, and
+minimum subgroup sizes are also resolved protocol fields. Model-emitted
+candidate scores are preserved beside each result so probabilistic scoring
+does not depend on backbone-specific files. Specialized clinical metrics only
+operate when their required structured annotations are present; absence is an
+explicit unavailable state rather than an implicit zero.
 Workers select `items[rank::world_size]` and use rank-local artifact names;
 `merge-predictions` rejects missing ranks, duplicate sample IDs, mixed
 fingerprints, and unexpected sample counts before producing a canonical file.
