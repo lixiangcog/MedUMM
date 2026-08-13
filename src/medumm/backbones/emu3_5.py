@@ -137,6 +137,11 @@ class Emu3_5Adapter(ModelAdapter):
                 f"Emu3.5 requires vLLM {REQUIRED_VLLM_VERSION}; found "
                 f"{capabilities['version']!r}."
             )
+        if not capabilities.get("emu3_5_native_cfg", False):
+            raise RuntimeError(
+                "Emu3.5 requires BAAI's complete vLLM patch set (model registry, "
+                "Emu3.5 model implementation, and cond/uncond CFG scheduler)."
+            )
         if self.backend.parallel.pipeline_parallel_size != 1:
             raise ValueError("The patched Emu3.5 vLLM 0.11.0 path supports tensor parallel only.")
         if self.backend.parallel.data_parallel_size != 1:

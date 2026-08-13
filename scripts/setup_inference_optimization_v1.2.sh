@@ -35,7 +35,8 @@ elif [[ "${MEDUMM_INFERENCE_BACKEND}" == "vllm-serve" ]]; then
 elif [[ "${MEDUMM_INFERENCE_BACKEND}" == "sglang" ]]; then
   MEDUMM_RUNTIME_ENV="${MEDUMM_RUNTIME_ENV:-/data/user/hd66945/envs/medumm-sglang-054}"
   python3 -m venv "${MEDUMM_RUNTIME_ENV}"
-  "${MEDUMM_RUNTIME_ENV}/bin/python" -m pip install "sglang[srt]==0.5.4.post3"
+  "${MEDUMM_RUNTIME_ENV}/bin/python" -m pip install \
+    "sglang[srt]==0.5.4.post3" "ninja==1.13.0"
 else
   echo "MEDUMM_INFERENCE_BACKEND must be vllm, vllm-serve, or sglang" >&2
   exit 2

@@ -105,6 +105,27 @@ def test_emu3_5_refuses_unpatched_missing_vllm(tmp_path, monkeypatch):
         )
 
 
+def test_emu3_5_refuses_unpatched_vllm_before_model_loading(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        "medumm.backbones.emu3_5.require_backend",
+        lambda _config: {
+            "installed": True,
+            "version": "0.11.0",
+            "emu3_5_native_cfg": False,
+        },
+    )
+    with pytest.raises(RuntimeError, match="complete vLLM patch set"):
+        Emu3_5Adapter().load(
+            {
+                "backend": {"name": "vllm", "mode": "in_process"},
+                "source_revision": "0123456789abcdef",
+                "model_revision": "0123456789abcdef",
+                "vq_revision": "0123456789abcdef",
+            },
+            _runtime(tmp_path),
+        )
+
+
 def test_vllm_server_command_contains_batch_and_parallel_controls():
     command, backend = server_command(
         {
@@ -236,6 +257,25 @@ def test_http_adapter_rejects_emu_cfg_controls(tmp_path):
     )
     with pytest.raises(ValueError, match="does not expose Emu3.5 CFG"):
         adapter._payload(request)
+
+
+def test_http_adapter_uses_portable_text_only_message(tmp_path):
+    adapter = OpenAIHTTPAdapter()
+    adapter.load(
+        {
+            "model": "medical-test-model",
+            "backend": {
+                "name": "vllm",
+                "mode": "openai_http",
+                "endpoint": "http://127.0.0.1:8000",
+            },
+        },
+        _runtime(tmp_path),
+    )
+    payload = adapter._payload(
+        InferenceRequest(task="understanding", prompt="portable text request")
+    )
+    assert payload["messages"][-1]["content"] == "portable text request"
 
 
 def test_emu_batch_submits_all_cond_uncond_pairs_in_one_engine_call(monkeypatch):

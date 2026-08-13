@@ -67,8 +67,16 @@ class OpenAIHTTPAdapter(ModelAdapter):
         }
 
     def _payload(self, request: InferenceRequest) -> dict[str, Any]:
-        content: list[dict[str, Any]] = [self._image_content(path) for path in request.images]
-        content.append({"type": "text", "text": str(request.prompt or "")})
+        # A plain string is the most portable OpenAI representation for
+        # text-only requests.  Some VLM chat templates reject a one-element
+        # multimodal content list even though image-bearing requests require it.
+        if request.images:
+            content: str | list[dict[str, Any]] = [
+                self._image_content(path) for path in request.images
+            ]
+            content.append({"type": "text", "text": str(request.prompt or "")})
+        else:
+            content = str(request.prompt or "")
         messages: list[dict[str, Any]] = []
         if self.system_prompt:
             messages.append({"role": "system", "content": self.system_prompt})
