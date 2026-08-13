@@ -5,6 +5,7 @@ import importlib.util
 import re
 from dataclasses import asdict, dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
 
@@ -190,12 +191,30 @@ def _installed_version(distribution: str, module: str | None = None) -> str | No
         return "unknown"
 
 
+def _find_spec(name: str) -> Any | None:
+    try:
+        return importlib.util.find_spec(name)
+    except (ImportError, ModuleNotFoundError, AttributeError):
+        return None
+
+
 def backend_catalog() -> list[dict[str, Any]]:
     vllm_version = _installed_version("vllm")
     sglang_version = _installed_version("sglang")
+    vllm_registry = _find_spec("vllm.model_executor.models.registry")
+    registry_has_emu3_5 = False
+    if vllm_registry is not None and vllm_registry.origin:
+        try:
+            registry_has_emu3_5 = "Emu3_5ForCausalLM" in Path(
+                vllm_registry.origin
+            ).read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            registry_has_emu3_5 = False
     emu3_5_scheduler_installed = (
         vllm_version == "0.11.0"
-        and importlib.util.find_spec("vllm.v1.core.sched.batch_scheduler") is not None
+        and _find_spec("vllm.v1.core.sched.batch_scheduler") is not None
+        and _find_spec("vllm.model_executor.models.emu3_5") is not None
+        and registry_has_emu3_5
     )
     values = (
         BackendCapabilities(

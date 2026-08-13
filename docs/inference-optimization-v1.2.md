@@ -56,12 +56,17 @@ that the patched architecture and scheduler are active after engine creation.
 Required versions are Python 3.12, vLLM 0.11.0, Transformers 4.56.1, and
 FlashAttention 2.8.3. The source, model, and vision-tokenizer revisions must all
 be immutable. MedUMM additionally checks the source checkout's actual Git HEAD.
+Because the upstream patches replace parts of vLLM's request processing and
+scheduler stack, the patched Emu3.5 runtime is isolated from the unpatched
+`vllm-serve` environment used by generic OpenAI-compatible models.
 
 The setup helper creates an isolated runtime and applies the 20 patches from
 the pinned upstream checkout:
 
 ```bash
 MEDUMM_INFERENCE_BACKEND=vllm \
+  scripts/setup_inference_optimization_v1.2.sh
+MEDUMM_INFERENCE_BACKEND=vllm-serve \
   scripts/setup_inference_optimization_v1.2.sh
 ```
 

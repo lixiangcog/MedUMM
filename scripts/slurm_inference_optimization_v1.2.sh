@@ -17,7 +17,7 @@ MEDUMM_INFERENCE_BACKEND="${MEDUMM_INFERENCE_BACKEND:-vllm}"
 MEDUMM_SERVER_MODEL_PATH="${MEDUMM_SERVER_MODEL_PATH:-/data/user/hd66945/models/Qwen2.5-VL-3B-Instruct}"
 MEDUMM_SERVER_MODEL_REVISION="${MEDUMM_SERVER_MODEL_REVISION:-66285546d2b821cf421d4f5eb2576359d3770cd3}"
 if [[ "${MEDUMM_INFERENCE_BACKEND}" == "vllm" ]]; then
-  MEDUMM_RUNTIME_ENV="${MEDUMM_RUNTIME_ENV:-/data/user/hd66945/envs/medumm-vllm-011}"
+  MEDUMM_RUNTIME_ENV="${MEDUMM_RUNTIME_ENV:-/data/user/hd66945/envs/medumm-vllm-011-serve}"
   SERVER_CONFIG="configs/inference/serve_vllm.yaml"
   BENCHMARK_CONFIG="configs/inference/benchmark_openai_vllm_v1.2.yaml"
   SERVER_PORT=8000
