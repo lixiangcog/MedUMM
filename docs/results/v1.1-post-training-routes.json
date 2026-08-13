@@ -34,7 +34,7 @@
     "torch": "2.8.0+cu126",
     "cuda_available": false,
     "successful_job": {
-      "job_id": 437367,
+      "job_id": 437370,
       "state": "COMPLETED",
       "exit_code": "0:0",
       "elapsed": "00:01:19",
@@ -42,7 +42,8 @@
       "method_catalog_count": 7,
       "stage_catalog_count": 13,
       "routes_passed": 7,
-      "stages_executed": 13
+      "stages_executed": 13,
+      "tested_source_commit": "f820d5921a97f3dccc5acb0382a442005245ff2a"
     },
     "failed_attempt": {
       "job_id": 437345,
@@ -52,10 +53,15 @@
       "cause": "The test fixture assumed the synchronized server snapshot contained .git metadata and called git rev-parse before route execution.",
       "resolution": "Use the known immutable snapshot id in the fixture while retaining strict Git revision validation in production profiles. Jobs 437346 through 437351 passed as source/runtime isolation, callable-runtime, license, and immutable-revision checks were added."
     },
+    "invalidated_attempt": {
+      "job_id": 437369,
+      "state": "CANCELLED",
+      "reason": "The submitted MEDUMM_SOURCE_COMMIT value was mistyped. The job was cancelled and is not counted as validation evidence."
+    },
     "sequential_acceptance": {
       "status": "passed",
-      "summary_path": "/data/user/hd66945/MedUMM/outputs/post_training/v1.1-sequential-437367/summary.json",
-      "duration_seconds": 36.050287,
+      "summary_path": "/data/user/hd66945/MedUMM/outputs/post_training/v1.1-sequential-437370/summary.json",
+      "tested_source_commit": "f820d5921a97f3dccc5acb0382a442005245ff2a",
       "validation_levels": {
         "paper_profile_plan": "passed for all seven routes; stage graphs and native launcher contracts only",
         "contract_execution": "passed for all seven routes and all 13 stages",
