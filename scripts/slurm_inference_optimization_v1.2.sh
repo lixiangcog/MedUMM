@@ -41,7 +41,8 @@ cd "${MEDUMM_ROOT}"
 
 test -x "${MEDUMM_RUNTIME_ENV}/bin/python"
 test -f "${MEDUMM_SERVER_MODEL_PATH}/config.json"
-"${MEDUMM_RUNTIME_ENV}/bin/python" -m pip install --no-deps -e "${MEDUMM_ROOT}"
+"${MEDUMM_RUNTIME_ENV}/bin/python" -m pip install --no-deps --no-build-isolation \
+  -e "${MEDUMM_ROOT}"
 nvidia-smi --query-gpu=index,name,memory.total,memory.used,driver_version --format=csv,noheader
 "${MEDUMM_RUNTIME_ENV}/bin/python" -m pytest -q tests/test_inference_optimization.py
 "${MEDUMM_RUNTIME_ENV}/bin/python" -m medumm backends --json > "${RUN_ROOT}/backend-catalog.json"
