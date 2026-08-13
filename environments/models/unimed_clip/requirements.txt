@@ -1,0 +1,10 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=unimed_clip
+# profile=open_clip
+# contract_sha256=1dae4408373121b49ce5326d754a1a698e9d63684165c20537c6773b203eacc3
+torch==2.7.1
+torchvision==0.22.1
+open-clip-torch==2.32.0
+huggingface-hub==0.33.4
+pillow==11.2.1
+numpy==1.26.4

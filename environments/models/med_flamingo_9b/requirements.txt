@@ -1,0 +1,13 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=med_flamingo_9b
+# profile=open_flamingo
+# contract_sha256=af2227af4f758334e50be3f0a078b8104abbdf2a7cb35af407629fee74b38adc
+torch==2.0.1
+torchvision==0.15.2
+transformers @ git+https://github.com/huggingface/transformers@01734dba842c29408c96caa5c345c9e415c7569b
+accelerate @ git+https://github.com/huggingface/accelerate@4d583ad6a1f13d1d7617e6a37f791ec01a68413a
+open-flamingo==0.0.2
+einops==0.6.0
+einops-exts==0.0.4
+pillow==9.4.0
+numpy==1.24.2

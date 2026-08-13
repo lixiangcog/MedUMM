@@ -1,5 +1,15 @@
 # Roadmap
 
+## v1.3 — per-model reproducible environments
+
+- [x] one immutable environment contract for every one of 32 model resources
+- [x] generated requirements, Docker, Apptainer and source-lock artifacts
+- [x] local/HPC environment creator with restricted-model access gates
+- [x] Slurm container entry point and Modal image factory from one catalog
+- [x] CI enforcement of 1:1 coverage, immutable pins and generated-file drift
+- [ ] container build and import validation for the remaining 29 models
+- [ ] real pinned-weight GPU task validation for the remaining 29 models
+
 MedUMM grows through validated medical vertical slices. Platform breadth and
 medical scale are tracked separately so a long model list cannot hide an
 incomplete evaluation or data-governance path.

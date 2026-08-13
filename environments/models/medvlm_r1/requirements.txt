@@ -1,0 +1,13 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=medvlm_r1
+# profile=modern_qwen
+# contract_sha256=2f5a8668780f6ac77def22c48ac0e31c265bf47d18e7329429ce3c2a55e8c984
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.51.3
+tokenizers==0.21.1
+accelerate==1.7.0
+qwen-vl-utils==0.0.14
+pillow==11.2.1
+safetensors==0.5.3
+numpy==1.26.4

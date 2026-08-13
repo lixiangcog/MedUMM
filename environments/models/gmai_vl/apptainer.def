@@ -1,0 +1,26 @@
+# Generated from environments/models.yaml; do not edit by hand.
+Bootstrap: docker
+From: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+
+%files
+    lock.txt /tmp/medumm-lock.txt
+
+%post
+    apt-get update
+    apt-get install -y --no-install-recommends git python3.10 python3.10-venv python3-pip ca-certificates
+    rm -rf /var/lib/apt/lists/*
+    python3.10 -m venv /opt/medumm/venv
+    /opt/medumm/venv/bin/python -m pip install --upgrade pip==25.1.1
+    /opt/medumm/venv/bin/python -m pip install --extra-index-url https://download.pytorch.org/whl/cu121 -r /tmp/medumm-lock.txt
+
+%environment
+    export PATH=/opt/medumm/venv/bin:$PATH
+    export PYTHONUNBUFFERED=1
+    export HF_HOME=/cache/huggingface
+    export MEDUMM_MODEL_ROOT=/models
+    export MEDUMM_OUTPUT_ROOT=/outputs
+
+%labels
+    org.medumm.model gmai_vl
+    org.medumm.profile internvl
+    org.medumm.contract-sha256 19dfab13cd87b423f3df7bd00e0f7ad0b7d09d73df65f8e598e681c0ccee4def

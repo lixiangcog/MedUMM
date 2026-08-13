@@ -1,0 +1,13 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=lingshu_7b
+# profile=modern_qwen
+# contract_sha256=f3de1d2e3ff0fdfcc8fe037ac73b52225e5225fa73b81b370816fb23ba8badd3
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.51.3
+tokenizers==0.21.1
+accelerate==1.7.0
+qwen-vl-utils==0.0.14
+pillow==11.2.1
+safetensors==0.5.3
+numpy==1.26.4

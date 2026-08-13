@@ -1,0 +1,15 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=vila_m3_3b
+# profile=vila
+# contract_sha256=cded8ae5607bc23b72a1d989d293c6aa97ea75378c3d0f8c363da4052512e586
+torch==2.3.0
+torchvision==0.18.0
+transformers==4.46.0
+tokenizers==0.20.3
+accelerate==0.34.2
+peft==0.13.2
+bitsandbytes==0.43.2
+einops==0.6.1
+timm==0.9.12
+pillow==10.4.0
+numpy==1.26.4

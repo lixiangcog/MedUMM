@@ -7,6 +7,32 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.3: isolated model environments
+
+Every one of the 32 catalog models now has an independent, immutable runtime
+contract. Each contract pins Python, CUDA, the base-container digest, Python
+packages, model revision, upstream source commits, access policy, import probes,
+GPU guidance, and validation evidence. Generated requirements, Docker and
+Apptainer definitions live under `environments/models/<model>/`; Modal images,
+local virtual environments, and Slurm/Apptainer execution all consume the same
+catalog so their dependency stacks cannot silently diverge.
+
+```bash
+medumm environments list
+medumm environments show llava_med_v1_5_7b
+bash scripts/setup_model_env.sh lingshu_7b
+sbatch --export=ALL,MODEL_NAME=lingshu_7b scripts/slurm_model_environment.sh
+```
+
+Restricted models fail closed until `--accept-terms` is passed after the user
+accepts the upstream license. Contract/build validation is not reported as a
+successful model run: only LLaVA-Med, Lingshu-7B and PubMedCLIP retain their
+previously committed runtime-validated status. See
+[docs/model-environments-v1.3.md](docs/model-environments-v1.3.md).
+The machine-readable validation record, including the cluster container-build
+privilege boundary, is in
+[docs/results/v1.3-model-environments.json](docs/results/v1.3-model-environments.json).
+
 ## v1.2: optimized inference engines
 
 Version 1.2 adds explicit vLLM and SGLang backends, OpenAI-compatible serving,
@@ -217,11 +243,11 @@ pip install -e ".[medical]"
 ```
 
 LLaVA-Med uses the upstream implementation's older Transformers compatibility
-window. Keep it in a separate environment; the supplied setup script creates
-one without modifying the parent Conda environment:
+window. The legacy helper remains available, but the common per-model command
+is preferred and never modifies the parent Conda environment:
 
 ```bash
-bash scripts/setup_llava_med_env.sh
+bash scripts/setup_model_env.sh llava_med_v1_5_7b
 ```
 
 ## Unified CLI

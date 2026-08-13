@@ -1,0 +1,3 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=xraygpt_7b
+https://github.com/mbzuai-oryx/XrayGPT	d0baa6a075671090bc3581def91d75e4501931e8	install=false

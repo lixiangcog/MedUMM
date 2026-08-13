@@ -1,0 +1,12 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=medclip
+# profile=medclip
+# contract_sha256=8a30233bd829a43de8e77467c8f27b561385d1d57719d12e5f995d34f28c935a
+torch==2.0.1
+torchvision==0.15.2
+transformers==4.24.0
+tokenizers==0.13.3
+timm==0.6.13
+pillow==9.4.0
+numpy==1.26.4
+scikit-learn==1.2.2

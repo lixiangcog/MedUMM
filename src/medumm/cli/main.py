@@ -171,6 +171,35 @@ def _backends_command(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _environments_command(arguments: argparse.Namespace) -> int:
+    from medumm.environments import ENVIRONMENT_CATALOG
+    from medumm.environments.render import inspect_current_environment
+
+    if arguments.environment_action == "show":
+        print(
+            json.dumps(
+                ENVIRONMENT_CATALOG.get(arguments.model).to_dict(),
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
+        return 0
+    if arguments.environment_action == "check-current":
+        result = inspect_current_environment(ENVIRONMENT_CATALOG.get(arguments.model))
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0 if result["valid"] else 1
+    values = ENVIRONMENT_CATALOG.to_dict()
+    if arguments.json:
+        print(json.dumps(values, indent=2, ensure_ascii=False))
+    else:
+        for item in values["models"]:
+            print(
+                f"{item['model']}: profile={item['profile']}; python={item['python']}; "
+                f"cuda={item['cuda']}; validation={item['validation']}"
+            )
+    return 0
+
+
 def _benchmark_inference_command(arguments: argparse.Namespace) -> int:
     from medumm.inference.benchmark import run_inference_benchmark
 
@@ -394,6 +423,24 @@ def build_parser() -> argparse.ArgumentParser:
     )
     backends.add_argument("--json", action="store_true")
     backends.set_defaults(handler=_backends_command)
+
+    environments = commands.add_parser(
+        "environments", help="Inspect reproducible per-model runtime contracts"
+    )
+    environment_commands = environments.add_subparsers(
+        dest="environment_action", required=True
+    )
+    environment_list = environment_commands.add_parser("list", help="List model environments")
+    environment_list.add_argument("--json", action="store_true")
+    environment_list.set_defaults(handler=_environments_command)
+    environment_show = environment_commands.add_parser("show", help="Show one environment")
+    environment_show.add_argument("model")
+    environment_show.set_defaults(handler=_environments_command)
+    environment_check = environment_commands.add_parser(
+        "check-current", help="Check imports in the current Python environment"
+    )
+    environment_check.add_argument("model")
+    environment_check.set_defaults(handler=_environments_command)
 
     benchmark_inference = commands.add_parser(
         "benchmark-inference", help="Measure inference latency and throughput"

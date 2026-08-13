@@ -1,0 +1,14 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=bimedix2_8b
+# profile=llava_qwen
+# contract_sha256=6f4a0545e6b79708c1b20d8472dbdf8e764545fbcb6348d3f167df2991f2f706
+torch==2.0.1
+torchvision==0.15.2
+transformers==4.37.2
+tokenizers==0.15.2
+accelerate==0.21.0
+einops==0.6.1
+einops-exts==0.0.4
+sentencepiece==0.1.99
+pillow==10.2.0
+numpy==1.26.0

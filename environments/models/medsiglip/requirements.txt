@@ -1,0 +1,10 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=medsiglip
+# profile=contrastive_hf
+# contract_sha256=011d830a825b93fe15dd6ba6b42aeb3b659c3fb0e8721629886748d8693180e9
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.51.3
+tokenizers==0.21.1
+pillow==11.2.1
+numpy==1.26.4

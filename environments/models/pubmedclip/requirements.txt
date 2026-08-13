@@ -1,0 +1,10 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=pubmedclip
+# profile=contrastive_hf
+# contract_sha256=3710f8c289fd93c91c0d6484e94b6f84490501135322fdf63d92a09ec10cc8dd
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.51.3
+tokenizers==0.21.1
+pillow==11.2.1
+numpy==1.26.4

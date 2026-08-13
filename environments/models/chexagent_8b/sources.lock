@@ -1,0 +1,3 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=chexagent_8b
+https://github.com/Stanford-AIMI/CheXagent	e4f31e6e517f442620fe816f90c846cbcb28b746	install=false

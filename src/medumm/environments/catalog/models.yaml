@@ -1,0 +1,1116 @@
+catalog_version: "1.3.0"
+models:
+  - model: bimedix2_8b
+    profile: llava_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.37.2"
+      - "tokenizers==0.15.2"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==10.2.0"
+      - "numpy==1.26.0"
+    sources:
+      - repository: https://github.com/mbzuai-oryx/BiMediX2
+        revision: ca658eb954f7b4a6861067203b385d3bab6ad46c
+        install: false
+    model_revision: aee62b2f36fea13dbbd6b83909707a443a1c3822
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: biomedclip
+    profile: open_clip
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "open-clip-torch==2.32.0"
+      - "huggingface-hub==0.33.4"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 9f341de24bfb00180f1b847274256e9b65a3a32e
+    minimum_gpu_memory_gb: 8
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - open_clip
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: biomedgpt_10b
+    profile: legacy_vision
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.28.1"
+      - "tokenizers==0.13.3"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==9.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/PharMolix/OpenBioMed
+        revision: 5ddc32de1849b3e8c41dd69c71761afc27899480
+        install: false
+    model_revision: b9d52a4b6b87d3ead78cdd2fdaeb8ba656bffa6a
+    minimum_gpu_memory_gb: 28
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: chexagent_8b
+    profile: internvl
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.1"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+    torch_index: https://download.pytorch.org/whl/cu121
+    dependencies:
+      - "torch==2.3.0"
+      - "torchvision==0.18.0"
+      - "transformers==4.46.0"
+      - "tokenizers==0.20.3"
+      - "accelerate==0.34.2"
+      - "timm==0.9.12"
+      - "einops==0.6.1"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/Stanford-AIMI/CheXagent
+        revision: e4f31e6e517f442620fe816f90c846cbcb28b746
+        install: false
+    model_revision: 4934e91451945c8218c267aae9c34929a7677829
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+      - timm
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: fleming_vl_8b
+    profile: internvl
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.1"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+    torch_index: https://download.pytorch.org/whl/cu121
+    dependencies:
+      - "torch==2.3.0"
+      - "torchvision==0.18.0"
+      - "transformers==4.46.0"
+      - "tokenizers==0.20.3"
+      - "accelerate==0.34.2"
+      - "timm==0.9.12"
+      - "einops==0.6.1"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 801e2bef9645bca0646d55837a6630fb468e2901
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - timm
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: gmai_vl
+    profile: internvl
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.1"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+    torch_index: https://download.pytorch.org/whl/cu121
+    dependencies:
+      - "torch==2.3.0"
+      - "torchvision==0.18.0"
+      - "transformers==4.46.0"
+      - "tokenizers==0.20.3"
+      - "accelerate==0.34.2"
+      - "timm==0.9.12"
+      - "einops==0.6.1"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/uni-medical/GMAI-VL
+        revision: 9f81a156ec8575b72c730dea426be521c8a0104c
+        install: false
+    model_revision: 1741e45501947d534014c487efc229f91c8e79e1
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - timm
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: healthgpt_m3
+    profile: llava_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.37.2"
+      - "tokenizers==0.15.2"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==10.2.0"
+      - "numpy==1.26.0"
+    sources:
+      - repository: https://github.com/DCDmllm/HealthGPT
+        revision: 30aa31e4c1ba903b60f1772aab839b3b7967afec
+        install: false
+    model_revision: abc0c446b557dbf6d9cad867d99c93eedf0fc7aa
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: huatuogpt_vision_34b
+    profile: llava_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.37.2"
+      - "tokenizers==0.15.2"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==10.2.0"
+      - "numpy==1.26.0"
+    sources:
+      - repository: https://github.com/FreedomIntelligence/HuatuoGPT-Vision
+        revision: e1a52dcf6c0417f4b6ac1d378b01147280192fca
+        install: false
+    model_revision: 0f77069c398c8ffd0cbe41618c157f999b23052e
+    minimum_gpu_memory_gb: 80
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: huatuogpt_vision_7b
+    profile: llava_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.37.2"
+      - "tokenizers==0.15.2"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==10.2.0"
+      - "numpy==1.26.0"
+    sources:
+      - repository: https://github.com/FreedomIntelligence/HuatuoGPT-Vision
+        revision: e1a52dcf6c0417f4b6ac1d378b01147280192fca
+        install: false
+    model_revision: 34dfcdbb7728ff38da865839f342b88c4cf6ef39
+    minimum_gpu_memory_gb: 21
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: lingshu_32b
+    profile: modern_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "qwen-vl-utils==0.0.14"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 36b98277cacb60db86f34b75ce0540b1ea35183c
+    minimum_gpu_memory_gb: 76
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: lingshu_7b
+    profile: modern_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "qwen-vl-utils==0.0.14"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: runtime_validated
+    evidence: docs/results/v0.9-runtime-slices.json
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: lingshu_i_8b
+    profile: internvl
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.1"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+    torch_index: https://download.pytorch.org/whl/cu121
+    dependencies:
+      - "torch==2.3.0"
+      - "torchvision==0.18.0"
+      - "transformers==4.46.0"
+      - "tokenizers==0.20.3"
+      - "accelerate==0.34.2"
+      - "timm==0.9.12"
+      - "einops==0.6.1"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: b004bfc0554d90bd44baedf4de08c361e71ef017
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - timm
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: llava_med_v1_5_7b
+    profile: llava_legacy
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.36.2"
+      - "tokenizers==0.15.2"
+      - "sentencepiece==0.1.99"
+      - "einops==0.6.1"
+      - "accelerate==0.21.0"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/microsoft/LLaVA-Med
+        revision: 30697ca50b5c29a8e955c99330b259776aef27b9
+        install: true
+    model_revision: 91bb16c122001ddc9cf1fd36ce1dae09448943a2
+    minimum_gpu_memory_gb: 21
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - llava
+    validation: runtime_validated
+    evidence: docs/results/v0.3-llava-med-vqa-rad.json
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: m3d_lamed_4b
+    profile: m3d
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.2.1"
+      - "torchvision==0.17.1"
+      - "transformers==4.39.1"
+      - "tokenizers==0.15.2"
+      - "accelerate==0.29.3"
+      - "monai==1.3.0"
+      - "nibabel==5.2.1"
+      - "simpleitk==2.3.1"
+      - "einops==0.8.0"
+      - "pillow==10.3.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/BAAI-DCAI/M3D
+        revision: 63e72005a2304eda74579870239bfc7b04b0edae
+        install: false
+    model_revision: 329bed510c2cff0ad3fe6f2a1a7075f45e2706e9
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - monai
+      - nibabel
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: maira_2
+    profile: maira
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "protobuf==5.29.4"
+      - "sentencepiece==0.2.0"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 795a2b1cd4a310624b4e3d14b5a23e41fd273deb
+    minimum_gpu_memory_gb: 21
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: med_flamingo_9b
+    profile: open_flamingo
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers @ git+https://github.com/huggingface/transformers@01734dba842c29408c96caa5c345c9e415c7569b"
+      - "accelerate @ git+https://github.com/huggingface/accelerate@4d583ad6a1f13d1d7617e6a37f791ec01a68413a"
+      - "open-flamingo==0.0.2"
+      - "einops==0.6.0"
+      - "einops-exts==0.0.4"
+      - "pillow==9.4.0"
+      - "numpy==1.24.2"
+    sources:
+      - repository: https://github.com/snap-stanford/med-flamingo
+        revision: b3c1e64d175323f764b791f9e43172afe06ad180
+        install: false
+    model_revision: 7243cd83bd426ceade9c4de9844cc5e5f3ff75e0
+    minimum_gpu_memory_gb: 25
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - open_flamingo
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medclip
+    profile: medclip
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.24.0"
+      - "tokenizers==0.13.3"
+      - "timm==0.6.13"
+      - "pillow==9.4.0"
+      - "numpy==1.26.4"
+      - "scikit-learn==1.2.2"
+    sources:
+      - repository: https://github.com/RyanWangZf/MedCLIP
+        revision: 9c3396f20d5d54e4fae241b8cb06ca45848e98c9
+        install: false
+    model_revision: d5892b39a4adaed74b92212a44081509db72f87b
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Artifact endpoint currently requires authentication; model_revision is pinned to the audited upstream source commit or accessible base artifact."
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: meddr
+    profile: internvl
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.1"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+    torch_index: https://download.pytorch.org/whl/cu121
+    dependencies:
+      - "torch==2.3.0"
+      - "torchvision==0.18.0"
+      - "transformers==4.46.0"
+      - "tokenizers==0.20.3"
+      - "accelerate==0.34.2"
+      - "timm==0.9.12"
+      - "einops==0.6.1"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/sunanhe/MedDr
+        revision: 2136a4cb95a582200b34a3cfab3db5f32898df56
+        install: false
+    model_revision: 2136a4cb95a582200b34a3cfab3db5f32898df56
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - timm
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Artifact endpoint currently requires authentication; model_revision is pinned to the audited upstream source commit or accessible base artifact."
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medgemma_1_27b_it
+    profile: gemma3
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 2d3e00ea38b50018bf5dd3aa1009457cd2d5a48f
+    minimum_gpu_memory_gb: 65
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medgemma_1_5_4b_it
+    profile: gemma3
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 91850547d9f0b2fdd21aa7c5f4f3d1a8a52c243b
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medmo_4b
+    profile: modern_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "qwen-vl-utils==0.0.14"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/genmilab/MedMO
+        revision: 330d951ccf402ed205e45ddacbfd6c2b3c656065
+        install: false
+    model_revision: 0e220705d851598b37725326aadb852aa8b37f43
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medmo_8b
+    profile: modern_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "qwen-vl-utils==0.0.14"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/genmilab/MedMO
+        revision: 330d951ccf402ed205e45ddacbfd6c2b3c656065
+        install: false
+    model_revision: 8eafab80545fb4d60b0fb126a097e972e6475851
+    minimum_gpu_memory_gb: 23
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medsiglip
+    profile: contrastive_hf
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 9cea28a1a1195f665105faa6e8544c112fd960a4
+    minimum_gpu_memory_gb: 8
+    recommended_gpus: 1
+    access: gated
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: medvlm_r1
+    profile: modern_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "qwen-vl-utils==0.0.14"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/JZPeterPan/MedVLM-R1
+        revision: 2eee4210b25b149dcfa68513eb4682ac63b029d2
+        install: false
+    model_revision: d256f2cfdf98c6872c1dc9f20b7dd52f49374fe9
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: plip
+    profile: contrastive_hf
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 67ade53ddd32195868f422585f72698ef5d15094
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: pubmedclip
+    profile: contrastive_hf
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 26c0c67f6da303ad2a38909130bd35744ea93517
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: runtime_validated
+    evidence: docs/results/v0.9-runtime-slices.json
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: quiltnet
+    profile: open_clip
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "open-clip-torch==2.32.0"
+      - "huggingface-hub==0.33.4"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 8ce77289ce35a90b2f1db1137dfa4bc2df175e33
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - open_clip
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: radfm_14b
+    profile: legacy_vision
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.28.1"
+      - "tokenizers==0.13.3"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==9.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/chaoyi-wu/RadFM
+        revision: 8d798c554ca0f40cd4a409f0335cc8512cc9d7cf
+        install: false
+    model_revision: bd5e695420b1104e0663401c6c1012bf9f29e87e
+    minimum_gpu_memory_gb: 36
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: unimed_clip
+    profile: open_clip
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "open-clip-torch==2.32.0"
+      - "huggingface-hub==0.33.4"
+      - "pillow==11.2.1"
+      - "numpy==1.26.4"
+    sources:
+      []
+    model_revision: 536d1651ab28a68a85af07b0ad1a3c56de34e14c
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - open_clip
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Artifact endpoint currently requires authentication; model_revision is pinned to the audited upstream source commit or accessible base artifact."
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: unimed_vl
+    profile: modern_qwen
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.6"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
+    dependencies:
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
+      - "qwen-vl-utils==0.0.14"
+      - "pillow==11.2.1"
+      - "safetensors==0.5.3"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/mbzuai-oryx/UniMed-CLIP
+        revision: 536d1651ab28a68a85af07b0ad1a3c56de34e14c
+        install: false
+    model_revision: 29918cef3ce94a13fe1670145c32a3d1198aec7d
+    minimum_gpu_memory_gb: 14
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+      - PIL
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: vila_m3_3b
+    profile: vila
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "12.1"
+    docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+    torch_index: https://download.pytorch.org/whl/cu121
+    dependencies:
+      - "torch==2.3.0"
+      - "torchvision==0.18.0"
+      - "transformers==4.46.0"
+      - "tokenizers==0.20.3"
+      - "accelerate==0.34.2"
+      - "peft==0.13.2"
+      - "bitsandbytes==0.43.2"
+      - "einops==0.6.1"
+      - "timm==0.9.12"
+      - "pillow==10.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/Efficient-Large-Model/VILA
+        revision: 0f1426e8da9181e6e6653e10bc15f62d515fa2f6
+        install: false
+    model_revision: 0f1426e8da9181e6e6653e10bc15f62d515fa2f6
+    minimum_gpu_memory_gb: 12
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Artifact endpoint currently requires authentication; model_revision is pinned to the audited upstream source commit or accessible base artifact."
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+
+  - model: xraygpt_7b
+    profile: legacy_vision
+    python: "3.10"
+    platform: linux_x86_64
+    accelerator: nvidia_gpu
+    cuda: "11.8"
+    docker_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:f6913f3c02f297877f6859d12ff330043c0be668fdad86868c29a239a5a82151
+    apptainer_base_image: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04@sha256:85fb7ac694079fff1061a0140fd5b5a641997880e12112d92589c3bbb1e8b7ca
+    torch_index: https://download.pytorch.org/whl/cu118
+    dependencies:
+      - "torch==2.0.1"
+      - "torchvision==0.15.2"
+      - "transformers==4.28.1"
+      - "tokenizers==0.13.3"
+      - "accelerate==0.21.0"
+      - "einops==0.6.1"
+      - "einops-exts==0.0.4"
+      - "sentencepiece==0.1.99"
+      - "pillow==9.4.0"
+      - "numpy==1.26.4"
+    sources:
+      - repository: https://github.com/mbzuai-oryx/XrayGPT
+        revision: d0baa6a075671090bc3581def91d75e4501931e8
+        install: false
+    model_revision: d0baa6a075671090bc3581def91d75e4501931e8
+    minimum_gpu_memory_gb: 21
+    recommended_gpus: 1
+    access: open
+    imports:
+      - torch
+      - transformers
+    validation: contract_validated
+    resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
+    notes:
+      - "Artifact endpoint currently requires authentication; model_revision is pinned to the audited upstream source commit or accessible base artifact."
+      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."

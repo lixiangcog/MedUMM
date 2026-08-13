@@ -1,0 +1,12 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=maira_2
+# profile=maira
+# contract_sha256=dfaed72b29024c4dcbabaa3656360f7db5266f4a03dfce5a6675f048cec5f5a1
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.51.3
+tokenizers==0.21.1
+protobuf==5.29.4
+sentencepiece==0.2.0
+pillow==11.2.1
+numpy==1.26.4

@@ -57,6 +57,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "medumm.resources" = ["catalog/*.yaml"]
+"medumm.environments" = ["catalog/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

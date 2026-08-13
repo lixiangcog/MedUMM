@@ -1,0 +1,13 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=lingshu_i_8b
+# profile=internvl
+# contract_sha256=9cadd8371a6af5c06707446ebc2a8c63bd3dd67dd015a27fd178c6a8b3cc5602
+torch==2.3.0
+torchvision==0.18.0
+transformers==4.46.0
+tokenizers==0.20.3
+accelerate==0.34.2
+timm==0.9.12
+einops==0.6.1
+pillow==10.4.0
+numpy==1.26.4

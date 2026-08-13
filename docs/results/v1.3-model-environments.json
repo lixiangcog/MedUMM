@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.3.0",
+  "scope": "per-model dependency and container isolation",
+  "status": "contracts_and_linux_resolution_passed_container_build_privilege_blocked",
+  "catalog": {
+    "models": 32,
+    "per_model_artifacts": 5,
+    "generated_artifacts": 160,
+    "profiles": 13,
+    "contract_coverage": "32/32"
+  },
+  "local_validation": {
+    "contract_tests_passed": 10,
+    "dependency_resolver": "uv 0.8.11",
+    "target_python": "3.10",
+    "target_platform": "x86_64-manylinux_2_28",
+    "dependency_graphs_resolved": 32,
+    "dependency_graphs_failed": 0,
+    "generated_artifact_check": "passed",
+    "shell_syntax_check": "passed",
+    "python_compile_check": "passed"
+  },
+  "server_validation": {
+    "host": "dl01.hpcmaster.com",
+    "login_node": "ln01",
+    "python": "3.12.4",
+    "scheduler": "Slurm",
+    "container_engine": "singularity-ce 4.1.5-1.el8",
+    "catalog_coverage_check": "passed",
+    "generated_artifact_check": "passed",
+    "docker_oci_pull_and_exec": "passed",
+    "definition_build": "blocked",
+    "definition_build_blocker": "The account has no /etc/subuid fakeroot mapping and the cluster has no usable remote builder; non-root Singularity definition builds require fakeroot, remote build, or administrator-approved sudo."
+  },
+  "model_runtime_validation": {
+    "runtime_validated": [
+      "llava_med_v1_5_7b",
+      "lingshu_7b",
+      "pubmedclip"
+    ],
+    "contract_and_resolution_only": 29,
+    "claim": "No new model runtime or clinical-quality claim is made by this environment release."
+  }
+}

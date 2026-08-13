@@ -1,0 +1,3 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=med_flamingo_9b
+https://github.com/snap-stanford/med-flamingo	b3c1e64d175323f764b791f9e43172afe06ad180	install=false

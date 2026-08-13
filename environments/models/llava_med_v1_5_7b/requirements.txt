@@ -1,0 +1,14 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=llava_med_v1_5_7b
+# profile=llava_legacy
+# contract_sha256=bf87af8bd007ffd7ccaf39e66a548fb387575124cc452b063650cae8ca2e5f10
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.36.2
+tokenizers==0.15.2
+sentencepiece==0.1.99
+einops==0.6.1
+accelerate==0.21.0
+pillow==10.4.0
+numpy==1.26.4
+git+https://github.com/microsoft/LLaVA-Med.git@30697ca50b5c29a8e955c99330b259776aef27b9

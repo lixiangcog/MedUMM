@@ -1,0 +1,10 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=biomedclip
+# profile=open_clip
+# contract_sha256=1bc65431a0c840086aa321f1b5b237b84044af3e2354959196fc29d317ec8d3e
+torch==2.7.1
+torchvision==0.22.1
+open-clip-torch==2.32.0
+huggingface-hub==0.33.4
+pillow==11.2.1
+numpy==1.26.4

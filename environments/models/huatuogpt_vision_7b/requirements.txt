@@ -1,0 +1,14 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=huatuogpt_vision_7b
+# profile=llava_qwen
+# contract_sha256=dcd3783620768474be066f462285d69687e3789463638a70da062b819d632cb0
+torch==2.0.1
+torchvision==0.15.2
+transformers==4.37.2
+tokenizers==0.15.2
+accelerate==0.21.0
+einops==0.6.1
+einops-exts==0.0.4
+sentencepiece==0.1.99
+pillow==10.2.0
+numpy==1.26.0

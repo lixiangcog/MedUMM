@@ -1,0 +1,12 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=medgemma_1_5_4b_it
+# profile=gemma3
+# contract_sha256=ad8afbad85b36308c00f8c806f9539765aeea25625fc1592dc393d0e697515fc
+torch==2.7.1
+torchvision==0.22.1
+transformers==4.51.3
+tokenizers==0.21.1
+accelerate==1.7.0
+pillow==11.2.1
+safetensors==0.5.3
+numpy==1.26.4

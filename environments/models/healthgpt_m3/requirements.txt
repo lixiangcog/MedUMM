@@ -1,0 +1,14 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=healthgpt_m3
+# profile=llava_qwen
+# contract_sha256=b89fd106b1d3a74beb6a776c15c77e4e4ce623c4f419bf991120e7a3bfa40e89
+torch==2.0.1
+torchvision==0.15.2
+transformers==4.37.2
+tokenizers==0.15.2
+accelerate==0.21.0
+einops==0.6.1
+einops-exts==0.0.4
+sentencepiece==0.1.99
+pillow==10.2.0
+numpy==1.26.0

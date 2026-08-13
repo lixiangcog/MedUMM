@@ -1,0 +1,15 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=m3d_lamed_4b
+# profile=m3d
+# contract_sha256=b038973a3715580b59eed607a46322e38128f9d3d5461613e007fa10aa9852f8
+torch==2.2.1
+torchvision==0.17.1
+transformers==4.39.1
+tokenizers==0.15.2
+accelerate==0.29.3
+monai==1.3.0
+nibabel==5.2.1
+simpleitk==2.3.1
+einops==0.8.0
+pillow==10.3.0
+numpy==1.26.4

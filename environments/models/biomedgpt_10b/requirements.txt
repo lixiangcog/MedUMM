@@ -1,0 +1,14 @@
+# Generated from environments/models.yaml; do not edit by hand.
+# model=biomedgpt_10b
+# profile=legacy_vision
+# contract_sha256=758a363912263d80863da661fd19a9ce427fd6f3fc1accb5a7eb20901ace6b9a
+torch==2.0.1
+torchvision==0.15.2
+transformers==4.28.1
+tokenizers==0.13.3
+accelerate==0.21.0
+einops==0.6.1
+einops-exts==0.0.4
+sentencepiece==0.1.99
+pillow==9.4.0
+numpy==1.26.4
