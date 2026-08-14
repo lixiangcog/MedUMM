@@ -1,0 +1,23 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: bfloat16
+inference:
+  backbone: fleming_vl_8b
+  config:
+    model_path: ${FLEMING_VL_8B_MODEL_PATH}
+    revision: 801e2bef9645bca0646d55837a6630fb468e2901
+    device_map: auto
+    torch_dtype: bfloat16
+    trust_remote_code: true
+    use_flash_attn: false
+    max_tiles: 4
+    parameters:
+      max_new_tokens: 32
+      do_sample: false
+  request:
+    request_id: fleming-vl-8b-pathology-runtime-v1.5
+    task: understanding
+    prompt: What does this medical image show? Answer briefly and do not provide clinical advice.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+  output_json: outputs/inference/fleming_vl_8b_v1.5.json

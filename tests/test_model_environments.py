@@ -41,8 +41,12 @@ def test_runtime_claims_require_committed_evidence():
     runtime = [spec for spec in ENVIRONMENT_CATALOG.values() if spec.validation.value == "runtime_validated"]
     assert {spec.model for spec in runtime} == {
         "biomedclip",
+        "fleming_vl_8b",
         "llava_med_v1_5_7b",
         "lingshu_7b",
+        "lingshu_i_8b",
+        "medmo_4b",
+        "medmo_8b",
         "medvlm_r1",
         "plip",
         "pubmedclip",

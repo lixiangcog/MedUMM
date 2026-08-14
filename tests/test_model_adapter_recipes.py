@@ -44,7 +44,7 @@ def test_adapter_audit_distinguishes_recipes_from_gpu_evidence():
     assert result["explicit_recipes"] == 32
     assert result["builtin_executors"] == 18
     assert result["official_source_executors"] == 14
-    assert result["runtime_validated"] == 7
+    assert result["runtime_validated"] == 11
 
 
 def test_cli_exposes_model_adapter_matrix(capsys):

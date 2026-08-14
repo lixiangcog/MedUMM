@@ -14,6 +14,7 @@ class ModelExecutor(str, Enum):
     QWEN3_VL = "qwen3_vl_chat"
     CHEXAGENT = "chexagent_chat"
     INTERNVL_CHAT = "internvl_chat"
+    INTERNVL_TRANSFORMERS = "internvl_transformers"
     HF_CONTRASTIVE = "transformers_contrastive"
     OPEN_CLIP_HUB = "open_clip_hf_hub"
     MEDCLIP = "medclip"
@@ -202,12 +203,12 @@ _VALUES = (
     ),
     _builtin(
         "lingshu_i_8b",
-        ModelExecutor.TRANSFORMERS_PIPELINE,
+        ModelExecutor.INTERNVL_TRANSFORMERS,
         "internvl",
         "InternVLForConditionalGeneration",
         "AutoProcessor",
-        "transformers_multimodal_chat_template",
-        max_images=None,
+        "internvl_2_5_mpt",
+        max_images=4,
     ),
     _official(
         "llava_med_v1_5_7b",

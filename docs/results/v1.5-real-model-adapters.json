@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.5.0",
+  "status": "passed",
+  "hostname": "gpu01",
+  "scheduler": {
+    "slurm_job_id": "437697"
+  },
+  "runtime": {
+    "torch": "2.8.0+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB"
+  },
+  "validated_models": [
+    {
+      "model": "medmo_4b",
+      "model_revision": "0e220705d851598b37725326aadb852aa8b37f43",
+      "executor": "qwen3_vl_chat",
+      "device": "cuda:0",
+      "dtype": "bfloat16",
+      "duration_ms": 938.11,
+      "peak_gpu_memory_mb": 8524.51,
+      "response": "A 3D model of the SARS-CoV-2 spike protein.",
+      "result_path": "outputs/inference/medmo_4b_v1.5.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.5/models/medmo_4b",
+        "contract_sha256": "d588387da13ef7cb07da21f0e9de226870db510188d4490b8b5c0cdfca026b41",
+        "python": "3.10.20",
+        "medumm": "1.5.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.57.1",
+        "cuda": "12.6"
+      }
+    },
+    {
+      "model": "medmo_8b",
+      "model_revision": "8eafab80545fb4d60b0fb126a097e972e6475851",
+      "executor": "qwen3_vl_chat",
+      "device": "cuda:0",
+      "dtype": "bfloat16",
+      "duration_ms": 1002.42,
+      "peak_gpu_memory_mb": 17246.9,
+      "response": "The image is a CT scan of the abdomen.",
+      "result_path": "outputs/inference/medmo_8b_v1.5.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.5/models/medmo_8b",
+        "contract_sha256": "29d5f68125ebb1c3d80c2e3dc8b05119d8a88cd8b5c6594a294528c00306aab4",
+        "python": "3.10.20",
+        "medumm": "1.5.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.57.1",
+        "cuda": "12.6"
+      }
+    },
+    {
+      "model": "lingshu_i_8b",
+      "model_revision": "b004bfc0554d90bd44baedf4de08c361e71ef017",
+      "executor": "internvl_transformers",
+      "device": "cuda:0",
+      "dtype": "bfloat16",
+      "duration_ms": 4260.66,
+      "peak_gpu_memory_mb": 15846.52,
+      "response": "This medical image shows a detailed 3D representation of a protein complex, highlighting various structural components. The blue helices represent the protein's secondary structure, while",
+      "result_path": "outputs/inference/lingshu_i_8b_v1.5.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.5/models/lingshu_i_8b",
+        "contract_sha256": "63a8084b00c3b6d5735a5edc296de79ae71a0c77edfcfe9726971691eef11f65",
+        "python": "3.10.20",
+        "medumm": "1.5.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.52.4",
+        "cuda": "12.6"
+      }
+    },
+    {
+      "model": "fleming_vl_8b",
+      "model_revision": "801e2bef9645bca0646d55837a6630fb468e2901",
+      "executor": "internvl_chat",
+      "device": "cuda:0",
+      "dtype": "bfloat16",
+      "duration_ms": 4298.79,
+      "peak_gpu_memory_mb": 15286.65,
+      "response": "The image shows a 3D model of a protein structure. The blue helices represent alpha-helices, the red sheets represent beta-sheets, and",
+      "result_path": "outputs/inference/fleming_vl_8b_v1.5.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.5/models/fleming_vl_8b",
+        "contract_sha256": "861515fb9515688e258c28892e53f7dc3b9800fce95630eea31ef56f6e567de6",
+        "python": "3.10.20",
+        "medumm": "1.5.0",
+        "torch": "2.3.0+cu121",
+        "transformers": "4.46.0",
+        "cuda": "12.1"
+      }
+    }
+  ],
+  "gated_access_probe": {
+    "medsiglip": {
+      "repo_id": "google/medsiglip-448",
+      "revision": "9cea28a1a1195f665105faa6e8544c112fd960a4",
+      "access": "gated",
+      "status": "blocked",
+      "reason": "upstream_terms_or_authorized_token_required"
+    },
+    "medgemma_1_5_4b_it": {
+      "repo_id": "google/medgemma-1.5-4b-it",
+      "revision": "91850547d9f0b2fdd21aa7c5f4f3d1a8a52c243b",
+      "access": "gated",
+      "status": "blocked",
+      "reason": "upstream_terms_or_authorized_token_required"
+    },
+    "maira_2": {
+      "repo_id": "microsoft/maira-2",
+      "revision": "795a2b1cd4a310624b4e3d14b5a23e41fd273deb",
+      "access": "gated",
+      "status": "blocked",
+      "reason": "upstream_terms_or_authorized_token_required"
+    }
+  },
+  "counts": {
+    "validated_in_this_job": 4,
+    "runtime_validated_after_release": 11,
+    "catalog_models": 32
+  },
+  "validation_scope": "Pinned real-weight inference through the public MedUMM adapter interface on one Slurm-allocated GPU. This is interface/runtime evidence, not a clinical-quality claim."
+}

@@ -1,0 +1,21 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: bfloat16
+inference:
+  backbone: lingshu_i_8b
+  config:
+    model_path: ${LINGSHU_I_8B_MODEL_PATH}
+    revision: b004bfc0554d90bd44baedf4de08c361e71ef017
+    device_map: auto
+    torch_dtype: bfloat16
+    trust_remote_code: false
+    parameters:
+      max_new_tokens: 32
+      do_sample: false
+  request:
+    request_id: lingshu-i-8b-pathology-runtime-v1.5
+    task: understanding
+    prompt: What does this medical image show? Answer briefly and do not provide clinical advice.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+  output_json: outputs/inference/lingshu_i_8b_v1.5.json

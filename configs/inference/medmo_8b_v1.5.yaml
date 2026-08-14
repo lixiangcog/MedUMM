@@ -1,0 +1,21 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: bfloat16
+inference:
+  backbone: medmo_8b
+  config:
+    model_path: ${MEDMO_8B_MODEL_PATH}
+    revision: 8eafab80545fb4d60b0fb126a097e972e6475851
+    device_map: auto
+    torch_dtype: bfloat16
+    max_pixels: 401408
+    parameters:
+      max_new_tokens: 32
+      do_sample: false
+  request:
+    request_id: medmo-8b-pathology-runtime-v1.5
+    task: understanding
+    prompt: Identify the image modality and briefly describe the visible tissue. Do not provide clinical advice.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+  output_json: outputs/inference/medmo_8b_v1.5.json

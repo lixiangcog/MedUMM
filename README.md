@@ -7,6 +7,23 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.5: four more real medical model runtimes
+
+Version 1.5 validates four additional open-weight medical multimodal releases
+through the same public `medumm infer` interface: MedMO-4B and MedMO-8B use
+Qwen3-VL generation, Lingshu-I-8B uses the native Transformers InternVL model
+with its upstream MPT prompt protocol, and Fleming-VL-8B uses its pinned
+official InternVL chat implementation. Each model has an immutable weight
+revision and an independently checked Python environment.
+
+All four completed offline inference in Slurm job `437697` on one
+NVIDIA A800-SXM4-80GB. MedUMM now has committed GPU runtime evidence for 11 of
+32 catalog models; the other 21 remain interface or contract claims only.
+MedSigLIP, MedGemma 1.5 4B, and MAIRA-2 were also probed and remain explicitly
+blocked by upstream access terms on the current server. See
+[docs/real-model-adapters-v1.5.md](docs/real-model-adapters-v1.5.md) and the
+[machine-readable A800 evidence](docs/results/v1.5-real-model-adapters.json).
+
 ## v1.4: explicit real-model adapters
 
 Version 1.4 replaces broad catalog-family routing with one explicit adapter

@@ -237,7 +237,7 @@ models:
     license: source-specific terms
     access: open
     runtime_family: hf_image_text_to_text
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image, image_set]
     medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
@@ -245,7 +245,7 @@ models:
     languages: [en, zh]
     trust_remote_code: true
     revision_policy: require_immutable_revision
-    notes: ["Instruction-tuned Lingshu release."]
+    notes: ["Native InternVL generation passed the v1.5 offline A800 Slurm acceptance with pinned real weights."]
 
   - name: vila_m3_3b
     display_name: VILA-M3 3B
@@ -370,7 +370,7 @@ models:
     license: Apache-2.0
     access: open
     runtime_family: hf_image_text_to_text
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image, image_set, volume]
     medical_domains: [radiology, pathology, ophthalmology, dermatology]
@@ -378,7 +378,7 @@ models:
     languages: [en]
     trust_remote_code: true
     revision_policy: require_immutable_revision
-    notes: ["Unified medical reasoning, report generation, and grounding through text output."]
+    notes: ["Pinned Qwen3-VL generation passed the v1.5 offline A800 Slurm acceptance."]
 
   - name: medmo_8b
     display_name: MedMO 8B
@@ -389,7 +389,7 @@ models:
     license: Apache-2.0
     access: open
     runtime_family: hf_image_text_to_text
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image, image_set, volume]
     medical_domains: [radiology, pathology, ophthalmology, dermatology]
@@ -397,7 +397,7 @@ models:
     languages: [en]
     trust_remote_code: true
     revision_policy: require_immutable_revision
-    notes: ["Larger MedMO release with multi-image and 3D case support."]
+    notes: ["Pinned Qwen3-VL generation passed the v1.5 offline A800 Slurm acceptance."]
 
   - name: fleming_vl_8b
     display_name: Fleming-VL 8B
@@ -408,7 +408,7 @@ models:
     license: source-specific terms
     access: open
     runtime_family: official_bridge
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image, image_set, volume, video]
     medical_domains: [radiology, pathology, ophthalmology, dermatology, surgery]
@@ -416,7 +416,7 @@ models:
     languages: [en]
     trust_remote_code: true
     revision_policy: require_immutable_revision
-    notes: ["Supports 2D, 3D, longitudinal, and medical video inputs."]
+    notes: ["Pinned official InternVL chat execution passed the v1.5 offline A800 Slurm acceptance for a 2D image request."]
 
   - name: unimed_vl
     display_name: UniMed-VL

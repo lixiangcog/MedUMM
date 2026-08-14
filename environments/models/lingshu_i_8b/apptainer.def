@@ -1,6 +1,6 @@
 # Generated from environments/models.yaml; do not edit by hand.
 Bootstrap: docker
-From: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
+From: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
 
 %files
     lock.txt /tmp/medumm-lock.txt
@@ -11,7 +11,7 @@ From: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f035
     rm -rf /var/lib/apt/lists/*
     python3.10 -m venv /opt/medumm/venv
     /opt/medumm/venv/bin/python -m pip install --upgrade pip==25.1.1
-    /opt/medumm/venv/bin/python -m pip install --extra-index-url https://download.pytorch.org/whl/cu121 -r /tmp/medumm-lock.txt
+    /opt/medumm/venv/bin/python -m pip install --extra-index-url https://download.pytorch.org/whl/cu126 -r /tmp/medumm-lock.txt
 
 %environment
     export PATH=/opt/medumm/venv/bin:$PATH
@@ -23,4 +23,4 @@ From: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f035
 %labels
     org.medumm.model lingshu_i_8b
     org.medumm.profile internvl
-    org.medumm.contract-sha256 9cadd8371a6af5c06707446ebc2a8c63bd3dd67dd015a27fd178c6a8b3cc5602
+    org.medumm.contract-sha256 63a8084b00c3b6d5735a5edc296de79ae71a0c77edfcfe9726971691eef11f65

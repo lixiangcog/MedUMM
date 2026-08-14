@@ -1,11 +1,11 @@
 # Generated from environments/models.yaml; do not edit by hand.
 # model=medmo_8b
 # profile=modern_qwen
-# contract_sha256=02328df497c8edbe869f84250d6db62c006162d30f8b47771d23b3bf01a95e16
+# contract_sha256=29d5f68125ebb1c3d80c2e3dc8b05119d8a88cd8b5c6594a294528c00306aab4
 torch==2.7.1
 torchvision==0.22.1
-transformers==4.51.3
-tokenizers==0.21.1
+transformers==4.57.1
+tokenizers==0.22.1
 accelerate==1.7.0
 qwen-vl-utils==0.0.14
 pillow==11.2.1

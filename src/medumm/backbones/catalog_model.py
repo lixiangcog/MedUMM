@@ -102,6 +102,8 @@ class CatalogModelAdapter(ModelAdapter):
             self._load_chexagent(config, model_path=model_path, revision=revision)
         elif self.recipe.executor is ModelExecutor.INTERNVL_CHAT:
             self._load_internvl_chat(config, model_path=model_path, revision=revision)
+        elif self.recipe.executor is ModelExecutor.INTERNVL_TRANSFORMERS:
+            self._load_internvl_transformers(config, model_path=model_path, revision=revision)
         elif self.recipe.executor is ModelExecutor.M3D_LAMED:
             self._load_m3d_lamed(config, model_path=model_path, revision=revision)
         elif self.recipe.executor is ModelExecutor.MEDCLIP:
@@ -155,10 +157,15 @@ class CatalogModelAdapter(ModelAdapter):
             device_map=config.get("device_map", "auto"),
             trust_remote_code=bool(config.get("trust_remote_code", self.spec.trust_remote_code)),
         )
+        self._model = self._pipeline.model
+        self._torch = torch
         self._defaults = dict(
             config.get("parameters", {"max_new_tokens": 128, "do_sample": False})
         )
         self._system_prompt = str(config.get("system_prompt", SYSTEM_PROMPT))
+        parameter = next(self._model.parameters())
+        self._device = str(parameter.device)
+        self._dtype = str(parameter.dtype).removeprefix("torch.")
 
     def _load_qwen_vl(
         self,
@@ -311,6 +318,55 @@ class CatalogModelAdapter(ModelAdapter):
         self._defaults = {
             "max_new_tokens": 256,
             "do_sample": False,
+            **dict(config.get("parameters", {})),
+        }
+        self._system_prompt = str(config.get("system_prompt", SYSTEM_PROMPT))
+        parameter = next(self._model.parameters())
+        self._device = str(parameter.device)
+        self._dtype = str(parameter.dtype).removeprefix("torch.")
+
+    def _load_internvl_transformers(
+        self,
+        config: dict[str, Any],
+        *,
+        model_path: str,
+        revision: str | None,
+    ) -> None:
+        try:
+            import torch
+            import transformers
+            from transformers import AutoProcessor
+        except (ImportError, ModuleNotFoundError) as error:
+            raise RuntimeError(
+                f"{self.name} requires its pinned native InternVL Transformers environment."
+            ) from error
+        model_class_name = str(self.recipe.model_class or "").strip()
+        model_class = getattr(transformers, model_class_name, None)
+        if model_class is None:
+            raise RuntimeError(
+                f"The current Transformers installation has no {model_class_name}. "
+                f"Use the {self.name} model environment."
+            )
+        trust_remote_code = bool(
+            config.get("trust_remote_code", self.spec.trust_remote_code)
+        )
+        self._model = model_class.from_pretrained(
+            model_path,
+            revision=revision,
+            device_map=config.get("device_map", "auto"),
+            torch_dtype=self._torch_dtype(torch, config),
+            trust_remote_code=trust_remote_code,
+        ).eval()
+        self._processor = AutoProcessor.from_pretrained(
+            model_path,
+            revision=revision,
+            trust_remote_code=trust_remote_code,
+        )
+        self._torch = torch
+        self._defaults = {
+            "max_new_tokens": 128,
+            "do_sample": False,
+            "use_cache": True,
             **dict(config.get("parameters", {})),
         }
         self._system_prompt = str(config.get("system_prompt", SYSTEM_PROMPT))
@@ -625,8 +681,14 @@ class CatalogModelAdapter(ModelAdapter):
                 },
                 {"role": "user", "content": content},
             ]
+            uses_cuda = self._device.startswith("cuda")
+            if uses_cuda:
+                self._torch.cuda.reset_peak_memory_stats()
+                self._torch.cuda.synchronize()
             started = perf_counter()
             output = self._pipeline(text=messages, **{**self._defaults, **request.parameters})
+            if uses_cuda:
+                self._torch.cuda.synchronize()
             duration_ms = (perf_counter() - started) * 1000
         finally:
             for image in opened:
@@ -639,10 +701,27 @@ class CatalogModelAdapter(ModelAdapter):
             metadata={
                 "resource": self.name,
                 "source": self.spec.source,
+                "model_id": self.model_path,
+                "model_revision": self.model_revision,
+                "model_family": self.recipe.model_type,
+                "executor": self.recipe.executor.value,
+                "device": self._device,
+                "dtype": self._dtype,
+                "input_images": len(request.images),
+                "hostname": platform.node(),
+                "scheduler": {
+                    "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+                    "slurm_step_id": os.environ.get("SLURM_STEP_ID"),
+                },
+                "peak_gpu_memory_mb": (
+                    round(self._torch.cuda.max_memory_allocated() / 1024**2, 2)
+                    if uses_cuda
+                    else None
+                ),
                 "clinical_use": False,
                 **request.metadata,
             },
-            duration_ms=duration_ms,
+            duration_ms=round(duration_ms, 2),
         )
 
     def _qwen_generate(self, request: InferenceRequest) -> InferenceResult:
@@ -853,6 +932,10 @@ class CatalogModelAdapter(ModelAdapter):
         image_prefix = "".join("<image>\n" for _ in request.images)
         question = f"{self._system_prompt}\n{image_prefix}{request.prompt or 'Describe the images.'}".strip()
         options = {**self._defaults, **request.parameters}
+        uses_cuda = self._device.startswith("cuda")
+        if uses_cuda:
+            self._torch.cuda.reset_peak_memory_stats()
+            self._torch.cuda.synchronize()
         started = perf_counter()
         chat_options: dict[str, Any] = {}
         if len(patch_counts) > 1:
@@ -865,6 +948,8 @@ class CatalogModelAdapter(ModelAdapter):
                 options,
                 **chat_options,
             )
+        if uses_cuda:
+            self._torch.cuda.synchronize()
         duration_ms = (perf_counter() - started) * 1000
         if isinstance(response, tuple):
             response = response[0]
@@ -877,12 +962,106 @@ class CatalogModelAdapter(ModelAdapter):
                 "resource": self.name,
                 "model_id": self.model_path,
                 "model_revision": self.model_revision,
-                "model_family": "internvl_chat",
+                "model_family": self.recipe.model_type,
                 "executor": self.recipe.executor.value,
                 "device": self._device,
                 "dtype": self._dtype,
                 "input_images": len(request.images),
                 "image_tiles": sum(patch_counts),
+                "hostname": platform.node(),
+                "scheduler": {
+                    "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+                    "slurm_step_id": os.environ.get("SLURM_STEP_ID"),
+                },
+                "peak_gpu_memory_mb": (
+                    round(self._torch.cuda.max_memory_allocated() / 1024**2, 2)
+                    if uses_cuda
+                    else None
+                ),
+                "clinical_use": False,
+                **request.metadata,
+            },
+            duration_ms=round(duration_ms, 2),
+        )
+
+    def _internvl_transformers_generate(
+        self,
+        request: InferenceRequest,
+    ) -> InferenceResult:
+        if not request.images:
+            raise ValueError(f"{self.name} requires at least one image.")
+        if self.recipe.max_images is not None and len(request.images) > self.recipe.max_images:
+            raise ValueError(
+                f"{self.name} accepts at most {self.recipe.max_images} images per request."
+            )
+        images: list[Image.Image] = []
+        try:
+            images = [Image.open(path).convert("RGB") for path in request.images]
+            image_tokens = "\n".join("<IMG_CONTEXT>" for _ in images)
+            user_text = str(request.prompt or "Describe the images.")
+            prompt = (
+                f"<|im_start|>system\n{self._system_prompt}<|im_end|>\n"
+                f"<|im_start|>user\n{image_tokens}\n{user_text}<|im_end|>\n"
+                "<|im_start|>assistant\n"
+            )
+            model_dtype = next(self._model.parameters()).dtype
+            inputs = self._processor(
+                text=[prompt],
+                images=images,
+                padding=True,
+                return_tensors="pt",
+            ).to(device=self._device, dtype=model_dtype)
+            options = {**self._defaults, **request.parameters}
+            if not bool(options.get("do_sample", False)):
+                options.pop("temperature", None)
+                options.pop("top_p", None)
+            uses_cuda = self._device.startswith("cuda")
+            if uses_cuda:
+                self._torch.cuda.reset_peak_memory_stats()
+                self._torch.cuda.synchronize()
+            started = perf_counter()
+            with self._torch.inference_mode():
+                generated = self._model.generate(**inputs, **options)
+            if uses_cuda:
+                self._torch.cuda.synchronize()
+            duration_ms = (perf_counter() - started) * 1000
+            trimmed = [
+                output_ids[len(input_ids) :]
+                for input_ids, output_ids in zip(inputs.input_ids, generated, strict=True)
+            ]
+            text = self._processor.batch_decode(
+                trimmed,
+                skip_special_tokens=True,
+                clean_up_tokenization_spaces=False,
+            )[0].strip()
+        finally:
+            for image in images:
+                image.close()
+        return InferenceResult(
+            request_id=request.request_id,
+            task=TaskType.UNDERSTANDING,
+            model_name=self.name,
+            text=text,
+            metadata={
+                "resource": self.name,
+                "model_id": self.model_path,
+                "model_revision": self.model_revision,
+                "model_family": self.recipe.model_type,
+                "executor": self.recipe.executor.value,
+                "device": self._device,
+                "dtype": self._dtype,
+                "input_images": len(request.images),
+                "generated_tokens": int(trimmed[0].shape[-1]),
+                "hostname": platform.node(),
+                "scheduler": {
+                    "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+                    "slurm_step_id": os.environ.get("SLURM_STEP_ID"),
+                },
+                "peak_gpu_memory_mb": (
+                    round(self._torch.cuda.max_memory_allocated() / 1024**2, 2)
+                    if uses_cuda
+                    else None
+                ),
                 "clinical_use": False,
                 **request.metadata,
             },
@@ -1135,6 +1314,8 @@ class CatalogModelAdapter(ModelAdapter):
             return [self._chexagent_generate(request) for request in requests]
         if self.recipe.executor is ModelExecutor.INTERNVL_CHAT:
             return [self._internvl_generate(request) for request in requests]
+        if self.recipe.executor is ModelExecutor.INTERNVL_TRANSFORMERS:
+            return [self._internvl_transformers_generate(request) for request in requests]
         if self.recipe.executor is ModelExecutor.M3D_LAMED:
             return [self._m3d_generate(request) for request in requests]
         if self.recipe.executor in {

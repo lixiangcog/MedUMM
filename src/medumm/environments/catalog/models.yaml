@@ -172,10 +172,11 @@ models:
       - torch
       - transformers
       - timm
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.5-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
-      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+      - "Pinned real weights passed the v1.5 offline A800 Slurm acceptance through the explicit Fleming adapter."
 
   - model: gmai_vl
     profile: internvl
@@ -395,19 +396,19 @@ models:
     python: "3.10"
     platform: linux_x86_64
     accelerator: nvidia_gpu
-    cuda: "12.1"
+    cuda: "12.6"
     docker_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:46cb48a4abfbc40c836fe57bc05a07101b6458fffc63bbdfd6a50db98c9358bd
-    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:f4d8e1264366940438f0353da6f289c7bef069d993d111f8106086ccd18c4a30
-    torch_index: https://download.pytorch.org/whl/cu121
+    apptainer_base_image: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468fd8acbdc8c1d41261614e579ae49afe6141da51133
+    torch_index: https://download.pytorch.org/whl/cu126
     dependencies:
-      - "torch==2.3.0"
-      - "torchvision==0.18.0"
-      - "transformers==4.46.0"
-      - "tokenizers==0.20.3"
-      - "accelerate==0.34.2"
+      - "torch==2.7.1"
+      - "torchvision==0.22.1"
+      - "transformers==4.52.4"
+      - "tokenizers==0.21.1"
+      - "accelerate==1.7.0"
       - "timm==0.9.12"
       - "einops==0.6.1"
-      - "pillow==10.4.0"
+      - "pillow==11.2.1"
       - "numpy==1.26.4"
     sources:
       []
@@ -419,10 +420,11 @@ models:
       - torch
       - transformers
       - timm
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.5-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
-      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+      - "Pinned real weights passed the v1.5 offline A800 Slurm acceptance through the native InternVL executor."
 
   - model: llava_med_v1_5_7b
     profile: llava_legacy
@@ -719,8 +721,8 @@ models:
     dependencies:
       - "torch==2.7.1"
       - "torchvision==0.22.1"
-      - "transformers==4.51.3"
-      - "tokenizers==0.21.1"
+      - "transformers==4.57.1"
+      - "tokenizers==0.22.1"
       - "accelerate==1.7.0"
       - "qwen-vl-utils==0.0.14"
       - "pillow==11.2.1"
@@ -738,10 +740,11 @@ models:
       - torch
       - transformers
       - PIL
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.5-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
-      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+      - "Pinned real weights passed the v1.5 offline A800 Slurm acceptance through Qwen3-VL generation."
 
   - model: medmo_8b
     profile: modern_qwen
@@ -755,8 +758,8 @@ models:
     dependencies:
       - "torch==2.7.1"
       - "torchvision==0.22.1"
-      - "transformers==4.51.3"
-      - "tokenizers==0.21.1"
+      - "transformers==4.57.1"
+      - "tokenizers==0.22.1"
       - "accelerate==1.7.0"
       - "qwen-vl-utils==0.0.14"
       - "pillow==11.2.1"
@@ -774,10 +777,11 @@ models:
       - torch
       - transformers
       - PIL
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.5-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
-      - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
+      - "Pinned real weights passed the v1.5 offline A800 Slurm acceptance through Qwen3-VL generation."
 
   - model: medsiglip
     profile: contrastive_hf

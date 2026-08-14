@@ -28,8 +28,12 @@ def test_runtime_validated_status_is_reserved_for_committed_acceptance_paths():
         if item.status is IntegrationStatus.RUNTIME_VALIDATED
     } == {
         "biomedclip",
+        "fleming_vl_8b",
         "llava_med_v1_5_7b",
         "lingshu_7b",
+        "lingshu_i_8b",
+        "medmo_4b",
+        "medmo_8b",
         "medvlm_r1",
         "plip",
         "pubmedclip",

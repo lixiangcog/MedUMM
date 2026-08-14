@@ -1,5 +1,17 @@
 # Roadmap
 
+## v1.5 — wider real-model runtime coverage
+
+- [x] immutable real-weight snapshots and SHA-256 provenance for MedMO-4B, MedMO-8B, Lingshu-I-8B and Fleming-VL-8B
+- [x] model-specific isolated environments with exact Torch and Transformers releases
+- [x] native Lingshu-I InternVL model executor and upstream MPT prompt protocol
+- [x] Qwen3-VL execution for both MedMO sizes and pinned official InternVL chat for Fleming
+- [x] offline four-model A800 Slurm acceptance with latency, peak-memory and environment evidence
+- [x] explicit gated-access probes for MedSigLIP, MedGemma 1.5 4B and MAIRA-2
+- [ ] runtime validation for the remaining 21 catalog models
+- [ ] gated-model acceptance after the user accepts upstream terms and provides authorized access
+- [ ] multi-GPU acceptance for 27B/32B/34B releases
+
 ## v1.4 — explicit adapters and real-weight acceptance
 
 - [x] one explicit model class, processor, prompt protocol and executor recipe for all 32 models
@@ -8,7 +20,7 @@
 - [x] arbitrary user-supplied Python bridge removed from the model interface
 - [x] pinned PLIP, QuiltNet, MedVLM-R1 and BiomedCLIP assets and isolated Python 3.10 environments
 - [x] passed four-model offline A800 Slurm acceptance with latency and peak-memory evidence
-- [ ] runtime validation for the remaining 25 catalog models
+- [ ] runtime validation for the remaining 21 catalog models
 - [ ] repository-specific executors for every remaining official-source runtime
 - [ ] multi-GPU acceptance for 27B/32B/34B releases
 

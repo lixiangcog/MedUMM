@@ -18,5 +18,5 @@ RUN python -m pip install --upgrade pip==25.1.1 \
 WORKDIR /workspace
 LABEL org.medumm.model=medmo_4b \
       org.medumm.profile=modern_qwen \
-      org.medumm.contract-sha256=770ac67e15917885076e88a89aa02cde35c1b606c741f1e1f280ccbdbffb04f5
+      org.medumm.contract-sha256=d588387da13ef7cb07da21f0e9de226870db510188d4490b8b5c0cdfca026b41
 CMD ["python", "-m", "medumm.cli.main", "--help"]

@@ -72,7 +72,20 @@ if [[ "${CHECK_ONLY}" -eq 0 ]]; then
   if [[ ! -x "${ENV_PATH}/bin/python" ]]; then
     "${PYTHON_COMMAND}" -m venv "${ENV_PATH}"
   fi
-  "${ENV_PATH}/bin/python" -m pip install --upgrade "pip==25.1.1"
+  if ! "${ENV_PATH}/bin/python" -c \
+    'from importlib.metadata import version; raise SystemExit(version("pip") != "25.1.1")'; then
+    if [[ -n "${MEDUMM_PIP_WHEEL:-}" ]]; then
+      test -f "${MEDUMM_PIP_WHEEL}"
+      "${ENV_PATH}/bin/python" -m pip install --no-index "${MEDUMM_PIP_WHEEL}"
+    elif [[ "${MEDUMM_SKIP_PIP_UPGRADE:-0}" != "1" ]]; then
+      "${ENV_PATH}/bin/python" -m pip install --upgrade "pip==25.1.1"
+    fi
+  fi
+  if [[ -n "${MEDUMM_SOCKS_WHEEL:-}" ]] && \
+    ! "${ENV_PATH}/bin/python" -c 'import socks' >/dev/null 2>&1; then
+    test -f "${MEDUMM_SOCKS_WHEEL}"
+    "${ENV_PATH}/bin/python" -m pip install --no-index "${MEDUMM_SOCKS_WHEEL}"
+  fi
   TORCH_INDEX=$("${CATALOG_PYTHON}" - "${MEDUMM_ROOT}" "${MODEL_NAME}" <<'PY'
 from pathlib import Path
 import sys
@@ -86,7 +99,7 @@ PY
   else
     "${ENV_PATH}/bin/python" -m pip install -r "${LOCK}"
   fi
-  "${ENV_PATH}/bin/python" -m pip install --no-deps -e "${MEDUMM_ROOT}"
+  "${ENV_PATH}/bin/python" -m pip install --no-deps --no-build-isolation -e "${MEDUMM_ROOT}"
   printf '%s\n' "${FINGERPRINT}" > "${ENV_PATH}/medumm-environment.sha256"
 fi
 
