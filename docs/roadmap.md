@@ -1,5 +1,20 @@
 # Roadmap
 
+## v1.6 — independent medical benchmark matrix
+
+- [x] separate 34 dataset resources from executable benchmark claims
+- [x] 13 specialized medical benchmark adapters plus two generic adapters and one composite runner
+- [x] fixed dataset-family, annotation, prompt, metric-suite, audit and version contract per benchmark
+- [x] dedicated MCQA, imbalance-aware classification, multilabel finding, temporal, retrieval, fairness, safety and paired-robustness scorers
+- [x] reuse versioned pathology, report-factuality, grounding, measurement and calibration scorers through independent benchmark plugins
+- [x] `medumm benchmarks list/show/audit/template` discovery and contract validation
+- [x] 13 runnable configurations with audit → inference → scoring → report artifacts
+- [x] fail-closed annotation, choice, provenance, de-identification, fairness-group and robustness-pair gates
+- [x] all 13 software contracts passed one CPU Slurm acceptance matrix with committed evidence
+- [ ] pinned public real-model runtime slice for every specialized benchmark
+- [ ] expert-labelled report, grounding, measurement, fairness, safety and longitudinal acceptance data
+- [ ] full-dataset statistically meaningful leaderboard results
+
 ## v1.5 — wider real-model runtime coverage
 
 - [x] immutable real-weight snapshots and SHA-256 provenance for MedMO-4B, MedMO-8B, Lingshu-I-8B and Fleming-VL-8B
@@ -86,10 +101,10 @@ incomplete evaluation or data-governance path.
 - [ ] multi-dataset mixture schema with sampling weights and provenance
 - [ ] initialized multi-node process groups and experiment-tracker hooks
 - [ ] preference-training interface and first medical safety preference recipe
-- [ ] localization and grounding metrics
-- [ ] report generation and longitudinal reasoning benchmarks
-- [ ] calibration, uncertainty, selective prediction, and abstention
-- [ ] hallucination, demographic robustness, and shortcut audits
+- [x] localization and grounding metrics
+- [x] report generation and longitudinal reasoning benchmark interfaces
+- [x] calibration, uncertainty, selective prediction, and abstention
+- [x] hallucination, demographic robustness, and shortcut-audit interfaces
 - [ ] cross-modal consistency evaluation across text, image, and editing outputs
 - [ ] signed public leaderboard manifests and reproducibility bundles
 

@@ -1,0 +1,26 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cpu}
+evaluation:
+  benchmark: radiology_report_generation
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/benchmarks_v1.6.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/benchmarks_v1.6.provenance.json
+    benchmark_filter: radiology_report_generation
+    validate_media: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters:
+      fixed_answer: "Findings: bright focus. No dark field. Impression: synthetic positive pattern."
+  protocol:
+    name: radiology_report_generation
+    version: "1.0"
+    metric_suite: medical_report_factuality
+    require_provenance: true
+    require_deidentified: true
+  mode: full
+  resume: false
+  output_directory: outputs/evaluation/benchmarks_v1.6/radiology_report_generation

@@ -1,0 +1,33 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cpu}
+evaluation:
+  benchmark: medical_calibration
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/benchmarks_v1.6.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/benchmarks_v1.6.provenance.json
+    benchmark_filter: medical_calibration
+    validate_media: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters:
+      bright_answer: A
+      dark_answer: B
+      bright_threshold: 64
+      candidate_scores: {A: 0.8, B: 0.2}
+  protocol:
+    name: medical_calibration
+    version: "1.0"
+    metric_suite: medical_calibration
+    calibration_bins: 5
+    selective_thresholds: [0.5, 0.7, 0.9]
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 2
+  mode: full
+  batch_size: 2
+  resume: false
+  output_directory: outputs/evaluation/benchmarks_v1.6/medical_calibration

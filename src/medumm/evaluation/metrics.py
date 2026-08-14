@@ -17,6 +17,24 @@ from medumm.medical.clinical_metrics import (
     summarize_measurement,
     summarize_report,
 )
+from medumm.medical.benchmark_metrics import (
+    evaluate_classification,
+    evaluate_fairness,
+    evaluate_mcqa,
+    evaluate_multilabel,
+    evaluate_retrieval,
+    evaluate_robustness,
+    evaluate_safety,
+    evaluate_temporal,
+    summarize_classification,
+    summarize_fairness,
+    summarize_mcqa,
+    summarize_multilabel,
+    summarize_retrieval,
+    summarize_robustness,
+    summarize_safety,
+    summarize_temporal,
+)
 
 
 class MedicalVQACoreMetrics(MetricSuite):
@@ -165,6 +183,115 @@ class MedicalCalibrationMetrics(MetricSuite):
         return summarize_groups(rows, protocol, aggregate, primary_metric="accuracy")
 
 
+class MedicalMCQAMetrics(MetricSuite):
+    """Strict choice extraction, accuracy, and invalid-response accounting."""
+
+    name = "medical_mcqa"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_mcqa(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        return summarize_groups(rows, protocol, summarize_mcqa, primary_metric="choice_accuracy")
+
+
+class MedicalImageClassificationMetrics(MetricSuite):
+    """Accuracy, balanced accuracy, macro F1, confusion, and optional macro AUC."""
+
+    name = "medical_image_classification"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_classification(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        return summarize_groups(
+            rows, protocol, summarize_classification, primary_metric="balanced_accuracy"
+        )
+
+
+class MedicalMultilabelFindingMetrics(MetricSuite):
+    """Per-sample and micro multilabel finding precision, recall, F1, and exact match."""
+
+    name = "medical_multilabel_findings"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_multilabel(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        return summarize_groups(rows, protocol, summarize_multilabel, primary_metric="micro_f1")
+
+
+class MedicalTemporalReasoningMetrics(MetricSuite):
+    """Phase/order accuracy, edit similarity, and transition F1 for medical sequences."""
+
+    name = "medical_temporal_reasoning"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_temporal(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        return summarize_groups(rows, protocol, summarize_temporal, primary_metric="edit_similarity")
+
+
+class MedicalRetrievalMetrics(MetricSuite):
+    """Recall@K and mean reciprocal rank from model-produced candidate scores."""
+
+    name = "medical_retrieval"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_retrieval(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        return summarize_groups(rows, protocol, summarize_retrieval, primary_metric="recall_at_1")
+
+
+class MedicalFairnessMetrics(MetricSuite):
+    """Worst-group accuracy plus demographic-parity and equal-opportunity gaps."""
+
+    name = "medical_fairness"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_fairness(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        del protocol
+        return {"overall": summarize_fairness(rows)}
+
+
+class MedicalSafetyMetrics(MetricSuite):
+    """Expected refusal, unsafe compliance, over-refusal, and policy-term coverage."""
+
+    name = "medical_safety"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_safety(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        del protocol
+        return {"overall": summarize_safety(rows)}
+
+
+class MedicalRobustnessMetrics(MetricSuite):
+    """Paired baseline/perturbation accuracy drop and prediction consistency."""
+
+    name = "medical_robustness"
+    version = "1.0"
+
+    def score(self, prediction: str, content: dict[str, Any]) -> dict[str, Any]:
+        return evaluate_robustness(prediction, content)
+
+    def summarize(self, rows: list[dict[str, Any]], protocol: dict[str, Any]) -> dict[str, Any]:
+        del protocol
+        return {"overall": summarize_robustness(rows)}
+
+
 metric_suites: TypedRegistry[MetricSuite] = TypedRegistry("metric_suite")
 
 
@@ -206,6 +333,38 @@ def register_metric_suites() -> None:
         (
             MedicalCalibrationMetrics,
             "ECE, Brier, NLL, confidence, and selective prediction metrics",
+        ),
+        (
+            MedicalMCQAMetrics,
+            "Strict medical multiple-choice accuracy and invalid-response rate",
+        ),
+        (
+            MedicalImageClassificationMetrics,
+            "Balanced accuracy, macro F1, confusion, and optional macro AUC",
+        ),
+        (
+            MedicalMultilabelFindingMetrics,
+            "Medical finding micro/macro F1 and exact multilabel match",
+        ),
+        (
+            MedicalTemporalReasoningMetrics,
+            "Medical sequence edit similarity, phase accuracy, and transition F1",
+        ),
+        (
+            MedicalRetrievalMetrics,
+            "Medical image-text retrieval Recall@K and mean reciprocal rank",
+        ),
+        (
+            MedicalFairnessMetrics,
+            "Worst-group accuracy and demographic/equal-opportunity disparity",
+        ),
+        (
+            MedicalSafetyMetrics,
+            "Expected refusal, unsafe compliance, and over-refusal metrics",
+        ),
+        (
+            MedicalRobustnessMetrics,
+            "Paired perturbation accuracy drop and response consistency",
         ),
     )
     for suite, description in suites:

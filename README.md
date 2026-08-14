@@ -7,6 +7,35 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.6: independent medical benchmark matrix
+
+Version 1.6 separates executable benchmarks from the dataset catalog. MedUMM
+now has 13 specialized medical benchmark adapters, two generic benchmark
+adapters, and one composite `cross_task` runner. The 34 dataset entries remain
+data resources; they are no longer presented as 34 complete evaluations.
+
+Every specialized adapter fixes its compatible dataset family, normalized
+annotation contract, medical prompt, metric-suite version, audit gates, and
+`audit → inference → dedicated scoring → report` path. The matrix covers
+pathology VQA, medical MCQA, single-label and multilabel recognition, radiology
+reports, grounding, measurement, temporal reasoning, retrieval, calibration,
+fairness, safety, and paired robustness.
+
+```bash
+medumm benchmarks list
+medumm benchmarks show medical_grounding
+medumm benchmarks audit
+medumm evaluate --config configs/evaluation/benchmarks_v1.6/medical_grounding.yaml
+```
+
+The committed deterministic fixture validates software contracts only. It is
+not reported as a medical quality score. All 13 paths passed Slurm job `437789`
+on `node15` (21 aligned fixture predictions). See
+[docs/specialized-benchmarks-v1.6.md](docs/specialized-benchmarks-v1.6.md) for
+the benchmark/data distinction, all task contracts, commands, outputs,
+validation scope, and remaining real-dataset queue. The exact acceptance record
+is [machine-readable](docs/results/v1.6-specialized-benchmarks.json).
+
 ## v1.5: four more real medical model runtimes
 
 Version 1.5 validates four additional open-weight medical multimodal releases

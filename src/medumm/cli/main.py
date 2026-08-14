@@ -243,6 +243,119 @@ def _models_command(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _benchmarks_command(arguments: argparse.Namespace) -> int:
+    from medumm.evaluation.benchmark_catalog import (
+        SPECIALIZED_BENCHMARKS,
+        get_medical_benchmark,
+        medical_benchmark_catalog,
+    )
+    from medumm.evaluation.metrics import create_metric_suite
+    from medumm.resources import DATASET_RESOURCES
+
+    register_builtins()
+    if arguments.benchmark_action == "show":
+        print(
+            json.dumps(
+                get_medical_benchmark(arguments.benchmark).to_dict(),
+                indent=2,
+                ensure_ascii=False,
+            )
+        )
+        return 0
+    if arguments.benchmark_action == "template":
+        import yaml
+
+        spec = get_medical_benchmark(arguments.benchmark)
+        template = {
+            "schema_version": "1.0",
+            "runtime": {"seed": 42, "device": "auto"},
+            "evaluation": {
+                "benchmark": spec.name,
+                "data": {
+                    "adapter": "medical_tasks_jsonl",
+                    "path": "REPLACE_WITH_NORMALIZED_MANIFEST.jsonl",
+                    "image_root": "REPLACE_WITH_MEDIA_ROOT",
+                    "provenance": "REPLACE_WITH_PROVENANCE.json",
+                    "deidentified": True,
+                },
+                "model": {"backbone": "REPLACE_WITH_MODEL", "parameters": {}},
+                "protocol": {
+                    "name": spec.name,
+                    "version": spec.version,
+                    "metric_suite": spec.metric_suite,
+                    "require_provenance": True,
+                    "require_deidentified": True,
+                },
+                "mode": "full",
+                "output_directory": f"outputs/evaluation/{spec.name}",
+            },
+        }
+        template["benchmark_contract"] = {
+            "dataset_families": [value.value for value in spec.dataset_families],
+            "required_annotation": spec.required_annotation,
+            "requires_choices": spec.requires_choices,
+            "note": "benchmark_contract documents the normalized row requirements; remove it before execution if a strict external schema is used.",
+        }
+        print(yaml.safe_dump(template, sort_keys=False, allow_unicode=True), end="")
+        return 0
+    if arguments.benchmark_action == "audit":
+        registered = set(registry.benchmarks.names())
+        expected = {spec.name for spec in SPECIALIZED_BENCHMARKS}
+        missing = sorted(expected - registered)
+        metric_errors = []
+        for spec in SPECIALIZED_BENCHMARKS:
+            try:
+                suite = create_metric_suite(spec.metric_suite)
+            except Exception as error:  # report the contract failure without hiding others
+                metric_errors.append({"benchmark": spec.name, "error": str(error)})
+                continue
+            if suite.version != spec.version:
+                metric_errors.append(
+                    {
+                        "benchmark": spec.name,
+                        "error": f"metric version {suite.version} != benchmark {spec.version}",
+                    }
+                )
+        unknown_dataset_benchmarks = sorted(
+            {
+                spec.benchmark
+                for spec in DATASET_RESOURCES.values()
+                if spec.benchmark not in registered
+            }
+        )
+        result = {
+            "schema_version": "1.0",
+            "registered_benchmarks": len(registered),
+            "independent_benchmarks": len(registered - {"cross_task"}),
+            "specialized_medical_benchmarks": len(expected),
+            "composite_benchmarks": 1,
+            "dataset_resources": len(DATASET_RESOURCES.values()),
+            "dataset_benchmark_families": len(
+                {spec.benchmark for spec in DATASET_RESOURCES.values()}
+            ),
+            "missing_specialized_benchmarks": missing,
+            "metric_contract_errors": metric_errors,
+            "unknown_dataset_benchmarks": unknown_dataset_benchmarks,
+            "valid": not missing and not metric_errors and not unknown_dataset_benchmarks,
+            "validation_scope": (
+                "Executable benchmark registration, fixed metric contracts, and dataset-family "
+                "routing; dataset catalog entries are not counted as benchmarks."
+            ),
+        }
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0 if result["valid"] else 1
+    values = medical_benchmark_catalog()
+    if arguments.json:
+        print(json.dumps(values, indent=2, ensure_ascii=False))
+    else:
+        for item in values:
+            print(
+                f"{item['name']}: metric={item['metric_suite']}; "
+                f"validation={item['validation']}"
+            )
+    return 0
+
+
 def _benchmark_inference_command(arguments: argparse.Namespace) -> int:
     from medumm.inference.benchmark import run_inference_benchmark
 
@@ -425,7 +538,7 @@ def _merge_command(arguments: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 1.5.0")
+    parser.add_argument("--version", action="version", version="MedUMM 1.6.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")
@@ -504,6 +617,32 @@ def build_parser() -> argparse.ArgumentParser:
     )
     environment_check.add_argument("model")
     environment_check.set_defaults(handler=_environments_command)
+
+    benchmarks = commands.add_parser(
+        "benchmarks", help="Inspect executable medical benchmark contracts"
+    )
+    benchmark_commands = benchmarks.add_subparsers(
+        dest="benchmark_action", required=True
+    )
+    benchmark_list = benchmark_commands.add_parser(
+        "list", help="List independent specialized medical benchmarks"
+    )
+    benchmark_list.add_argument("--json", action="store_true")
+    benchmark_list.set_defaults(handler=_benchmarks_command)
+    benchmark_show = benchmark_commands.add_parser(
+        "show", help="Show one benchmark data/prompt/metric contract"
+    )
+    benchmark_show.add_argument("benchmark")
+    benchmark_show.set_defaults(handler=_benchmarks_command)
+    benchmark_audit = benchmark_commands.add_parser(
+        "audit", help="Audit benchmark, metric, and dataset routing coverage"
+    )
+    benchmark_audit.set_defaults(handler=_benchmarks_command)
+    benchmark_template = benchmark_commands.add_parser(
+        "template", help="Print a safe configuration template for one benchmark"
+    )
+    benchmark_template.add_argument("benchmark")
+    benchmark_template.set_defaults(handler=_benchmarks_command)
 
     benchmark_inference = commands.add_parser(
         "benchmark-inference", help="Measure inference latency and throughput"

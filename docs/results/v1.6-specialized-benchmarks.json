@@ -1,0 +1,841 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.6.0",
+  "status": "passed",
+  "hostname": "node15",
+  "scheduler": {
+    "slurm_job_id": "437789"
+  },
+  "runtime": {
+    "python": "3.12.4",
+    "torch": "2.8.0+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": false,
+    "gpu": null
+  },
+  "counts": {
+    "registered_benchmarks": 16,
+    "independent_benchmarks": 15,
+    "specialized_medical_benchmarks": 13,
+    "dataset_resources": 34,
+    "evaluated_fixture_samples": 21
+  },
+  "benchmarks": [
+    {
+      "benchmark": "pathology_vqa",
+      "benchmark_version": "1.0",
+      "metric_suite": "pathology_vqa",
+      "dataset_size": 2,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 2,
+          "exact_match": 100.0,
+          "token_f1": 100.0,
+          "abstention_rate": 0.0,
+          "closed_accuracy": 100.0
+        },
+        "uncertainty": {
+          "exact_match": {
+            "confidence_level": 0.95,
+            "lower": 100.0,
+            "upper": 100.0,
+            "bootstrap_samples": 1000
+          },
+          "token_f1": {
+            "confidence_level": 0.95,
+            "lower": 100.0,
+            "upper": 100.0,
+            "bootstrap_samples": 1000
+          },
+          "abstention_rate": {
+            "confidence_level": 0.95,
+            "lower": 0.0,
+            "upper": 0.0,
+            "bootstrap_samples": 1000
+          }
+        },
+        "by_modality": {
+          "synthetic_pathology": {
+            "total": 2,
+            "exact_match": 100.0,
+            "token_f1": 100.0,
+            "abstention_rate": 0.0,
+            "closed_accuracy": 100.0
+          }
+        },
+        "by_specialty": {
+          "pathology": {
+            "total": 2,
+            "exact_match": 100.0,
+            "token_f1": 100.0,
+            "abstention_rate": 0.0,
+            "closed_accuracy": 100.0
+          }
+        },
+        "pathology": {
+          "total": 2,
+          "yes_no_count": 2,
+          "free_form_count": 0,
+          "yes_no_accuracy": 100.0,
+          "free_form_accuracy": null,
+          "overall_accuracy": 100.0,
+          "macro_answer_type_accuracy": 100.0
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/pathology_vqa"
+    },
+    {
+      "benchmark": "medical_mcqa",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_mcqa",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "scorable": 1,
+          "choice_accuracy": 100.0,
+          "invalid_response_rate": 0.0
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 1,
+            "scorable": 1,
+            "choice_accuracy": 100.0,
+            "invalid_response_rate": 0.0
+          }
+        },
+        "by_specialty": {
+          "general_medicine": {
+            "total": 1,
+            "scorable": 1,
+            "choice_accuracy": 100.0,
+            "invalid_response_rate": 0.0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "choice_accuracy",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "choice_accuracy",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "general_medicine",
+            "worst_group_value": 100.0,
+            "best_group": "general_medicine",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_mcqa"
+    },
+    {
+      "benchmark": "medical_image_classification",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_image_classification",
+      "dataset_size": 2,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 2,
+          "scorable": 2,
+          "accuracy": 100.0,
+          "balanced_accuracy": 100.0,
+          "macro_f1": 100.0,
+          "macro_auc": 50.0,
+          "per_class": {
+            "bright-focus": {
+              "support": 1,
+              "precision": 100.0,
+              "recall": 100.0,
+              "f1": 100.0
+            },
+            "dark-field": {
+              "support": 1,
+              "precision": 100.0,
+              "recall": 100.0,
+              "f1": 100.0
+            }
+          },
+          "confusion_matrix": {
+            "bright-focus": {
+              "bright-focus": 1,
+              "dark-field": 0
+            },
+            "dark-field": {
+              "bright-focus": 0,
+              "dark-field": 1
+            }
+          }
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 2,
+            "scorable": 2,
+            "accuracy": 100.0,
+            "balanced_accuracy": 100.0,
+            "macro_f1": 100.0,
+            "macro_auc": 50.0,
+            "per_class": {
+              "bright-focus": {
+                "support": 1,
+                "precision": 100.0,
+                "recall": 100.0,
+                "f1": 100.0
+              },
+              "dark-field": {
+                "support": 1,
+                "precision": 100.0,
+                "recall": 100.0,
+                "f1": 100.0
+              }
+            },
+            "confusion_matrix": {
+              "bright-focus": {
+                "bright-focus": 1,
+                "dark-field": 0
+              },
+              "dark-field": {
+                "bright-focus": 0,
+                "dark-field": 1
+              }
+            }
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 2,
+            "scorable": 2,
+            "accuracy": 100.0,
+            "balanced_accuracy": 100.0,
+            "macro_f1": 100.0,
+            "macro_auc": 50.0,
+            "per_class": {
+              "bright-focus": {
+                "support": 1,
+                "precision": 100.0,
+                "recall": 100.0,
+                "f1": 100.0
+              },
+              "dark-field": {
+                "support": 1,
+                "precision": 100.0,
+                "recall": 100.0,
+                "f1": 100.0
+              }
+            },
+            "confusion_matrix": {
+              "bright-focus": {
+                "bright-focus": 1,
+                "dark-field": 0
+              },
+              "dark-field": {
+                "bright-focus": 0,
+                "dark-field": 1
+              }
+            }
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "balanced_accuracy",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "balanced_accuracy",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_image_classification"
+    },
+    {
+      "benchmark": "medical_multilabel_findings",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_multilabel_findings",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "annotated": 1,
+          "micro_precision": 100.0,
+          "micro_recall": 100.0,
+          "micro_f1": 100.0,
+          "macro_sample_f1": 100.0,
+          "exact_match": 100.0
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 1,
+            "annotated": 1,
+            "micro_precision": 100.0,
+            "micro_recall": 100.0,
+            "micro_f1": 100.0,
+            "macro_sample_f1": 100.0,
+            "exact_match": 100.0
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 1,
+            "annotated": 1,
+            "micro_precision": 100.0,
+            "micro_recall": 100.0,
+            "micro_f1": 100.0,
+            "macro_sample_f1": 100.0,
+            "exact_match": 100.0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "micro_f1",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "micro_f1",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_multilabel_findings"
+    },
+    {
+      "benchmark": "radiology_report_generation",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_report_factuality",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "annotated": 1,
+          "fact_precision": 100.0,
+          "fact_recall": 100.0,
+          "fact_f1": 100.0,
+          "negative_assertion_accuracy": 100.0,
+          "contradiction_rate": 0.0,
+          "critical_recall": 100.0,
+          "section_completeness": 100.0
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 1,
+            "annotated": 1,
+            "fact_precision": 100.0,
+            "fact_recall": 100.0,
+            "fact_f1": 100.0,
+            "negative_assertion_accuracy": 100.0,
+            "contradiction_rate": 0.0,
+            "critical_recall": 100.0,
+            "section_completeness": 100.0
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 1,
+            "annotated": 1,
+            "fact_precision": 100.0,
+            "fact_recall": 100.0,
+            "fact_f1": 100.0,
+            "negative_assertion_accuracy": 100.0,
+            "contradiction_rate": 0.0,
+            "critical_recall": 100.0,
+            "section_completeness": 100.0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "fact_f1",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "fact_f1",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/radiology_report_generation"
+    },
+    {
+      "benchmark": "medical_grounding",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_grounding",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "annotated": 1,
+          "mean_iou": 100.0,
+          "iou_50_recall": 100.0,
+          "normalized_point_distance": 0.0,
+          "pointing_accuracy": 100.0
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 1,
+            "annotated": 1,
+            "mean_iou": 100.0,
+            "iou_50_recall": 100.0,
+            "normalized_point_distance": 0.0,
+            "pointing_accuracy": 100.0
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 1,
+            "annotated": 1,
+            "mean_iou": 100.0,
+            "iou_50_recall": 100.0,
+            "normalized_point_distance": 0.0,
+            "pointing_accuracy": 100.0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "mean_iou",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "mean_iou",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_grounding"
+    },
+    {
+      "benchmark": "medical_measurement",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_measurement",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "annotated": 1,
+          "mae": 0.0,
+          "mean_relative_error": 0.0,
+          "within_tolerance": 100.0,
+          "unit_error_count": 0
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 1,
+            "annotated": 1,
+            "mae": 0.0,
+            "mean_relative_error": 0.0,
+            "within_tolerance": 100.0,
+            "unit_error_count": 0
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 1,
+            "annotated": 1,
+            "mae": 0.0,
+            "mean_relative_error": 0.0,
+            "within_tolerance": 100.0,
+            "unit_error_count": 0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "within_tolerance",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "within_tolerance",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_measurement"
+    },
+    {
+      "benchmark": "medical_temporal_reasoning",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_temporal_reasoning",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "annotated": 1,
+          "sequence_exact_match": 100.0,
+          "edit_similarity": 100.0,
+          "phase_accuracy": 100.0,
+          "transition_f1": 100.0
+        },
+        "by_modality": {
+          "synthetic_procedure": {
+            "total": 1,
+            "annotated": 1,
+            "sequence_exact_match": 100.0,
+            "edit_similarity": 100.0,
+            "phase_accuracy": 100.0,
+            "transition_f1": 100.0
+          }
+        },
+        "by_specialty": {
+          "surgery": {
+            "total": 1,
+            "annotated": 1,
+            "sequence_exact_match": 100.0,
+            "edit_similarity": 100.0,
+            "phase_accuracy": 100.0,
+            "transition_f1": 100.0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "edit_similarity",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_procedure",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_procedure",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "edit_similarity",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "surgery",
+            "worst_group_value": 100.0,
+            "best_group": "surgery",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_temporal_reasoning"
+    },
+    {
+      "benchmark": "medical_retrieval",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_retrieval",
+      "dataset_size": 1,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 1,
+          "scorable": 1,
+          "recall_at_1": 100.0,
+          "recall_at_5": 100.0,
+          "recall_at_10": 100.0,
+          "mean_reciprocal_rank": 100.0
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 1,
+            "scorable": 1,
+            "recall_at_1": 100.0,
+            "recall_at_5": 100.0,
+            "recall_at_10": 100.0,
+            "mean_reciprocal_rank": 100.0
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 1,
+            "scorable": 1,
+            "recall_at_1": 100.0,
+            "recall_at_5": 100.0,
+            "recall_at_10": 100.0,
+            "mean_reciprocal_rank": 100.0
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "recall_at_1",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "recall_at_1",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_retrieval"
+    },
+    {
+      "benchmark": "medical_calibration",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_calibration",
+      "dataset_size": 2,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 2,
+          "annotated": 2,
+          "accuracy": 100.0,
+          "mean_confidence": 80.0,
+          "expected_calibration_error": 20.0,
+          "brier_score": 0.6800000000000002,
+          "negative_log_likelihood": 0.916290731874155,
+          "selective_prediction": {
+            "0.5": {
+              "coverage": 100.0,
+              "accuracy": 100.0,
+              "selected": 2
+            },
+            "0.7": {
+              "coverage": 100.0,
+              "accuracy": 100.0,
+              "selected": 2
+            },
+            "0.9": {
+              "coverage": 0.0,
+              "accuracy": null,
+              "selected": 0
+            }
+          }
+        },
+        "by_modality": {
+          "synthetic_image": {
+            "total": 2,
+            "annotated": 2,
+            "accuracy": 100.0,
+            "mean_confidence": 80.0,
+            "expected_calibration_error": 20.0,
+            "brier_score": 0.6800000000000002,
+            "negative_log_likelihood": 0.916290731874155,
+            "selective_prediction": {
+              "0.5": {
+                "coverage": 100.0,
+                "accuracy": 100.0,
+                "selected": 2
+              },
+              "0.7": {
+                "coverage": 100.0,
+                "accuracy": 100.0,
+                "selected": 2
+              },
+              "0.9": {
+                "coverage": 0.0,
+                "accuracy": null,
+                "selected": 0
+              }
+            }
+          }
+        },
+        "by_specialty": {
+          "radiology": {
+            "total": 2,
+            "annotated": 2,
+            "accuracy": 100.0,
+            "mean_confidence": 80.0,
+            "expected_calibration_error": 20.0,
+            "brier_score": 0.6800000000000002,
+            "negative_log_likelihood": 0.916290731874155,
+            "selective_prediction": {
+              "0.5": {
+                "coverage": 100.0,
+                "accuracy": 100.0,
+                "selected": 2
+              },
+              "0.7": {
+                "coverage": 100.0,
+                "accuracy": 100.0,
+                "selected": 2
+              },
+              "0.9": {
+                "coverage": 0.0,
+                "accuracy": null,
+                "selected": 0
+              }
+            }
+          }
+        },
+        "subgroup_disparity": {
+          "modality": {
+            "metric": "accuracy",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "synthetic_image",
+            "worst_group_value": 100.0,
+            "best_group": "synthetic_image",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          },
+          "specialty": {
+            "metric": "accuracy",
+            "minimum_group_samples": 1,
+            "eligible_groups": 1,
+            "worst_group": "radiology",
+            "worst_group_value": 100.0,
+            "best_group": "radiology",
+            "best_group_value": 100.0,
+            "max_min_gap": 0.0
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_calibration"
+    },
+    {
+      "benchmark": "medical_fairness",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_fairness",
+      "dataset_size": 4,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 4,
+          "annotated": 4,
+          "accuracy": 50.0,
+          "worst_group_accuracy": 50.0,
+          "accuracy_max_min_gap": 0.0,
+          "demographic_parity_gap": 0.0,
+          "equal_opportunity_gap": 0.0,
+          "by_sensitive_group": {
+            "group_1": {
+              "count": 2,
+              "accuracy": 50.0,
+              "positive_rate": 100.0,
+              "true_positive_rate": 100.0
+            },
+            "group_2": {
+              "count": 2,
+              "accuracy": 50.0,
+              "positive_rate": 100.0,
+              "true_positive_rate": 100.0
+            }
+          }
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_fairness"
+    },
+    {
+      "benchmark": "medical_safety",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_safety",
+      "dataset_size": 2,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 2,
+          "annotated": 2,
+          "safe_completion_rate": 50.0,
+          "behavior_accuracy": 50.0,
+          "refusal_rate": 100.0,
+          "over_refusal_rate": 50.0,
+          "unsafe_compliance_rate": 0.0,
+          "required_term_coverage": 100.0,
+          "prohibited_term_count": 0
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_safety"
+    },
+    {
+      "benchmark": "medical_robustness",
+      "benchmark_version": "1.0",
+      "metric_suite": "medical_robustness",
+      "dataset_size": 2,
+      "audit_status": "passed",
+      "metrics": {
+        "overall": {
+          "total": 2,
+          "annotated": 2,
+          "pair_count": 1,
+          "complete_pair_count": 1,
+          "baseline_accuracy": 100.0,
+          "perturbed_accuracy": 100.0,
+          "accuracy_drop": 0.0,
+          "prediction_consistency": 100.0
+        }
+      },
+      "output_directory": "outputs/evaluation/benchmarks_v1.6/medical_robustness"
+    }
+  ],
+  "validation_scope": {
+    "validated": "All specialized benchmark contracts executed data audit, inference, dedicated scoring, and report generation in one Slurm allocation.",
+    "execution_model": "medical_reference deterministic software adapter",
+    "hardware": "CPU Slurm allocation; the deterministic reference adapter does not require a GPU",
+    "not_claimed": "The synthetic fixture is not a real-dataset or real-model medical quality, fairness, robustness, or safety estimate."
+  }
+}

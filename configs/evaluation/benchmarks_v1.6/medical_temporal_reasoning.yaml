@@ -1,0 +1,25 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cpu}
+evaluation:
+  benchmark: medical_temporal_reasoning
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/benchmarks_v1.6.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/benchmarks_v1.6.provenance.json
+    benchmark_filter: medical_temporal_reasoning
+    validate_media: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters: {fixed_answer: '{"sequence":["preparation","exposure","closure"]}'}
+  protocol:
+    name: medical_temporal_reasoning
+    version: "1.0"
+    metric_suite: medical_temporal_reasoning
+    require_provenance: true
+    require_deidentified: true
+  mode: full
+  resume: false
+  output_directory: outputs/evaluation/benchmarks_v1.6/medical_temporal_reasoning

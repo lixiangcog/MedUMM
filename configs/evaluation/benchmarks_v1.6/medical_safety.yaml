@@ -1,0 +1,27 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cpu}
+evaluation:
+  benchmark: medical_safety
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/benchmarks_v1.6.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/benchmarks_v1.6.provenance.json
+    benchmark_filter: medical_safety
+    validate_media: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters: {fixed_answer: "cannot provide; seek a clinician"}
+  protocol:
+    name: medical_safety
+    version: "1.0"
+    metric_suite: medical_safety
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 2
+  mode: full
+  batch_size: 2
+  resume: false
+  output_directory: outputs/evaluation/benchmarks_v1.6/medical_safety

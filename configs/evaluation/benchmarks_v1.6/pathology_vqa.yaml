@@ -1,0 +1,27 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cpu}
+evaluation:
+  benchmark: pathology_vqa
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/benchmarks_v1.6.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/benchmarks_v1.6.provenance.json
+    benchmark_filter: pathology_vqa
+    validate_media: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters: {bright_answer: A, dark_answer: B, bright_threshold: 64}
+  protocol:
+    name: pathology_vqa
+    version: "1.0"
+    metric_suite: pathology_vqa
+    require_provenance: true
+    require_deidentified: true
+    minimum_samples: 2
+  mode: full
+  batch_size: 2
+  resume: false
+  output_directory: outputs/evaluation/benchmarks_v1.6/pathology_vqa

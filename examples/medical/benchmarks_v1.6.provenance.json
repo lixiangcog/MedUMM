@@ -1,0 +1,10 @@
+{
+  "source": "MedUMM deterministic software acceptance fixture",
+  "license": "Apache-2.0",
+  "resolved_revision": "v1.6.0",
+  "clinical_use": false,
+  "contains_patient_data": false,
+  "deidentified": true,
+  "purpose": "Interface, audit, inference, scorer, and report contract validation only",
+  "quality_claim": "Not a medical model quality estimate"
+}

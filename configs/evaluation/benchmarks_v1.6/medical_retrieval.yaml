@@ -1,0 +1,29 @@
+schema_version: "1.0"
+runtime: {seed: 42, device: cpu}
+evaluation:
+  benchmark: medical_retrieval
+  data:
+    adapter: medical_tasks_jsonl
+    source: jsonl
+    path: examples/medical/benchmarks_v1.6.jsonl
+    image_root: examples/medical/images
+    provenance: examples/medical/benchmarks_v1.6.provenance.json
+    benchmark_filter: medical_retrieval
+    validate_media: true
+    deidentified: true
+  model:
+    backbone: medical_reference
+    parameters:
+      candidate_scores:
+        bright central focus: 0.9
+        uniform dark field: 0.08
+        blank image: 0.02
+  protocol:
+    name: medical_retrieval
+    version: "1.0"
+    metric_suite: medical_retrieval
+    require_provenance: true
+    require_deidentified: true
+  mode: full
+  resume: false
+  output_directory: outputs/evaluation/benchmarks_v1.6/medical_retrieval

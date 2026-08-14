@@ -48,7 +48,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: runtime_validated
-    benchmark: medical_vqa
+    benchmark: pathology_vqa
     tasks: [open_vqa, closed_vqa]
     modalities: [text, image]
     medical_domains: [pathology]
@@ -67,7 +67,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: medical_mcqa
     tasks: [multiple_choice_vqa]
     modalities: [text, image]
     medical_domains: [general_medicine, radiology, pathology]
@@ -86,7 +86,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: medical_mcqa
     tasks: [multiple_choice_vqa]
     modalities: [text, image]
     medical_domains: [radiology, pathology, ophthalmology, dermatology, microscopy]
@@ -105,7 +105,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: medical_mcqa
     tasks: [expert_reasoning, multiple_choice_vqa]
     modalities: [text, image, image_set]
     medical_domains: [general_medicine, radiology, pathology]
@@ -124,7 +124,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: medical_mcqa
     tasks: [expert_reasoning, multiple_choice_vqa]
     modalities: [text, image, image_set]
     medical_domains: [basic_medical_science, clinical_medicine, pharmacy, public_health, diagnostics]
@@ -143,7 +143,7 @@ datasets:
     access: open
     adapter_family: medical_task
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_mcqa
     tasks: [perception, knowledge, reasoning, clinical_decision]
     modalities: [text, image, image_set]
     medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
@@ -162,7 +162,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: pathology_vqa
     tasks: [pathology_reasoning, multiple_choice_vqa]
     modalities: [text, image]
     medical_domains: [pathology]
@@ -200,7 +200,7 @@ datasets:
     access: open
     adapter_family: vqa
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: medical_robustness
     tasks: [diagnosis, ambiguity_robustness]
     modalities: [text, image]
     medical_domains: [general_medicine, radiology, pathology, dermatology]
@@ -219,7 +219,7 @@ datasets:
     access: open
     adapter_family: medical_task
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_safety
     tasks: [fairness, privacy, safety, robustness, hallucination]
     modalities: [text, image]
     medical_domains: [general_medicine, radiology, pathology, dermatology]
@@ -238,7 +238,7 @@ datasets:
     access: open
     adapter_family: medical_task
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_robustness
     tasks: [basic_visual_perception, anatomy_orientation, morphology, depth_estimation]
     modalities: [text, image]
     medical_domains: [general_medicine, radiology, pathology]
@@ -257,7 +257,7 @@ datasets:
     access: open
     adapter_family: report_generation
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_grounding
     tasks: [report_generation, grounding, explanation]
     modalities: [text, image, image_set]
     medical_domains: [radiology, chest_xray]
@@ -276,7 +276,7 @@ datasets:
     access: open
     adapter_family: medical_task
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_mcqa
     tasks: [visual_diagnosis, reasoning]
     modalities: [text, image, image_set]
     medical_domains: [general_medicine, radiology, pathology, ophthalmology, dermatology]
@@ -314,7 +314,7 @@ datasets:
     access: open
     adapter_family: video
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_temporal_reasoning
     tasks: [surgical_phase, action_recognition, procedure_reasoning]
     modalities: [text, image, video]
     medical_domains: [surgery]
@@ -333,7 +333,7 @@ datasets:
     access: open
     adapter_family: detection_measurement
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_measurement
     tasks: [detection, localization, quantitative_measurement]
     modalities: [text, image]
     medical_domains: [radiology, pathology, ophthalmology, dermatology]
@@ -352,7 +352,7 @@ datasets:
     access: open
     adapter_family: report_generation
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: radiology_report_generation
     tasks: [report_generation, image_text_retrieval]
     modalities: [text, image, image_set]
     medical_domains: [radiology, chest_xray]
@@ -371,7 +371,7 @@ datasets:
     access: credentialed
     adapter_family: report_generation
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: radiology_report_generation
     tasks: [report_generation, finding_classification, image_text_retrieval]
     modalities: [text, image, image_set]
     medical_domains: [radiology, chest_xray]
@@ -390,7 +390,7 @@ datasets:
     access: credentialed
     adapter_family: report_generation
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: radiology_report_generation
     tasks: [report_generation, finding_classification, report_summarization]
     modalities: [text, image, image_set]
     medical_domains: [radiology, chest_xray]
@@ -409,7 +409,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_fairness
     tasks: [disease_classification, fairness]
     modalities: [text, image]
     medical_domains: [ophthalmology]
@@ -428,7 +428,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_image_classification
     tasks: [skin_lesion_classification]
     modalities: [text, image]
     medical_domains: [dermatology]
@@ -447,7 +447,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_image_classification
     tasks: [glaucoma_classification, optic_disc_localization]
     modalities: [text, image, image_set]
     medical_domains: [ophthalmology]
@@ -466,7 +466,7 @@ datasets:
     access: request
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_vqa
+    benchmark: medical_image_classification
     tasks: [glaucoma_classification]
     modalities: [text, image]
     medical_domains: [ophthalmology]
@@ -485,7 +485,7 @@ datasets:
     access: credentialed
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_multilabel_findings
     tasks: [multilabel_finding_classification]
     modalities: [text, image, image_set]
     medical_domains: [radiology, chest_xray]
@@ -504,7 +504,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_multilabel_findings
     tasks: [multilabel_finding_classification]
     modalities: [text, image]
     medical_domains: [radiology, chest_xray]
@@ -523,7 +523,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_fairness
     tasks: [tumor_patch_classification, domain_shift]
     modalities: [text, image]
     medical_domains: [pathology]
@@ -542,7 +542,7 @@ datasets:
     access: open
     adapter_family: classification
     status: runtime_validated
-    benchmark: medical_tasks
+    benchmark: medical_image_classification
     tasks: [pneumonia_classification]
     modalities: [text, image]
     medical_domains: [radiology, chest_xray]
@@ -561,7 +561,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_image_classification
     tasks: [breast_ultrasound_classification]
     modalities: [text, image]
     medical_domains: [radiology, ultrasound]
@@ -580,7 +580,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_image_classification
     tasks: [skin_lesion_classification]
     modalities: [text, image]
     medical_domains: [dermatology]
@@ -599,7 +599,7 @@ datasets:
     access: open
     adapter_family: classification
     status: interface_validated
-    benchmark: medical_tasks
+    benchmark: medical_image_classification
     tasks: [retinal_oct_classification]
     modalities: [text, image]
     medical_domains: [ophthalmology, oct]

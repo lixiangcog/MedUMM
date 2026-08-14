@@ -161,6 +161,27 @@ def register_builtins() -> None:
             _factory("medumm.evaluation.cross_task", "CrossTaskBenchmark"),
             description="Composite evaluation over registered medical benchmarks",
         )
+    from medumm.evaluation.benchmark_catalog import SPECIALIZED_BENCHMARKS
+
+    for spec in SPECIALIZED_BENCHMARKS:
+        if registry.benchmarks.contains(spec.name):
+            continue
+        registry.benchmarks.register(
+            spec.name,
+            _resource_factory(
+                "medumm.evaluation.specialized",
+                "specialized_benchmark_factory",
+                spec.name,
+            ),
+            description=spec.description,
+            metadata={
+                "version": spec.version,
+                "metric_suite": spec.metric_suite,
+                "dataset_families": [value.value for value in spec.dataset_families],
+                "validation": spec.validation,
+                "composite": False,
+            },
+        )
     if not registry.trainers.contains("medical_sft"):
         registry.trainers.register(
             "medical_sft",

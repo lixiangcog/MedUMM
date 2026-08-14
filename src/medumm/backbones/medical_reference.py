@@ -129,12 +129,19 @@ class MedicalReferenceAdapter(ModelAdapter):
             output = self.understanding(
                 request.prompt, request.images, request.videos, request.parameters
             )
+            raw_scores = request.parameters.get("candidate_scores", {})
+            if not isinstance(raw_scores, dict):
+                raise ValueError("medical_reference candidate_scores must be a mapping.")
             results.append(
                 InferenceResult(
                     request_id=request.request_id,
                     task=TaskType.UNDERSTANDING,
                     model_name=self.name,
                     text=str(output["understandings"][0]["response"]),
+                    scores={
+                        str(key): float(value)
+                        for key, value in raw_scores.items()
+                    },
                     metadata={"research_only": True, **request.metadata},
                 )
             )
