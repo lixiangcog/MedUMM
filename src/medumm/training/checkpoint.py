@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 import shutil
 from dataclasses import asdict, dataclass
@@ -107,6 +108,7 @@ class DistributedCheckpointManager:
                 state_dict={"model": model_state, "optimizer": optimizer_state},
                 checkpoint_id=str(path / "shards"),
             )
+            self._replicate_dcp_metadata(path / "shards" / ".metadata")
             checkpoint_format = "torch_distributed_checkpoint"
         else:
             torch.save(
@@ -251,3 +253,32 @@ class DistributedCheckpointManager:
         )
         for path in completed[: -self.keep_last]:
             shutil.rmtree(path)
+
+    def _replicate_dcp_metadata(self, metadata_path: Path) -> None:
+        """Make DCP metadata immediately visible to every NFS client node.
+
+        During a multi-node save, non-coordinator ranks may cache a negative
+        lookup for ``.metadata`` before rank zero creates it. Some NFSv3
+        installations keep that negative dentry across a fresh torchrun
+        process group. Broadcasting the small metadata file and rewriting it
+        once from local rank zero on every other node refreshes those clients
+        without gathering model or optimizer tensors.
+        """
+
+        if not self.session.distributed or self.session.world_size <= 1:
+            return
+        import torch.distributed as dist
+
+        payload: list[bytes | None] = [None]
+        if self.session.is_main_process:
+            payload[0] = metadata_path.read_bytes()
+        dist.broadcast_object_list(payload, src=0)
+        metadata = payload[0]
+        if metadata is None:
+            raise RuntimeError("DCP metadata broadcast returned no payload.")
+        if self.session.local_rank == 0 and not self.session.is_main_process:
+            with metadata_path.open("wb") as stream:
+                stream.write(metadata)
+                stream.flush()
+                os.fsync(stream.fileno())
+        self.session.barrier()

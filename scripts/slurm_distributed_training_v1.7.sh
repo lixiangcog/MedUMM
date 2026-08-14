@@ -89,9 +89,6 @@ export MEDUMM_CHECKPOINT_NAME="$checkpoint_name"
 srun --nodes="$SLURM_NNODES" --ntasks="$SLURM_NNODES" --ntasks-per-node=1 \
   bash -lc '
     checkpoint="$MEDUMM_OUTPUT_DIRECTORY/checkpoints/$MEDUMM_CHECKPOINT_NAME"
-    # DCP closes all files before returning, but NFSv3 may still have dirty
-    # client pages. Flush each writer node before testing cross-node visibility.
-    sync
     for _ in $(seq 1 120); do
       if [[ -f "$checkpoint/COMPLETED" && -f "$checkpoint/shards/.metadata" ]]; then
         exit 0
