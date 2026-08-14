@@ -31,6 +31,10 @@ export MEDUMM_OUTPUT_DIRECTORY="$output_directory"
 export MEDUMM_NPROC_PER_NODE="$nproc_per_node"
 export MASTER_ADDR="$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)"
 export MASTER_PORT="$((20000 + job_key % 20000))"
+# Some Slurm installations expose both variables with partition-specific values.
+# srun rejects the launch when they disagree, so keep the allocation's canonical
+# SLURM_CPUS_PER_TASK value and remove the redundant inherited TRES spelling.
+unset SLURM_TRES_PER_TASK
 
 launch() {
   export MEDUMM_PHASE="$1"
