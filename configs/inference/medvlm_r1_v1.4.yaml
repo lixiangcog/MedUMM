@@ -1,0 +1,22 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: bfloat16
+inference:
+  backbone: medvlm_r1
+  config:
+    model_path: ${MEDVLM_R1_MODEL_PATH}
+    revision: d256f2cfdf98c6872c1dc9f20b7dd52f49374fe9
+    device_map: auto
+    torch_dtype: bfloat16
+    min_pixels: 200704
+    max_pixels: 401408
+    parameters:
+      max_new_tokens: 64
+      do_sample: false
+  request:
+    request_id: medvlm-r1-pathology-runtime-v1.4
+    task: understanding
+    prompt: Identify the image modality and briefly describe the visible tissue. Do not provide clinical advice.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+  output_json: outputs/inference/medvlm_r1_v1.4.json

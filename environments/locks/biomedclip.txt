@@ -6,6 +6,7 @@ filelock==3.29.0
     # via
     #   huggingface-hub
     #   torch
+    #   transformers
 fsspec==2026.4.0
     # via
     #   huggingface-hub
@@ -19,6 +20,8 @@ huggingface-hub==0.33.4
     #   -r environments/models/biomedclip/requirements.txt
     #   open-clip-torch
     #   timm
+    #   tokenizers
+    #   transformers
 idna==3.4
     # via requests
 jinja2==3.1.6
@@ -33,6 +36,7 @@ numpy==1.26.4
     # via
     #   -r environments/models/biomedclip/requirements.txt
     #   torchvision
+    #   transformers
 nvidia-cublas-cu12==12.6.4.1
     # via
     #   nvidia-cudnn-cu12
@@ -73,7 +77,9 @@ nvidia-nvtx-cu12==12.6.77
 open-clip-torch==2.32.0
     # via -r environments/models/biomedclip/requirements.txt
 packaging==24.1
-    # via huggingface-hub
+    # via
+    #   huggingface-hub
+    #   transformers
 pillow==11.2.1
     # via
     #   -r environments/models/biomedclip/requirements.txt
@@ -82,20 +88,30 @@ pyyaml==6.0.3
     # via
     #   huggingface-hub
     #   timm
+    #   transformers
 regex==2026.7.19
-    # via open-clip-torch
+    # via
+    #   open-clip-torch
+    #   transformers
 requests==2.28.1
-    # via huggingface-hub
+    # via
+    #   huggingface-hub
+    #   transformers
 safetensors==0.8.0
     # via
     #   open-clip-torch
     #   timm
+    #   transformers
 setuptools==78.1.0
     # via triton
 sympy==1.14.0
     # via torch
 timm==1.0.28
     # via open-clip-torch
+tokenizers==0.21.1
+    # via
+    #   -r environments/models/biomedclip/requirements.txt
+    #   transformers
 torch==2.7.1+cu126
     # via
     #   -r environments/models/biomedclip/requirements.txt
@@ -111,6 +127,9 @@ tqdm==4.66.5
     # via
     #   huggingface-hub
     #   open-clip-torch
+    #   transformers
+transformers==4.51.3
+    # via -r environments/models/biomedclip/requirements.txt
 triton==3.3.1
     # via torch
 typing-extensions==4.15.0

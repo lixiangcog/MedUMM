@@ -18,5 +18,5 @@ RUN python -m pip install --upgrade pip==25.1.1 \
 WORKDIR /workspace
 LABEL org.medumm.model=unimed_clip \
       org.medumm.profile=open_clip \
-      org.medumm.contract-sha256=1dae4408373121b49ce5326d754a1a698e9d63684165c20537c6773b203eacc3
+      org.medumm.contract-sha256=7d065bce2598a39cbbe08db928b9bb76aa0228536bb17cc58dd891608de92dd2
 CMD ["python", "-m", "medumm.cli.main", "--help"]

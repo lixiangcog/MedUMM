@@ -1,0 +1,19 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: float32
+inference:
+  backbone: biomedclip
+  config:
+    model_path: ${BIOMEDCLIP_MODEL_PATH}
+    text_model_path: ${BIOMEDCLIP_TEXT_MODEL_PATH}
+    revision: 9f341de24bfb00180f1b847274256e9b65a3a32e
+    device: cuda
+  request:
+    request_id: biomedclip-pathology-runtime-v1.4
+    task: understanding
+    prompt: Rank the candidate descriptions for this biomedical image.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+    parameters:
+      candidates: ["histopathology tissue", "non-medical natural scene"]
+  output_json: outputs/inference/biomedclip_v1.4.json

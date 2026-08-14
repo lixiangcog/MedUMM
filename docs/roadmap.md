@@ -1,5 +1,17 @@
 # Roadmap
 
+## v1.4 — explicit adapters and real-weight acceptance
+
+- [x] one explicit model class, processor, prompt protocol and executor recipe for all 32 models
+- [x] `medumm models list/show/audit/preflight` with fail-closed revision and environment checks
+- [x] native Qwen2-VL, Qwen2.5-VL, Qwen3-VL, InternVL, CheXagent, M3D, CLIP, OpenCLIP and MedCLIP execution paths
+- [x] arbitrary user-supplied Python bridge removed from the model interface
+- [x] pinned PLIP, QuiltNet, MedVLM-R1 and BiomedCLIP assets and isolated Python 3.10 environments
+- [x] passed four-model offline A800 Slurm acceptance with latency and peak-memory evidence
+- [ ] runtime validation for the remaining 25 catalog models
+- [ ] repository-specific executors for every remaining official-source runtime
+- [ ] multi-GPU acceptance for 27B/32B/34B releases
+
 ## v1.3 — per-model reproducible environments
 
 - [x] one immutable environment contract for every one of 32 model resources
@@ -8,7 +20,7 @@
 - [x] Slurm container entry point and Modal image factory from one catalog
 - [x] CI enforcement of 1:1 coverage, immutable pins and generated-file drift
 - [ ] container build and import validation for the remaining 29 models
-- [ ] real pinned-weight GPU task validation for the remaining 29 models
+- [ ] real pinned-weight GPU task validation for the remaining 25 models
 
 MedUMM grows through validated medical vertical slices. Platform breadth and
 medical scale are tracked separately so a long model list cannot hide an

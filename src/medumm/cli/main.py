@@ -200,6 +200,49 @@ def _environments_command(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def _models_command(arguments: argparse.Namespace) -> int:
+    from medumm.backbones.audit import adapter_catalog, preflight_model_adapter
+    from medumm.backbones.recipes import MODEL_ADAPTER_RECIPES
+    from medumm.core.config import find_project_root
+
+    if arguments.model_action == "show":
+        catalog = adapter_catalog()
+        row = next(
+            (item for item in catalog["recipes"] if item["name"] == arguments.model),
+            None,
+        )
+        if row is None:
+            raise KeyError(f"Unknown model adapter: {arguments.model!r}.")
+        print(json.dumps(row, indent=2, ensure_ascii=False))
+        return 0
+    if arguments.model_action == "preflight":
+        root = find_project_root(Path.cwd())
+        result = preflight_model_adapter(
+            arguments.model,
+            project_root=root,
+            model_path=arguments.model_path,
+            source_path=arguments.source_path,
+            revision=arguments.revision,
+            accept_terms=arguments.accept_terms,
+            check_imports=not arguments.skip_imports,
+        )
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+        return 0 if result["ready"] else 1
+    catalog = adapter_catalog()
+    if arguments.model_action == "audit":
+        print(json.dumps(catalog, indent=2, ensure_ascii=False))
+        return 0 if catalog["valid"] else 1
+    if arguments.json:
+        print(json.dumps(catalog, indent=2, ensure_ascii=False))
+        return 0
+    for recipe in MODEL_ADAPTER_RECIPES.values():
+        print(
+            f"{recipe.name}: executor={recipe.executor.value}; "
+            f"implementation={recipe.implementation.value}"
+        )
+    return 0
+
+
 def _benchmark_inference_command(arguments: argparse.Namespace) -> int:
     from medumm.inference.benchmark import run_inference_benchmark
 
@@ -229,7 +272,10 @@ def _resource_template(kind: str, name: str) -> dict[str, Any]:
     from medumm.resources import DATASET_RESOURCES, MODEL_RESOURCES, AccessLevel
 
     if kind == "model":
+        from medumm.backbones.recipes import MODEL_ADAPTER_RECIPES
+
         spec = MODEL_RESOURCES.get(name)
+        recipe = MODEL_ADAPTER_RECIPES.get(name)
         model_config: dict[str, Any] = {
             "model_path": spec.artifact_id,
             "revision": "REPLACE_WITH_IMMUTABLE_COMMIT",
@@ -237,18 +283,10 @@ def _resource_template(kind: str, name: str) -> dict[str, Any]:
         }
         if spec.access is not AccessLevel.OPEN:
             model_config["accept_terms"] = False
-        if (
-            spec.runtime_family.value == "official_bridge"
-            and spec.name != "llava_med_v1_5_7b"
-        ):
-            model_config["bridge"] = "REPLACE_WITH_MODULE:ModelAdapterClass"
+        if recipe.source_checkout_required:
+            model_config["source_path"] = "REPLACE_WITH_PINNED_UPSTREAM_CHECKOUT"
         if spec.runtime_family.value == "open_clip":
-            model_config.update(
-                {
-                    "open_clip_model_name": "REPLACE_WITH_ARCHITECTURE",
-                    "checkpoint_path": "REPLACE_WITH_LOCAL_PINNED_CHECKPOINT",
-                }
-            )
+            model_config["checkpoint_path"] = "REPLACE_WITH_LOCAL_PINNED_CHECKPOINT"
         return {
             "schema_version": "1.0",
             "runtime": {"seed": 42, "device": "auto"},
@@ -387,7 +425,7 @@ def _merge_command(arguments: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="medumm", description="Medical multimodal model toolkit")
-    parser.add_argument("--version", action="version", version="MedUMM 1.2.0")
+    parser.add_argument("--version", action="version", version="MedUMM 1.4.0")
     commands = parser.add_subparsers(dest="command", required=True)
 
     infer = commands.add_parser("infer", help="Run understanding, generation, or editing")
@@ -423,6 +461,31 @@ def build_parser() -> argparse.ArgumentParser:
     )
     backends.add_argument("--json", action="store_true")
     backends.set_defaults(handler=_backends_command)
+
+    models = commands.add_parser(
+        "models", help="Inspect concrete model adapter recipes and runtime readiness"
+    )
+    model_commands = models.add_subparsers(dest="model_action", required=True)
+    model_list = model_commands.add_parser("list", help="List explicit model adapters")
+    model_list.add_argument("--json", action="store_true")
+    model_list.set_defaults(handler=_models_command)
+    model_show = model_commands.add_parser("show", help="Show one adapter recipe")
+    model_show.add_argument("model")
+    model_show.set_defaults(handler=_models_command)
+    model_audit = model_commands.add_parser(
+        "audit", help="Audit catalog, recipe, and environment coverage"
+    )
+    model_audit.set_defaults(handler=_models_command)
+    model_preflight = model_commands.add_parser(
+        "preflight", help="Validate pinned local assets before loading a real model"
+    )
+    model_preflight.add_argument("model")
+    model_preflight.add_argument("--model-path", required=True)
+    model_preflight.add_argument("--source-path")
+    model_preflight.add_argument("--revision", required=True)
+    model_preflight.add_argument("--accept-terms", action="store_true")
+    model_preflight.add_argument("--skip-imports", action="store_true")
+    model_preflight.set_defaults(handler=_models_command)
 
     environments = commands.add_parser(
         "environments", help="Inspect reproducible per-model runtime contracts"

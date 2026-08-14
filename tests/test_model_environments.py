@@ -40,9 +40,13 @@ def test_contracts_are_immutable_and_access_aware():
 def test_runtime_claims_require_committed_evidence():
     runtime = [spec for spec in ENVIRONMENT_CATALOG.values() if spec.validation.value == "runtime_validated"]
     assert {spec.model for spec in runtime} == {
+        "biomedclip",
         "llava_med_v1_5_7b",
         "lingshu_7b",
+        "medvlm_r1",
+        "plip",
         "pubmedclip",
+        "quiltnet",
     }
     for spec in runtime:
         assert spec.evidence

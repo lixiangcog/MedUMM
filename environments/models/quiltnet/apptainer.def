@@ -22,5 +22,5 @@ From: nvidia/cuda:12.6.3-cudnn-runtime-ubuntu22.04@sha256:5f0d2d827f6436b3cb7468
 
 %labels
     org.medumm.model quiltnet
-    org.medumm.profile open_clip
-    org.medumm.contract-sha256 b09970b889d7b398d9e104a8cb572c875501392b22edf5b8de3ae7ac36bef24f
+    org.medumm.profile contrastive_hf
+    org.medumm.contract-sha256 1501689041b737c2f761d67b2c7ccd5a77aee90aeb8a3de8d9025d089c679937

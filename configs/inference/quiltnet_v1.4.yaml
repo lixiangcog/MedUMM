@@ -1,0 +1,19 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: float32
+inference:
+  backbone: quiltnet
+  config:
+    model_path: ${QUILTNET_MODEL_PATH}
+    revision: 8ce77289ce35a90b2f1db1137dfa4bc2df175e33
+    device: cuda
+    torch_dtype: float32
+  request:
+    request_id: quiltnet-pathology-runtime-v1.4
+    task: understanding
+    prompt: Rank the candidate descriptions for this pathology image.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+    parameters:
+      candidates: ["histopathology tissue", "non-medical natural scene"]
+  output_json: outputs/inference/quiltnet_v1.4.json

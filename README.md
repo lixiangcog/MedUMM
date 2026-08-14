@@ -7,6 +7,24 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.4: explicit real-model adapters
+
+Version 1.4 replaces broad catalog-family routing with one explicit adapter
+recipe for every one of the 32 model releases. Each recipe fixes the real model
+type/class, processor, prompt protocol, executor, immutable weight revision,
+and—when required—the pinned official source entry point. The new `medumm
+models` CLI audits recipe/resource/environment coverage and performs local
+asset, revision, access, source-commit, and import preflight checks.
+
+Four additional real-weight paths passed one offline A800 Slurm acceptance job:
+PLIP and QuiltNet through native Transformers CLIP ranking, MedVLM-R1 through
+Qwen2-VL generation, and BiomedCLIP through a local pinned OpenCLIP snapshot and
+pinned BiomedBERT text encoder. This raises committed GPU evidence from 3 to 7
+of 32 models. It does not turn the remaining 25 catalog entries into runtime
+claims; repository-specific executors and model-scale validation remain in the
+queue. See [docs/real-model-adapters-v1.4.md](docs/real-model-adapters-v1.4.md)
+and the [A800 evidence](docs/results/v1.4-real-model-adapters.json).
+
 ## v1.3: isolated model environments
 
 Every one of the 32 catalog models now has an independent, immutable runtime
@@ -26,8 +44,8 @@ sbatch --export=ALL,MODEL_NAME=lingshu_7b scripts/slurm_model_environment.sh
 
 Restricted models fail closed until `--accept-terms` is passed after the user
 accepts the upstream license. Contract/build validation is not reported as a
-successful model run: only LLaVA-Med, Lingshu-7B and PubMedCLIP retain their
-previously committed runtime-validated status. See
+successful model run: v1.4 adds four new runtime-validated paths to the three
+previously committed ones. See
 [docs/model-environments-v1.3.md](docs/model-environments-v1.3.md).
 The machine-readable validation record, including the cluster container-build
 privilege boundary, is in

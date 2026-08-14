@@ -26,7 +26,15 @@ def test_runtime_validated_status_is_reserved_for_committed_acceptance_paths():
         item.name
         for item in MODEL_RESOURCES.values()
         if item.status is IntegrationStatus.RUNTIME_VALIDATED
-    } == {"llava_med_v1_5_7b", "lingshu_7b", "pubmedclip"}
+    } == {
+        "biomedclip",
+        "llava_med_v1_5_7b",
+        "lingshu_7b",
+        "medvlm_r1",
+        "plip",
+        "pubmedclip",
+        "quiltnet",
+    }
     assert {
         item.name
         for item in DATASET_RESOURCES.values()

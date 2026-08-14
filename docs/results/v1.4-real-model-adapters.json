@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.4.0",
+  "status": "passed",
+  "hostname": "gpu01",
+  "scheduler": {
+    "slurm_job_id": "437526"
+  },
+  "runtime": {
+    "torch": "2.8.0+cu126",
+    "cuda_version": "12.6",
+    "cuda_available": true,
+    "gpu": "NVIDIA A800-SXM4-80GB"
+  },
+  "validated_models": [
+    {
+      "model": "plip",
+      "model_revision": "67ade53ddd32195868f422585f72698ef5d15094",
+      "executor": "transformers_contrastive",
+      "device": "cuda:0",
+      "dtype": "float32",
+      "duration_ms": 280.73,
+      "peak_gpu_memory_mb": 588.12,
+      "response": "non-medical natural scene",
+      "scores": {
+        "histopathology tissue": 0.00631632748991251,
+        "non-medical natural scene": 0.9936836957931519
+      },
+      "result_path": "outputs/inference/plip_v1.4.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.4/models/plip",
+        "contract_sha256": "3617f3f9cb5b821d71907b069a4c7cd0aefc6e1a87a4211cd5f80522b6324250",
+        "python": "3.10.20",
+        "medumm": "1.4.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.51.3",
+        "cuda": "12.6"
+      }
+    },
+    {
+      "model": "quiltnet",
+      "model_revision": "8ce77289ce35a90b2f1db1137dfa4bc2df175e33",
+      "executor": "transformers_contrastive",
+      "device": "cuda:0",
+      "dtype": "float32",
+      "duration_ms": 279.15,
+      "peak_gpu_memory_mb": 588.1,
+      "response": "histopathology tissue",
+      "scores": {
+        "histopathology tissue": 0.508228063583374,
+        "non-medical natural scene": 0.49177196621894836
+      },
+      "result_path": "outputs/inference/quiltnet_v1.4.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.4/models/quiltnet",
+        "contract_sha256": "1501689041b737c2f761d67b2c7ccd5a77aee90aeb8a3de8d9025d089c679937",
+        "python": "3.10.20",
+        "medumm": "1.4.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.51.3",
+        "cuda": "12.6"
+      }
+    },
+    {
+      "model": "medvlm_r1",
+      "model_revision": "d256f2cfdf98c6872c1dc9f20b7dd52f49374fe9",
+      "executor": "qwen2_vl_chat",
+      "device": "cuda:0",
+      "dtype": "bfloat16",
+      "duration_ms": 1702.38,
+      "peak_gpu_memory_mb": 4337.41,
+      "response": "The image is a molecular structure, likely representing a protein complex interacting with DNA. The visible tissue in the image is a protein complex, which is colored in different shades of red, green, and blue, indicating different protein domains. The DNA strands are depicted in blue, and the protein domains are colored to highlight their structure",
+      "scores": {},
+      "result_path": "outputs/inference/medvlm_r1_v1.4.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.4/models/medvlm_r1",
+        "contract_sha256": "2f5a8668780f6ac77def22c48ac0e31c265bf47d18e7329429ce3c2a55e8c984",
+        "python": "3.10.20",
+        "medumm": "1.4.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.51.3",
+        "cuda": "12.6"
+      }
+    },
+    {
+      "model": "biomedclip",
+      "model_revision": "9f341de24bfb00180f1b847274256e9b65a3a32e",
+      "executor": "open_clip_hf_hub",
+      "device": "cuda:0",
+      "dtype": "float32",
+      "duration_ms": 230.59,
+      "peak_gpu_memory_mb": 777.61,
+      "response": "non-medical natural scene",
+      "scores": {
+        "histopathology tissue": 0.06638099253177643,
+        "non-medical natural scene": 0.9336190223693848
+      },
+      "result_path": "outputs/inference/biomedclip_v1.4.json",
+      "environment": {
+        "path": "/data/user/hd66945/MedUMM-model-envs-v1.4/models/biomedclip",
+        "contract_sha256": "47ade6d5c4b19973603b3e5c89dfd5259113ba894bb2773cb027ba95c22d97a0",
+        "python": "3.10.20",
+        "medumm": "1.4.0",
+        "torch": "2.7.1+cu126",
+        "transformers": "4.51.3",
+        "cuda": "12.6"
+      }
+    }
+  ],
+  "counts": {
+    "validated_in_this_job": 4,
+    "runtime_validated_after_release": 7,
+    "catalog_models": 32
+  },
+  "validation_scope": "Pinned real-weight inference through the public MedUMM adapter interface on one Slurm-allocated GPU. This is interface/runtime evidence, not a clinical-quality claim."
+}

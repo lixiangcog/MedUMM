@@ -49,6 +49,8 @@ models:
       - "torch==2.7.1"
       - "torchvision==0.22.1"
       - "open-clip-torch==2.32.0"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
       - "huggingface-hub==0.33.4"
       - "pillow==11.2.1"
       - "numpy==1.26.4"
@@ -61,8 +63,10 @@ models:
     imports:
       - torch
       - open_clip
+      - transformers
       - PIL
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.4-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
       - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
@@ -837,7 +841,8 @@ models:
       - torch
       - transformers
       - PIL
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.4-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
       - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
@@ -868,7 +873,8 @@ models:
       - torch
       - transformers
       - PIL
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.4-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
       - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
@@ -906,7 +912,7 @@ models:
       - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
 
   - model: quiltnet
-    profile: open_clip
+    profile: contrastive_hf
     python: "3.10"
     platform: linux_x86_64
     accelerator: nvidia_gpu
@@ -917,8 +923,8 @@ models:
     dependencies:
       - "torch==2.7.1"
       - "torchvision==0.22.1"
-      - "open-clip-torch==2.32.0"
-      - "huggingface-hub==0.33.4"
+      - "transformers==4.51.3"
+      - "tokenizers==0.21.1"
       - "pillow==11.2.1"
       - "numpy==1.26.4"
     sources:
@@ -929,9 +935,10 @@ models:
     access: open
     imports:
       - torch
-      - open_clip
+      - transformers
       - PIL
-    validation: contract_validated
+    validation: runtime_validated
+    evidence: docs/results/v1.4-real-model-adapters.json
     resolution: "uv 0.8.11; CPython 3.10; x86_64-manylinux_2_28"
     notes:
       - "Generated artifacts are contract/build validated; full model execution status is tracked separately."
@@ -989,11 +996,13 @@ models:
       - "pillow==11.2.1"
       - "numpy==1.26.4"
     sources:
-      []
+      - repository: https://github.com/mbzuai-oryx/UniMed-CLIP
+        revision: 536d1651ab28a68a85af07b0ad1a3c56de34e14c
+        install: false
     model_revision: 536d1651ab28a68a85af07b0ad1a3c56de34e14c
     minimum_gpu_memory_gb: 14
     recommended_gpus: 1
-    access: open
+    access: request
     imports:
       - torch
       - open_clip

@@ -465,7 +465,7 @@ models:
     license: source-specific terms
     access: open
     runtime_family: hf_image_text_to_text
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image]
     medical_domains: [general_medicine, radiology, pathology]
@@ -473,7 +473,7 @@ models:
     languages: [en]
     trust_remote_code: true
     revision_policy: require_immutable_revision
-    notes: ["Reasoning-oriented medical VLM release."]
+    notes: ["Reasoning-oriented medical VLM release; pinned Qwen2-VL generation passed the v1.4 A800 Slurm acceptance."]
 
   - name: biomedclip
     display_name: BiomedCLIP
@@ -484,7 +484,7 @@ models:
     license: MIT
     access: open
     runtime_family: open_clip
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image]
     medical_domains: [biomedicine, radiology, pathology]
@@ -492,7 +492,7 @@ models:
     languages: [en]
     trust_remote_code: false
     revision_policy: require_immutable_revision
-    notes: ["Contrastive retrieval and zero-shot candidate ranking adapter."]
+    notes: ["Contrastive retrieval and zero-shot candidate ranking passed the v1.4 A800 Slurm acceptance with the pinned auxiliary text encoder."]
 
   - name: medclip
     display_name: MedCLIP
@@ -522,7 +522,7 @@ models:
     license: Apache-2.0
     access: open
     runtime_family: hf_contrastive
-    status: interface_validated
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image]
     medical_domains: [pathology]
@@ -530,7 +530,7 @@ models:
     languages: [en]
     trust_remote_code: false
     revision_policy: require_immutable_revision
-    notes: ["Pathology image-text retrieval and candidate ranking."]
+    notes: ["Pathology image-text retrieval and candidate ranking passed the v1.4 A800 Slurm acceptance."]
 
   - name: pubmedclip
     display_name: PubMedCLIP
@@ -577,7 +577,7 @@ models:
     paper: https://arxiv.org/abs/2412.10372
     official_code: https://github.com/mbzuai-oryx/UniMed-CLIP
     license: source-specific terms
-    access: open
+    access: request
     runtime_family: open_clip
     status: interface_validated
     tasks: [understanding]
@@ -587,7 +587,7 @@ models:
     languages: [en]
     trust_remote_code: false
     revision_policy: require_immutable_revision
-    notes: ["Unified contrastive encoder for multiple medical domains."]
+    notes: ["Official source is public, but the audited Hugging Face artifact endpoint requires authentication and upstream distributes weights separately."]
 
   - name: quiltnet
     display_name: QuiltNet
@@ -597,8 +597,8 @@ models:
     official_code: https://github.com/wisdomikezogwo/quilt1m
     license: source-specific terms
     access: open
-    runtime_family: open_clip
-    status: interface_validated
+    runtime_family: hf_contrastive
+    status: runtime_validated
     tasks: [understanding]
     input_modalities: [text, image]
     medical_domains: [pathology]
@@ -606,4 +606,4 @@ models:
     languages: [en]
     trust_remote_code: false
     revision_policy: require_immutable_revision
-    notes: ["Histopathology image-text retrieval and candidate ranking."]
+    notes: ["The pinned Transformers CLIPModel passed histopathology candidate-ranking inference in the v1.4 A800 Slurm acceptance."]

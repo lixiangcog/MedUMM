@@ -17,6 +17,6 @@ RUN python -m pip install --upgrade pip==25.1.1 \
     && python -m pip install --extra-index-url https://download.pytorch.org/whl/cu126 -r /tmp/medumm-lock.txt
 WORKDIR /workspace
 LABEL org.medumm.model=quiltnet \
-      org.medumm.profile=open_clip \
-      org.medumm.contract-sha256=b09970b889d7b398d9e104a8cb572c875501392b22edf5b8de3ae7ac36bef24f
+      org.medumm.profile=contrastive_hf \
+      org.medumm.contract-sha256=1501689041b737c2f761d67b2c7ccd5a77aee90aeb8a3de8d9025d089c679937
 CMD ["python", "-m", "medumm.cli.main", "--help"]

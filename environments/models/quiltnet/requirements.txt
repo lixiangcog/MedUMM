@@ -1,10 +1,10 @@
 # Generated from environments/models.yaml; do not edit by hand.
 # model=quiltnet
-# profile=open_clip
-# contract_sha256=b09970b889d7b398d9e104a8cb572c875501392b22edf5b8de3ae7ac36bef24f
+# profile=contrastive_hf
+# contract_sha256=1501689041b737c2f761d67b2c7ccd5a77aee90aeb8a3de8d9025d089c679937
 torch==2.7.1
 torchvision==0.22.1
-open-clip-torch==2.32.0
-huggingface-hub==0.33.4
+transformers==4.51.3
+tokenizers==0.21.1
 pillow==11.2.1
 numpy==1.26.4

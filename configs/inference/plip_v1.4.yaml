@@ -1,0 +1,19 @@
+schema_version: "1.0"
+runtime:
+  device: cuda
+  dtype: float32
+inference:
+  backbone: plip
+  config:
+    model_path: ${PLIP_MODEL_PATH}
+    revision: 67ade53ddd32195868f422585f72698ef5d15094
+    device: cuda
+    torch_dtype: float32
+  request:
+    request_id: plip-pathology-runtime-v1.4
+    task: understanding
+    prompt: Rank the candidate descriptions for this pathology image.
+    images: ["${MEDUMM_ADAPTER_SMOKE_IMAGE}"]
+    parameters:
+      candidates: ["histopathology tissue", "non-medical natural scene"]
+  output_json: outputs/inference/plip_v1.4.json
