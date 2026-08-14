@@ -79,13 +79,21 @@ class DistributedCheckpointManager:
         if distributed_format:
             try:
                 import torch.distributed.checkpoint as dcp
-                from torch.distributed.checkpoint.state_dict import get_state_dict
+                from torch.distributed.checkpoint.state_dict import (
+                    StateDictOptions,
+                    get_state_dict,
+                )
             except (ImportError, ModuleNotFoundError) as error:
                 raise RuntimeError(
                     "Sharded checkpointing requires torch.distributed.checkpoint from "
                     "PyTorch 2.2 or newer."
                 ) from error
-            model_state, optimizer_state = get_state_dict(model, optimizer)
+            state_options = StateDictOptions(flatten_optimizer_state_dict=True)
+            model_state, optimizer_state = get_state_dict(
+                model,
+                optimizer,
+                options=state_options,
+            )
             dcp.save(
                 state_dict={"model": model_state, "optimizer": optimizer_state},
                 checkpoint_id=str(path / "shards"),
@@ -157,9 +165,18 @@ class DistributedCheckpointManager:
             raise RuntimeError("EMA shard recovery requires the original world size.")
         if manifest["format"] == "torch_distributed_checkpoint":
             import torch.distributed.checkpoint as dcp
-            from torch.distributed.checkpoint.state_dict import get_state_dict, set_state_dict
+            from torch.distributed.checkpoint.state_dict import (
+                StateDictOptions,
+                get_state_dict,
+                set_state_dict,
+            )
 
-            model_state, optimizer_state = get_state_dict(model, optimizer)
+            state_options = StateDictOptions(flatten_optimizer_state_dict=True)
+            model_state, optimizer_state = get_state_dict(
+                model,
+                optimizer,
+                options=state_options,
+            )
             payload = {"model": model_state, "optimizer": optimizer_state}
             dcp.load(state_dict=payload, checkpoint_id=str(path / "shards"))
             set_state_dict(
@@ -167,6 +184,7 @@ class DistributedCheckpointManager:
                 optimizer,
                 model_state_dict=payload["model"],
                 optim_state_dict=payload["optimizer"],
+                options=state_options,
             )
         else:
             payload = torch.load(path / "training.pt", map_location="cpu", weights_only=False)
