@@ -79,21 +79,30 @@ class DistributedCheckpointManager:
         if distributed_format:
             try:
                 import torch.distributed.checkpoint as dcp
-                from torch.distributed.checkpoint.state_dict import (
-                    StateDictOptions,
-                    get_state_dict,
-                )
+                from torch.distributed.checkpoint.state_dict import get_state_dict
             except (ImportError, ModuleNotFoundError) as error:
                 raise RuntimeError(
                     "Sharded checkpointing requires torch.distributed.checkpoint from "
                     "PyTorch 2.2 or newer."
                 ) from error
-            state_options = StateDictOptions(flatten_optimizer_state_dict=True)
-            model_state, optimizer_state = get_state_dict(
-                model,
-                optimizer,
-                options=state_options,
-            )
+            if self.session.config.strategy == "fsdp":
+                from torch.distributed.fsdp import (
+                    FullyShardedDataParallel as FSDP,
+                    ShardedOptimStateDictConfig,
+                    ShardedStateDictConfig,
+                    StateDictType,
+                )
+
+                with FSDP.state_dict_type(
+                    model,
+                    StateDictType.SHARDED_STATE_DICT,
+                    ShardedStateDictConfig(offload_to_cpu=True),
+                    ShardedOptimStateDictConfig(offload_to_cpu=True),
+                ):
+                    model_state = model.state_dict()
+                    optimizer_state = FSDP.optim_state_dict(model, optimizer)
+            else:
+                model_state, optimizer_state = get_state_dict(model, optimizer)
             dcp.save(
                 state_dict={"model": model_state, "optimizer": optimizer_state},
                 checkpoint_id=str(path / "shards"),
@@ -165,27 +174,55 @@ class DistributedCheckpointManager:
             raise RuntimeError("EMA shard recovery requires the original world size.")
         if manifest["format"] == "torch_distributed_checkpoint":
             import torch.distributed.checkpoint as dcp
-            from torch.distributed.checkpoint.state_dict import (
-                StateDictOptions,
-                get_state_dict,
-                set_state_dict,
-            )
+            if self.session.config.strategy == "fsdp":
+                from torch.distributed.checkpoint import (
+                    FileSystemReader,
+                    load_sharded_optimizer_state_dict,
+                )
+                from torch.distributed.fsdp import (
+                    FullyShardedDataParallel as FSDP,
+                    ShardedOptimStateDictConfig,
+                    ShardedStateDictConfig,
+                    StateDictType,
+                )
 
-            state_options = StateDictOptions(flatten_optimizer_state_dict=True)
-            model_state, optimizer_state = get_state_dict(
-                model,
-                optimizer,
-                options=state_options,
-            )
-            payload = {"model": model_state, "optimizer": optimizer_state}
-            dcp.load(state_dict=payload, checkpoint_id=str(path / "shards"))
-            set_state_dict(
-                model,
-                optimizer,
-                model_state_dict=payload["model"],
-                optim_state_dict=payload["optimizer"],
-                options=state_options,
-            )
+                storage_reader = FileSystemReader(str(path / "shards"))
+                with FSDP.state_dict_type(
+                    model,
+                    StateDictType.SHARDED_STATE_DICT,
+                    ShardedStateDictConfig(offload_to_cpu=True),
+                    ShardedOptimStateDictConfig(offload_to_cpu=True),
+                ):
+                    model_state = model.state_dict()
+                    payload = {"model": model_state}
+                    dcp.load(state_dict=payload, storage_reader=storage_reader)
+                    model.load_state_dict(payload["model"])
+                    optimizer_payload = load_sharded_optimizer_state_dict(
+                        model_state,
+                        optimizer_key="optimizer",
+                        storage_reader=storage_reader,
+                    )
+                    local_optimizer_state = FSDP.optim_state_dict_to_load(
+                        model,
+                        optimizer,
+                        optimizer_payload["optimizer"],
+                    )
+                    optimizer.load_state_dict(local_optimizer_state)
+            else:
+                from torch.distributed.checkpoint.state_dict import (
+                    get_state_dict,
+                    set_state_dict,
+                )
+
+                model_state, optimizer_state = get_state_dict(model, optimizer)
+                payload = {"model": model_state, "optimizer": optimizer_state}
+                dcp.load(state_dict=payload, checkpoint_id=str(path / "shards"))
+                set_state_dict(
+                    model,
+                    optimizer,
+                    model_state_dict=payload["model"],
+                    optim_state_dict=payload["optimizer"],
+                )
         else:
             payload = torch.load(path / "training.pt", map_location="cpu", weights_only=False)
             unwrap_model(model).load_state_dict(payload["model"])
