@@ -56,6 +56,12 @@ writing a new step therefore leaves the preceding checkpoint recoverable. The
 training cursor contains the epoch, next micro-batch, optimizer step and global
 sample count, so recovery does not repeat an already applied optimizer update.
 
+On multi-node NFSv3 clusters, a non-coordinator can retain a negative lookup for
+DCP's `.metadata` file after rank zero creates it. The checkpoint manager
+broadcasts that small metadata payload and refreshes it from local rank zero on
+each node. The Slurm recipe also waits until the completion marker and metadata
+are visible on every allocated node before starting a new process group.
+
 PyTorch Distributed Checkpoint can reshard model and optimizer state when the
 world size changes. MedUMM's EMA is intentionally rank-local to avoid gathering a
 second full model; resuming EMA with a different world size currently fails
@@ -94,7 +100,9 @@ sbatch --export=ALL,MEDUMM_STRATEGY=fsdp \
 Use `MEDUMM_NPROC_PER_NODE` together with a matching GPU allocation to increase
 local workers. `MEDUMM_PYTHON`, `MEDUMM_ROOT`, `MEDUMM_OUTPUT_DIRECTORY`, and
 `MEDUMM_EVIDENCE_PATH` can point at an isolated cluster environment and evidence
-location.
+location. `MEDUMM_DEVICE`, `MEDUMM_BACKEND`, and
+`MEDUMM_FSDP_SYNC_MODULE_STATES` support CPU/Gloo systems acceptance without
+changing the CUDA/NCCL production configuration.
 
 The job executes an interrupted phase and a recovery phase, then runs
 `scripts/verify_distributed_training_v1_7.py`. Passing requires:
@@ -105,6 +113,23 @@ The job executes an interrupted phase and a recovery phase, then runs
 4. one scheduler/scaler/EMA/RNG sidecar per rank;
 5. EMA updates after recovery;
 6. activation checkpointing for the FSDP recipe.
+
+## Committed acceptance evidence
+
+The code at source commit `020e27f984944ad9821d36ad23411194b9d4aa6e`
+passed the following independent Slurm launches with PyTorch 2.4.1:
+
+| Job | Nodes | Path | Result |
+| --- | --- | --- | --- |
+| `437898` | `node14`, `node20` | CPU/Gloo DDP, world size 2 | interruption at step 2, DCP recovery, completion at step 8 |
+| `437868` | `cu16`, `cu17` | CPU/Gloo FSDP `FULL_SHARD`, world size 2 | activation checkpointing, two shards, recovery, completion at step 8 |
+| `437812` | `gpu01` | A800/NCCL FSDP, BF16, world size 1 | runtime and recovery passed; PyTorch correctly used `NO_SHARD` at world size 1 |
+
+The machine-readable record is
+[`results/v1.7-distributed-training.json`](results/v1.7-distributed-training.json).
+It also records failed attempts that exposed Slurm CPU-variable conflicts,
+PyTorch 2.4 FSDP optimizer-FQN recovery behavior, and NFS metadata visibility,
+together with the commits that fixed each problem.
 
 This reference job validates the shared systems layer only. A real medical UMM
 training run remains separately responsible for licensed, de-identified data,

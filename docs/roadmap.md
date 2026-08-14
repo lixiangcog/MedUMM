@@ -12,7 +12,9 @@
 - [x] completed-checkpoint markers, latest selection, and retention
 - [x] public `distributed_reference` trainer and DDP/FSDP configurations
 - [x] two-process CPU DDP integration test with interruption and recovery
-- [ ] committed two-node A800 FSDP Slurm acceptance evidence
+- [x] two-node CPU/Gloo DDP and FSDP `FULL_SHARD` Slurm recovery evidence
+- [x] one-A800 NCCL FSDP, BF16, activation-checkpointing, and recovery evidence
+- [ ] multi-rank A800 FSDP scaling and performance evidence
 - [ ] integrate the substrate into the first real multimodal medical post-training route
 - [ ] elastic recovery after node loss and resharded EMA across a changed world size
 

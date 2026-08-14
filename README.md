@@ -35,7 +35,9 @@ sbatch --export=ALL,MEDUMM_STRATEGY=fsdp \
 The Slurm recipe deliberately interrupts after two optimizer steps, restarts from
 the sharded checkpoint, and validates all rank sidecars and EMA state. Public API,
 configuration, checkpoint layout, topology limits, and acceptance criteria are in
-[docs/distributed-training-v1.7.md](docs/distributed-training-v1.7.md).
+[docs/distributed-training-v1.7.md](docs/distributed-training-v1.7.md). Committed
+two-node DDP/FSDP recovery and one-A800 runtime evidence is available in
+[docs/results/v1.7-distributed-training.json](docs/results/v1.7-distributed-training.json).
 
 ## v1.6: independent medical benchmark matrix
 

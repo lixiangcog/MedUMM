@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0",
+  "release": "v1.7.0",
+  "status": "passed",
+  "scope": "model-independent DDP/FSDP post-training, sharded checkpointing, EMA, interruption recovery, and multi-node launch",
+  "clinical_use": false,
+  "tested_source_commit": "020e27f984944ad9821d36ad23411194b9d4aa6e",
+  "runtime": {
+    "host": "dl01.hpcmaster.com",
+    "scheduler": "Slurm",
+    "python": "3.12.2",
+    "torch": "2.4.1+cu118",
+    "cuda_runtime": "11.8",
+    "server_distributed_tests": {
+      "status": "passed",
+      "tests_passed": 4,
+      "command": "python -m pytest tests/test_distributed_training.py -q"
+    }
+  },
+  "acceptance": {
+    "multi_node_ddp": {
+      "status": "passed",
+      "job_id": 437898,
+      "partition": "Intel-8358-1",
+      "nodes": ["node14", "node20"],
+      "elapsed": "00:00:56",
+      "exit_code": "0:0",
+      "strategy": "ddp",
+      "backend": "gloo",
+      "device": "cpu",
+      "world_size": 2,
+      "interrupted_at_optimizer_step": 2,
+      "completed_optimizer_step": 8,
+      "samples_seen": 256,
+      "ema_updates": 8,
+      "rank_sidecars": 2,
+      "distributed_shards": 2,
+      "checkpoint_format": "torch_distributed_checkpoint",
+      "resumed": true
+    },
+    "multi_node_fsdp_full_shard": {
+      "status": "passed",
+      "job_id": 437868,
+      "partition": "p6342",
+      "nodes": ["cu16", "cu17"],
+      "elapsed": "00:00:19",
+      "exit_code": "0:0",
+      "strategy": "fsdp",
+      "requested_sharding": "full_shard",
+      "effective_sharding": "full_shard",
+      "backend": "gloo",
+      "device": "cpu",
+      "precision": "bf16",
+      "world_size": 2,
+      "activation_checkpointing": true,
+      "interrupted_at_optimizer_step": 2,
+      "completed_optimizer_step": 8,
+      "samples_seen": 256,
+      "ema_updates": 8,
+      "rank_sidecars": 2,
+      "distributed_shards": 2,
+      "checkpoint_format": "torch_distributed_checkpoint",
+      "resumed": true
+    },
+    "single_node_fsdp_full_shard": {
+      "status": "passed",
+      "save_job_id": 437824,
+      "resume_job_id": 437825,
+      "partition": "p6342",
+      "node": "cu16",
+      "world_size": 2,
+      "requested_sharding": "full_shard",
+      "effective_sharding": "full_shard",
+      "rank_sidecars": 2,
+      "distributed_shards": 2,
+      "resumed": true
+    },
+    "a800_fsdp_runtime": {
+      "status": "passed",
+      "job_id": 437812,
+      "partition": "A800-N",
+      "node": "gpu01",
+      "gpu": "NVIDIA A800-SXM4-80GB",
+      "backend": "nccl",
+      "device": "cuda:0",
+      "precision": "bf16",
+      "world_size": 1,
+      "requested_sharding": "full_shard",
+      "effective_sharding": "no_shard",
+      "effective_sharding_reason": "PyTorch FSDP switches FULL_SHARD to NO_SHARD when world_size is 1.",
+      "activation_checkpointing": true,
+      "completed_optimizer_step": 16,
+      "samples_seen": 256,
+      "ema_updates": 16,
+      "resumed": true
+    }
+  },
+  "failure_driven_fixes": [
+    {
+      "job_id": 437806,
+      "failure": "The CPU partition exported conflicting SLURM_CPUS_PER_TASK and SLURM_TRES_PER_TASK values.",
+      "resolution_commit": "596783f",
+      "resolution": "Normalize the Slurm launch environment before srun."
+    },
+    {
+      "job_ids": [437809, 437810],
+      "failure": "PyTorch 2.4 could save FSDP state but failed to reconstruct optimizer FQNs during recovery.",
+      "resolution_commit": "6c3ad56",
+      "resolution": "Use the native FSDP sharded state-dict context, load_sharded_optimizer_state_dict, and optim_state_dict_to_load path."
+    },
+    {
+      "job_ids": [437827, 437857, 437861, 437864],
+      "failure": "A non-coordinator node retained a negative NFSv3 lookup for DCP .metadata across a fresh torchrun process group.",
+      "resolution_commit": "020e27f",
+      "resolution": "Broadcast DCP metadata after save and refresh it once from local rank zero on every node before restart."
+    }
+  ],
+  "resource_blocked_attempt": {
+    "job_id": 437808,
+    "state": "cancelled",
+    "reason": "The requested second A800 node had no free GPU and the queue estimate exceeded the validation window.",
+    "counted_as_failure": false
+  },
+  "not_claimed": [
+    "The distributed_reference trainer uses deterministic synthetic regression data and is not a medical model-quality result.",
+    "Multi-rank GPU FSDP and GPU scaling/performance benchmarks were not run because two A800 GPUs were not concurrently available.",
+    "Elastic recovery after node loss and EMA resharding across a changed world size remain future work."
+  ]
+}
