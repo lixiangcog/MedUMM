@@ -17,6 +17,9 @@ project_root="${MEDUMM_ROOT:-/data/user/hd66945/MedUMM}"
 python_bin="${MEDUMM_PYTHON:-$project_root/.venv-distributed/bin/python}"
 strategy="${MEDUMM_STRATEGY:-fsdp}"
 nproc_per_node="${MEDUMM_NPROC_PER_NODE:-1}"
+device="${MEDUMM_DEVICE:-}"
+backend="${MEDUMM_BACKEND:-}"
+fsdp_sync_module_states="${MEDUMM_FSDP_SYNC_MODULE_STATES:-}"
 job_key="${SLURM_JOB_ID:-local}"
 output_directory="${MEDUMM_OUTPUT_DIRECTORY:-$project_root/outputs/post_training/v1.7-${strategy}-${job_key}}"
 evidence_path="${MEDUMM_EVIDENCE_PATH:-$project_root/outputs/post_training/v1.7-${strategy}-${job_key}-evidence.json}"
@@ -29,6 +32,9 @@ export MEDUMM_PYTHON="$python_bin"
 export MEDUMM_CONFIG="$config_path"
 export MEDUMM_OUTPUT_DIRECTORY="$output_directory"
 export MEDUMM_NPROC_PER_NODE="$nproc_per_node"
+export MEDUMM_DEVICE="$device"
+export MEDUMM_BACKEND="$backend"
+export MEDUMM_FSDP_SYNC_MODULE_STATES="$fsdp_sync_module_states"
 export MASTER_ADDR="$(scontrol show hostnames "$SLURM_JOB_NODELIST" | head -n 1)"
 export MASTER_PORT="$((20000 + job_key % 20000))"
 # Some Slurm installations expose both variables with partition-specific values.
@@ -55,6 +61,15 @@ launch() {
         args+=(--set post_training.training.max_optimizer_steps=2)
       else
         args+=(--set post_training.resume_from=auto)
+      fi
+      if [[ -n "$MEDUMM_DEVICE" ]]; then
+        args+=(--set "runtime.device=$MEDUMM_DEVICE")
+      fi
+      if [[ -n "$MEDUMM_BACKEND" ]]; then
+        args+=(--set "post_training.distributed.backend=$MEDUMM_BACKEND")
+      fi
+      if [[ -n "$MEDUMM_FSDP_SYNC_MODULE_STATES" ]]; then
+        args+=(--set "post_training.distributed.fsdp_sync_module_states=$MEDUMM_FSDP_SYNC_MODULE_STATES")
       fi
       exec "$MEDUMM_PYTHON" "${args[@]}"
     '
