@@ -76,6 +76,29 @@ launch() {
 }
 
 launch interrupt
+
+# A completed DCP write can take a few seconds to become visible through an
+# NFS attribute cache on every allocated node. Confirm the checkpoint marker
+# and metadata from each node before starting a fresh torchrun process group.
+checkpoint_name="$(
+  "$python_bin" -c \
+    'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["checkpoint"])' \
+    "$output_directory/checkpoints/latest.json"
+)"
+export MEDUMM_CHECKPOINT_NAME="$checkpoint_name"
+srun --nodes="$SLURM_NNODES" --ntasks="$SLURM_NNODES" --ntasks-per-node=1 \
+  bash -lc '
+    checkpoint="$MEDUMM_OUTPUT_DIRECTORY/checkpoints/$MEDUMM_CHECKPOINT_NAME"
+    for _ in $(seq 1 30); do
+      if [[ -f "$checkpoint/COMPLETED" && -f "$checkpoint/shards/.metadata" ]]; then
+        exit 0
+      fi
+      sleep 1
+    done
+    echo "Checkpoint is not visible on $(hostname): $checkpoint" >&2
+    exit 1
+  '
+
 launch resume
 
 world_size="$((SLURM_NNODES * nproc_per_node))"
