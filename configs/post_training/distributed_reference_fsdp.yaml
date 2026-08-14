@@ -1,0 +1,40 @@
+schema_version: "1.0"
+runtime:
+  seed: 42
+  device: cuda
+post_training:
+  method: distributed_reference
+  seed: 42
+  output_directory: outputs/post_training/distributed_reference_fsdp
+  resume_from: null
+  data:
+    synthetic: true
+    samples: 64
+    input_dimensions: 16
+  training:
+    epochs: 4
+    batch_size: 8
+    hidden_dimensions: 32
+    learning_rate: 0.02
+    weight_decay: 0.0001
+    lr_gamma: 0.98
+  distributed:
+    strategy: fsdp
+    backend: nccl
+    init_method: env://
+    timeout_seconds: 300
+    precision: bf16
+    gradient_accumulation_steps: 2
+    max_grad_norm: 1.0
+    activation_checkpointing: true
+    activation_checkpoint_module_classes: [Linear]
+    fsdp_sharding_strategy: full_shard
+    fsdp_min_num_params: 1
+    fsdp_cpu_offload: false
+    fsdp_sync_module_states: true
+    fsdp_use_orig_params: true
+    ema_decay: 0.95
+    ema_device: model
+    checkpoint_every_steps: 2
+    checkpoint_keep_last: 3
+    checkpoint_strict_topology: false

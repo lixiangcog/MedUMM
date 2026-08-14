@@ -201,6 +201,23 @@ def register_builtins() -> None:
                 "research_only": True,
             },
         )
+    if not registry.trainers.contains("distributed_reference"):
+        registry.trainers.register(
+            "distributed_reference",
+            _factory(
+                "medumm.post_training.distributed_reference",
+                "DistributedReferenceTrainer",
+            ),
+            description="Real DDP/FSDP, EMA, AMP, and sharded-checkpoint acceptance trainer",
+            metadata={
+                "strategies": ["single", "ddp", "fsdp"],
+                "checkpoint": "torch.distributed.checkpoint",
+                "ema": True,
+                "activation_checkpointing": True,
+                "multi_node": True,
+                "research_only": True,
+            },
+        )
     from medumm.post_training.research_routes import ROUTES
 
     for route in ROUTES.values():

@@ -7,6 +7,36 @@ models, datasets, benchmarks, and training methods evolve independently.
 > Research use only. MedUMM is not a medical device and must not be used for
 > diagnosis, treatment, or other clinical decisions.
 
+## v1.7: distributed post-training substrate
+
+Version 1.7 adds a model-independent PyTorch training substrate instead of only
+generating `torchrun` commands. Model-specific trainers can now reuse initialized
+process groups, device-local DDP or FSDP, gradient accumulation with `no_sync`,
+FP32/FP16/BF16 autocast, gradient scaling and clipping, non-reentrant activation
+checkpointing, per-rank EMA, and resumable model/optimizer shards written through
+`torch.distributed.checkpoint`.
+
+Checkpoints also preserve the scheduler, AMP scaler, EMA, Python/Torch/CUDA RNG,
+epoch, micro-batch position, optimizer step, and sample count. An incomplete
+checkpoint is never selected by `resume_from: auto`, and retention only removes
+completed checkpoints. The included `distributed_reference` trainer is a real
+small PyTorch optimization job used to test the substrate; its synthetic data is
+not a medical model or quality result.
+
+```bash
+python -m torch.distributed.run --standalone --nproc-per-node=2 \
+  -m medumm post-train \
+  --config configs/post_training/distributed_reference_ddp.yaml
+
+sbatch --export=ALL,MEDUMM_STRATEGY=fsdp \
+  scripts/slurm_distributed_training_v1.7.sh
+```
+
+The Slurm recipe deliberately interrupts after two optimizer steps, restarts from
+the sharded checkpoint, and validates all rank sidecars and EMA state. Public API,
+configuration, checkpoint layout, topology limits, and acceptance criteria are in
+[docs/distributed-training-v1.7.md](docs/distributed-training-v1.7.md).
+
 ## v1.6: independent medical benchmark matrix
 
 Version 1.6 separates executable benchmarks from the dataset catalog. MedUMM

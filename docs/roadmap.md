@@ -1,5 +1,21 @@
 # Roadmap
 
+## v1.7 — distributed post-training substrate
+
+- [x] initialized NCCL/Gloo process groups from torchrun or Slurm environments
+- [x] model-independent single-process, DDP, and FSDP wrapping
+- [x] BF16/FP16 autocast, gradient scaling, accumulation with `no_sync`, and clipping
+- [x] configurable non-reentrant activation checkpointing
+- [x] trainable-parameter EMA with rank-local FSDP shard support
+- [x] `torch.distributed.checkpoint` model and optimizer shards
+- [x] scheduler, scaler, EMA, RNG, epoch, micro-step, optimizer-step, and sample-count recovery
+- [x] completed-checkpoint markers, latest selection, and retention
+- [x] public `distributed_reference` trainer and DDP/FSDP configurations
+- [x] two-process CPU DDP integration test with interruption and recovery
+- [ ] committed two-node A800 FSDP Slurm acceptance evidence
+- [ ] integrate the substrate into the first real multimodal medical post-training route
+- [ ] elastic recovery after node loss and resharded EMA across a changed world size
+
 ## v1.6 — independent medical benchmark matrix
 
 - [x] separate 34 dataset resources from executable benchmark claims
@@ -99,7 +115,8 @@ incomplete evaluation or data-governance path.
 
 - [ ] Transformers SFT plus LoRA/QLoRA trainer plugin
 - [ ] multi-dataset mixture schema with sampling weights and provenance
-- [ ] initialized multi-node process groups and experiment-tracker hooks
+- [x] initialized multi-node process groups
+- [ ] experiment-tracker hooks
 - [ ] preference-training interface and first medical safety preference recipe
 - [x] localization and grounding metrics
 - [x] report generation and longitudinal reasoning benchmark interfaces
@@ -135,7 +152,8 @@ incomplete evaluation or data-governance path.
 - [x] non-zero gradient, before/after metric, PEFT save/reload, and CUDA evidence gates
 - [ ] clinician-annotated medical safety preference slice
 - [ ] real multimodal MMedPO-style lesion-grounded preference run
-- [ ] multi-node FSDP/DeepSpeed alignment recipe
+- [x] generic multi-node FSDP substrate and restart recipe
+- [ ] native multi-node medical alignment integration and DeepSpeed alternative
 
 ## v0.8 — medical resource scale catalog
 

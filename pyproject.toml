@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "medumm"
-version = "1.6.0"
+version = "1.7.0"
 description = "Unified medical multimodal model toolkit"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -29,6 +29,7 @@ alignment = [
   "torch>=2.2",
   "transformers>=4.50,<5",
 ]
+distributed = ["torch>=2.2"]
 qlora = ["bitsandbytes>=0.45"]
 vllm = ["vllm==0.11.0; python_version > '3.11'"]
 sglang = ["sglang>=0.5.4"]

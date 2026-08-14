@@ -1,0 +1,31 @@
+name: distributed training
+
+on:
+  push:
+    paths:
+      - "src/medumm/training/**"
+      - "src/medumm/post_training/distributed_reference.py"
+      - "configs/post_training/distributed_reference_*.yaml"
+      - "scripts/*distributed_training*"
+      - "tests/test_distributed_training.py"
+      - ".github/workflows/distributed-training.yml"
+  pull_request:
+    paths:
+      - "src/medumm/training/**"
+      - "src/medumm/post_training/distributed_reference.py"
+      - "configs/post_training/distributed_reference_*.yaml"
+      - "scripts/*distributed_training*"
+      - "tests/test_distributed_training.py"
+      - ".github/workflows/distributed-training.yml"
+
+jobs:
+  cpu-ddp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e ".[test,distributed]"
+      - run: python -m pytest tests/test_distributed_training.py -q
+      - run: bash -n scripts/slurm_distributed_training_v1.7.sh
