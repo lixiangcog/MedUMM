@@ -102,7 +102,11 @@ def wrap_model(
         sharding_strategy=sharding,
         cpu_offload=CPUOffload(offload_params=config.fsdp_cpu_offload),
         mixed_precision=mixed_precision,
-        device_id=session.device if session.device.type == "cuda" else None,
+        # PyTorch 2.4 assumes CUDA when device_id is omitted, even when the
+        # module and process group intentionally run on CPU. Passing the
+        # resolved session device keeps CPU/Gloo acceptance runs valid while
+        # retaining rank-local CUDA placement in production.
+        device_id=session.device,
         sync_module_states=config.fsdp_sync_module_states and session.world_size > 1,
         use_orig_params=config.fsdp_use_orig_params,
         limit_all_gathers=True,
